@@ -14,7 +14,7 @@ A phone-sized, LoRA-tuned language model that answers farmers' questions in Hind
 | What | Where | Access |
 |---|---|---|
 | Code | This repo; edge-model work is on branch `roshan/edge` | Public |
-| Processed data, translations, model answers | Hugging Face dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data) (private) | Members of the [kisan-edge](https://huggingface.co/kisan-edge) HF organization; ask Roshan for an invite |
+| Processed data, translations, model answers | Hugging Face dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data), in the [kisan-edge](https://huggingface.co/kisan-edge) HF org | Public (anyone can download); org members can upload |
 | Raw data | Re-downloaded by `python -m src.data.download` from [Omegaindebt/Kisan_Call_Centre_Transcripts](https://huggingface.co/datasets/Omegaindebt/Kisan_Call_Centre_Transcripts) and [KisanVaani/agriculture-qa-english-only](https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only) | Public |
 | Fine-tuned LoRA adapter | Kaggle job output `roshanned/kisan-edge-02-qlora` (not in git) | Roshan |
 | GPU jobs | Kaggle notebooks `roshanned/kisan-edge-01-pilot`, `roshanned/kisan-edge-02-qlora` (private) | Roshan |
@@ -55,7 +55,7 @@ All files use the shared question format from [PLAN.md](PLAN.md) section 5. `spl
   - Dropped 8,573 duplicates, 2,781 corrupted rows ("????" text) and 426 empty or short rows; phone numbers replaced with `[PHONE]`; HTML-encoded Hindi decoded
 - [x] Cleaned KisanVaani ([src/data/prepare_kisanvaani.py](src/data/prepare_kisanvaani.py)). **Only 2,331 unique pairs** in the 22,615-row original, and just 11 mention our 4 crops.
 - [x] Translated **33,545 English KCC questions to Hindi** with IndicTrans2 ([src/data/translate_indictrans2.py](src/data/translate_indictrans2.py))
-- [x] Uploaded all processed data to the private dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data) (see [Data and access](#data-and-access))
+- [x] Uploaded all processed data to the public dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data) (see [Data and access](#data-and-access))
 - [x] Code pushed to GitHub (branch `roshan/edge`)
 
 **Model choice (100-question Hindi pilot)** ([src/edge/make_pilot.py](src/edge/make_pilot.py), [src/edge/compare_pilot.py](src/edge/compare_pilot.py))
@@ -93,7 +93,7 @@ All files use the shared question format from [PLAN.md](PLAN.md) section 5. `spl
 
 | Task | Blocked on | Plan |
 |---|---|---|
-| Invite Anushka, Kiran, Sai to the `kisan-edge` HF org | n/a | They then get all data from the HF dataset |
+| Invite Anushka, Kiran, Sai to the `kisan-edge` HF org | n/a | Only needed to upload; downloading is open to everyone |
 | Tell Anushka about the files + `pilot_ids.txt` | n/a | Pilot IDs must go into **dev**, never test |
 | Hand-check 50 gold-set questions | Anushka's split + gold set | |
 | **Retrain QLoRA on the frozen train split** | Anushka's split | Current adapter used our own files; retraining avoids test leakage (~45 min) |
