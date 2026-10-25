@@ -9,6 +9,37 @@ A phone-sized, LoRA-tuned language model that answers farmers' questions in Hind
 | Mid-submission | Oct 30, 2026 |
 | Final submission | Nov 15, 2026 |
 
+## Data and access
+
+| What | Where | Access |
+|---|---|---|
+| Code | This repo; edge-model work is on branch `roshan/edge` | Public |
+| Processed data, translations, model answers | Hugging Face dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data) (private) | Members of the [kisan-edge](https://huggingface.co/kisan-edge) HF organization; ask Roshan for an invite |
+| Raw data | Re-downloaded by `python -m src.data.download` from [Omegaindebt/Kisan_Call_Centre_Transcripts](https://huggingface.co/datasets/Omegaindebt/Kisan_Call_Centre_Transcripts) and [KisanVaani/agriculture-qa-english-only](https://huggingface.co/datasets/KisanVaani/agriculture-qa-english-only) | Public |
+| Fine-tuned LoRA adapter | Kaggle job output `roshanned/kisan-edge-02-qlora` (not in git) | Roshan |
+| GPU jobs | Kaggle notebooks `roshanned/kisan-edge-01-pilot`, `roshanned/kisan-edge-02-qlora` (private) | Roshan |
+
+Load the processed data:
+```python
+from huggingface_hub import snapshot_download
+path = snapshot_download("kisan-edge/kisan-edge-data", repo_type="dataset")
+# path/processed/*.jsonl, path/outputs/*.jsonl
+```
+
+What's in it:
+
+| File | Rows | Contents |
+|---|---|---|
+| `processed/kcc_hinglish.jsonl` | 9,432 | KCC UP, 4 crops, Hinglish questions |
+| `processed/kcc_1m_other.jsonl` | 33,556 | KCC UP, 4 crops, English summaries + `question_hi` (IndicTrans2 Hindi) |
+| `processed/kisanvaani_en.jsonl` | 2,328 | KisanVaani English Q-A |
+| `processed/pilot.jsonl`, `pilot_ids.txt` | 100 | Hindi pilot set. **Must go into dev, never test.** |
+| `processed/sft_train.jsonl`, `sft_val.jsonl` | 9,146 / 282 | Fine-tuning set (pilot run) |
+| `outputs/pilot_*.jsonl` | 100 each | Answers + token logprobs: Qwen3-1.7B, Llama-3.2-1B/3B base, Llama-3.2-3B tuned |
+| `outputs/pilot_rating_sheet*.csv` | 100 | All answers side by side for manual rating |
+
+All files use the shared question format from [PLAN.md](PLAN.md) section 5. `split` is empty until Anushka's split script fills it; `category` is a first-pass label (Kiran's router labels are final).
+
 ---
 
 ## Edge model (Roshan): Phase 1 status
@@ -24,7 +55,8 @@ A phone-sized, LoRA-tuned language model that answers farmers' questions in Hind
   - Dropped 8,573 duplicates, 2,781 corrupted rows ("????" text) and 426 empty or short rows; phone numbers replaced with `[PHONE]`; HTML-encoded Hindi decoded
 - [x] Cleaned KisanVaani ([src/data/prepare_kisanvaani.py](src/data/prepare_kisanvaani.py)). **Only 2,331 unique pairs** in the 22,615-row original, and just 11 mention our 4 crops.
 - [x] Translated **33,545 English KCC questions to Hindi** with IndicTrans2 ([src/data/translate_indictrans2.py](src/data/translate_indictrans2.py))
-- [x] Uploaded all processed data to the private dataset [roshanned/kisan-edge-data](https://huggingface.co/datasets/roshanned/kisan-edge-data) (ask Roshan for access)
+- [x] Uploaded all processed data to the private dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data) (see [Data and access](#data-and-access))
+- [x] Code pushed to GitHub (branch `roshan/edge`)
 
 **Model choice (100-question Hindi pilot)** ([src/edge/make_pilot.py](src/edge/make_pilot.py), [src/edge/compare_pilot.py](src/edge/compare_pilot.py))
 
@@ -61,7 +93,8 @@ A phone-sized, LoRA-tuned language model that answers farmers' questions in Hind
 
 | Task | Blocked on | Plan |
 |---|---|---|
-| Send cleaned files + `pilot_ids.txt` to Anushka | n/a | Pilot IDs must go into **dev**, never test |
+| Invite Anushka, Kiran, Sai to the `kisan-edge` HF org | n/a | They then get all data from the HF dataset |
+| Tell Anushka about the files + `pilot_ids.txt` | n/a | Pilot IDs must go into **dev**, never test |
 | Hand-check 50 gold-set questions | Anushka's split + gold set | |
 | **Retrain QLoRA on the frozen train split** | Anushka's split | Current adapter used our own files; retraining avoids test leakage (~45 min) |
 | **B2** (base) on the gold set, with logprobs, to Kiran | Gold set | One Kaggle job |
