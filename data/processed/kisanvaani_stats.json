@@ -1,0 +1,11 @@
+{
+  "total": 22615,
+  "dropped_duplicate": 20246,
+  "dropped_empty_or_corrupted": 41,
+  "kept": 2328,
+  "kept_in_scope_4_crops": 11,
+  "by_crop": {
+    "wheat": 8,
+    "paddy": 3
+  }
+}

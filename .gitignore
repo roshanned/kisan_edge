@@ -1,0 +1,12 @@
+data/raw/
+__pycache__/
+*.pyc
+.env
+*.gguf
+models/
+outputs/cache/
+.venv/
+data/processed/*.jsonl
+data/processed/cache/
+outputs/*.jsonl
+kaggle/results/

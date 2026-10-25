@@ -1,0 +1,47 @@
+{
+  "total": 1000000,
+  "uttar_pradesh": 181177,
+  "four_crops": 54645,
+  "dropped_duplicate": 8573,
+  "dropped_corrupted_text": 2359,
+  "dropped_empty_or_short": 725,
+  "kept_hinglish": 9432,
+  "kept_hinglish_unique_questions": 6740,
+  "kept_other": 33556,
+  "hinglish_by_crop": {
+    "sugarcane": 1177,
+    "paddy": 3673,
+    "wheat": 3875,
+    "mustard": 707
+  },
+  "hinglish_by_category": {
+    "high_risk": 4731,
+    "live_data": 2050,
+    "general": 2651
+  },
+  "hinglish_by_answer_script": {
+    "deva": 447,
+    "hinglish": 6316,
+    "latn": 2669
+  },
+  "other_by_crop": {
+    "wheat": 12329,
+    "mustard": 2617,
+    "sugarcane": 4199,
+    "paddy": 14411
+  },
+  "other_by_category": {
+    "high_risk": 11666,
+    "live_data": 17261,
+    "general": 4629
+  },
+  "other_by_answer_script": {
+    "deva": 20893,
+    "latn": 5663,
+    "hinglish": 7000
+  },
+  "other_by_question_script": {
+    "en/latn": 33545,
+    "hi/deva": 11
+  }
+}
