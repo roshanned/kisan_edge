@@ -1,0 +1,112 @@
+{
+  "seed": 2026,
+  "quota": {
+    "test": {
+      "hi/deva": 300,
+      "hi/latn": 250,
+      "en/latn": 150
+    },
+    "calib": {
+      "hi/deva": 250,
+      "hi/latn": 200,
+      "en/latn": 150
+    },
+    "dev": {
+      "hi/deva": 300,
+      "hi/latn": 200,
+      "en/latn": 100
+    }
+  },
+  "category_share": {
+    "general": 0.4,
+    "high_risk": 0.4,
+    "live_data": 0.2
+  },
+  "dropped_for_leakage": 150,
+  "pilot_ids_in_dev": 99,
+  "counts": {
+    "train": {
+      "hi/deva": 8424,
+      "hi/latn": 5871,
+      "en/latn": 2140
+    },
+    "dev": {
+      "hi/deva": 300,
+      "hi/latn": 200,
+      "en/latn": 100
+    },
+    "calib": {
+      "hi/latn": 200,
+      "hi/deva": 250,
+      "en/latn": 150
+    },
+    "test": {
+      "hi/deva": 300,
+      "en/latn": 150,
+      "hi/latn": 250
+    }
+  },
+  "categories": {
+    "train": {
+      "live_data": 6701,
+      "high_risk": 6770,
+      "general": 2964
+    },
+    "dev": {
+      "high_risk": 273,
+      "live_data": 102,
+      "general": 225
+    },
+    "calib": {
+      "live_data": 120,
+      "high_risk": 240,
+      "general": 240
+    },
+    "test": {
+      "high_risk": 280,
+      "live_data": 140,
+      "general": 280
+    }
+  },
+  "crops": {
+    "train": {
+      "wheat": 6837,
+      "paddy": 6166,
+      "sugarcane": 2028,
+      "mustard": 1404
+    },
+    "dev": {
+      "paddy": 188,
+      "wheat": 216,
+      "sugarcane": 101,
+      "mustard": 95
+    },
+    "calib": {
+      "wheat": 221,
+      "paddy": 205,
+      "sugarcane": 98,
+      "mustard": 76
+    },
+    "test": {
+      "paddy": 244,
+      "wheat": 271,
+      "sugarcane": 101,
+      "mustard": 84
+    }
+  },
+  "gold": {
+    "anushka:en/latn": 15,
+    "kiran:en/latn": 15,
+    "roshan:en/latn": 15,
+    "sai:en/latn": 15,
+    "anushka:hi/deva": 18,
+    "kiran:hi/deva": 18,
+    "roshan:hi/deva": 17,
+    "sai:hi/deva": 17,
+    "roshan:hi/latn": 18,
+    "sai:hi/latn": 18,
+    "anushka:hi/latn": 17,
+    "kiran:hi/latn": 17
+  },
+  "test_ids_sha256": "f4c18a2841f555e30120faab23635cf312bf4b9f5423d017fec1a0aa3c5eecd3"
+}

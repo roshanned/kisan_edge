@@ -10,3 +10,10 @@ data/processed/*.jsonl
 data/processed/cache/
 outputs/*.jsonl
 kaggle/results/
+# data/eval files that ARE committed (small, needed to reproduce the report)
+!data/processed/questions.jsonl
+!data/processed/seed_50.jsonl
+!data/processed/gold.jsonl
+!data/processed/gold_candidates.jsonl
+!outputs/scores_*.jsonl
+outputs/mock_*.jsonl
