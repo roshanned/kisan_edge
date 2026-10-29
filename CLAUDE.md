@@ -1,77 +1,61 @@
-# CLAUDE.md: Anushka's work (Data and evaluation)
+# CLAUDE.md: Kiran's work (Router, gate, queue, integration)
 
-Source of truth: [PLAN.md](PLAN.md). This file lists only Anushka Sharma's tasks, what is already done elsewhere, and what is still undecided. **Do not invent answers to the open questions below; ask Anushka.**
+Source of truth: [PLAN.md](PLAN.md) (§3 Kiran, §4 Kiran, §5 formats). This branch (`kiran/gate`, cut from `anushka/data` on Oct 29) exists because Kiran has pushed nothing. Anushka is covering the parts that need no Kiran-only input. Anything needing a human decision is marked **[ASK]**.
 
-Branch for this work: `anushka/data` (does not exist yet; only `main` and `origin/roshan/edge` exist as of Oct 28, 2026).
-Code goes in `src/data/` (cleaning, split) and `src/eval/` (judge, scoring, tables, plots). Outputs go in `data/processed/` and `outputs/`.
+Code goes in `src/router_gate/` (router, intent clf, gate, output filter), `src/queue_sim/` (queue, cache, simulator), `src/common/` (schemas, mocks). Data goes in `data/processed/` and `src/router_gate/keywords/`. Outputs go in `outputs/`.
 
-## Deadlines (today is Oct 28)
+## Deadlines (mid-submission is Oct 30; final Nov 15, no extensions)
 
-| Item | Due | Status |
-|---|---|---|
-| Cleaning rules + 50-Q seed file to everyone | Oct 24 | Overdue |
-| Frozen splits + gold batches of 50 sent out | Oct 26 | Overdue |
-| Hand-checked gold batches back from everyone | Oct 27 | Overdue |
-| All outputs in for scoring | Oct 29 | |
-| **Mid-submission** (report + GitHub with all code) | **Oct 30** | |
-| Final outputs for scoring | Nov 12 | |
-| Final submission, no extensions | Nov 15 | |
+Kiran's items are all late: red-team set (due Oct 27), router labels, keyword lists. R / A1 / hybrid need B1, B2 and B3, which do not exist yet.
 
-## Phase 1 (mid-submission)
+## What already exists (do not redo)
 
-### Step 1: Data
-1. Write the cleaning rules and labelling rules; share with everyone. (4 crops only; remove names and phones; dedupe; tag script `deva` / `latn` Hinglish / `latn` English; tag category `general | live_data | high_risk | emergency`.)
-2. Download and clean KCC UP 2024-25 (main Hindi dataset) -> `data/processed/kcc_hi.jsonl`.
-3. Publish a 50-question seed file in the shared format (PLAN.md section 5).
-4. Write the split script (`train / dev / calib / test`). Run it **once** over my file plus Roshan's files. Freeze the test set.
-5. Pick ~200 gold candidates from the test split; send 50 to each person.
-6. Hand-check my own 50; merge everyone's into `data/processed/gold.jsonl`.
-7. Send the frozen train split to Roshan.
+- `data/processed/questions.jsonl`: frozen split (test 700, calib 600, dev 600, train 16,435). Has `query_type` and a first-pass `category` (`general | live_data | high_risk` only; **no `emergency` rows exist**).
+- `src/data/common.py`: `category_for(query_type, question)`, `detect_script`, `read_jsonl` / `write_jsonl`. Reuse these.
+- `src/eval/make_mock_outputs.py`: fake edge and cloud outputs with logprobs, for building the gate before B2/B3 arrive.
+- Output formats: PLAN.md §5 (`router.jsonl`, `hybrid_*.jsonl`, `edge_*.jsonl`, `cloud_*.jsonl`).
 
-### Step 2: Evaluation harness (`src/eval/`)
-8. Scoring script: correct / partly correct / wrong, using an LLM judge. Output `outputs/scores_*.jsonl` (`{"id","run","label","judge","human_checked"}`).
-9. Hand-check a sample of judge labels to see if it can be trusted.
-10. Report results per language and script (Hindi deva, Hinglish, English).
+## Phase 1 tasks (mid-submission)
 
-### Step 3: Results and report
-11. Score every output file: B1, B2, B3, R, A1, A2.
-12. Tables and plots.
-13. Assemble and submit the mid-submission report (outline in PLAN.md 3.1; everyone writes their own section, I edit).
+### Step 1: repo and data
+1. `src/common/`: shared schemas (dataclasses or TypedDicts) for the §5 records, plus a mock-data generator (can wrap `make_mock_outputs.py`).
+2. Red-team set, ~50 Qs, Hindi / Hinglish / English: doses, mixing, legal, insurance, poisoning -> `data/processed/redteam.jsonl`. **[ASK]** Kiran or Anushka to hand-write the Hindi ones; LLM-drafted is fine only if a person reads each one.
+3. Router labels: map KCC `query_type` -> `general | live_data | high_risk | emergency` -> `data/processed/router_labels.jsonl`. `emergency` has no KCC source; derive from keywords (poisoning, snakebite, fire, etc.) plus red-team items.
+4. Keyword lists per category, 3 languages -> `src/router_gate/keywords/` (e.g. `high_risk.txt`, `emergency.txt`, `live_data.txt`, one file per category, tagged by script).
+5. Hand-check his 50 gold Qs (`data/processed/gold_batches/gold_batch_kiran.csv`). **Manual.**
 
-## Phase 2 (final, Oct 31 - Nov 15)
-1. Grow test to full ~700 Qs, plus calib and dev (~2,000 total), with the **same frozen split**.
-2. Evaluation loaders for BhashaBench-Krishi Hindi (2,757 Qs) and the Indic-KCC-Agri-Advisory benchmark.
-3. Judge vs human agreement on 100 Qs; report it.
-4. Score every run; tables per language and script.
-5. Overall metrics: accuracy, cloud calls per 100 Qs, offline usefulness.
-6. Write and submit the final report.
+### Step 2: router and safety filter
+6. Rule router: keyword match plus emergency rules (108 / 112 / KCC 1551). Emergency always escalates to cloud and shows the number.
+7. Small intent classifier (TF-IDF + logistic regression is enough) trained on **train split only**.
+8. Offline output filter: block number + unit pairs, Devanagari digits, Hindi/Hinglish unit words (ml, लीटर, किलो, ग्राम, एकड़...), and spelled-out numbers.
+9. Report high-risk routing recall and filter miss rate on the red-team set.
 
-## Other items assigned to me
-- Gaps in the proposal (PLAN.md section 9): decide crop-recommendation data / "exact match" metric (define a dataset or drop it; was due Oct 27), and document the judging method (LLM judge + human-checked sample + agreement).
-- Risk: noisy KCC labels -> human-checked gold subset, report results by slice.
-- Definition of done (PLAN.md section 10): runs from a clean clone, JSONL outputs in `outputs/`, per-language results, every number traceable to a script, no API keys or personal data committed.
+### Step 3: gate (needs B2/B3 files; build on mock first)
+10. Gate v1: score from `mean_logprob` / `min_logprob`; report AUROC and a risk-coverage curve (label = judge correctness from Anushka's `scores_*.jsonl`).
+11. **R:** random routing at the same cloud-call rate as the gate (uses B3 + B1 outputs).
+12. **A1:** hybrid using the base model (uses B2 + B1 outputs, no new model calls).
 
-## Overlap with other people (checked against branches)
+### Step 4: queue and integration
+13. Queue and connectivity simulator skeleton: priority, dedup, retry with back-off; good / patchy / poor traces; unit tests.
+14. Run the hybrid end to end on 20 Qs -> `outputs/hybrid_*.jsonl`.
+15. Write the router/gate section of the report (`reports/mid/report.typ`); clean the repo; **tag `mid-submission`**.
 
-Only `origin/roshan/edge` exists (4 commits, last: "README: HF dataset is public"). No branches for Kiran or Sai.
+## Phase 2 (Oct 31 - Nov 15)
+1. Extend the red-team set.
+2. Gate classifier (LR or small MLP) on logprob features + question type, answer length, script, unknown crop/pest words. Threshold sweep on **calib**; risk-coverage per language. Metrics: AUROC, AURC, ECE, false-keep, unnecessary-send, cloud-call rate. H3: classifier AUROC > token-prob AUROC.
+3. Full queue (priority, dedup, retry, stale re-ask for weather and prices, dated cache) and simulator.
+4. Full hybrid + R + A1 + A4 (no queue) on the full set; queue metrics (delivery rate, p50/p90 time-to-answer, stale rate, duplicate-send rate); safety metrics (high-risk recall, offline dose rate, filter miss rate, emergency escalation rate).
+5. **H1 verdict:** hybrid accuracy >= 90% of B1 with <= 50% cloud calls.
+6. README with reproduction steps.
 
-| Overlap | What Roshan already did | What is left for me |
-|---|---|---|
-| Cleaning rules (Step 1.1) | `src/data/common.py` already implements them: 4-crop filter, phone -> `[PHONE]`, dedupe, script detection, first-pass category, record format. | Write/share the official rules doc; decide whether to adopt his `common.py` as the shared one. |
-| Hinglish + English files | Done: `kcc_hinglish.jsonl` (9,432), `kisanvaani_en.jsonl` (2,328), `kcc_1m_other.jsonl` (33,556, English summaries + IndicTrans2 `question_hi`). On public HF dataset `kisan-edge/kisan-edge-data` (not in git). | Pull and feed into the split. Note KisanVaani has only 11 rows on our 4 crops. |
-| Hindi translations | Done (33,545), stored in `kcc_1m_other.jsonl` as `question_hi`, **not** merged into `kcc_hi.jsonl` as PLAN.md says. | Decide how they enter the split. |
-| Pilot set | `pilot_ids.txt` (100 IDs): **must go into dev, never test.** | Enforce in split script. |
-| Category labels | His are first-pass only; Kiran's router labels are final. | Split must not depend on them being final (see questions). |
-| Gold hand-check | Pending on my split. | Blocked on me. |
-| Train split | He is waiting to retrain QLoRA on it. | Blocked on me. |
-| Not done by anyone | KCC UP 2024-25, split script, seed file, judge, scoring, report. | All mine. |
+## Rules for this branch
+- Split is frozen. Train only on `split == "train"`; tune thresholds on `calib`; never touch `test` except to report.
+- Never commit API keys (`.env` is ignored) or personal data.
+- Every number in the report must trace to a script + an `outputs/` file.
+- Read the existing CLAUDE.md of `anushka/data` only for Anushka's tasks; this file replaces it on this branch.
 
-## Open questions (ask before executing)
-1. **KCC UP 2024-25:** PLAN.md says data.gov.in. Roshan's 1M-row file is the 2014-19 sample from HF. Do I have the 2024-25 file, or do I still need to download it (data.gov.in needs an API key / manual download)? If unavailable, is it OK to use what Roshan already cleaned as the main data? ---  USE ROSHANS DATA
-2. **`kcc_hi.jsonl`:** should it contain only the original Devanagari 2024-25 rows, or also Roshan's translated `question_hi` rows?
-3. **Split sizes:** only "~700 test, ~2,000 total for test+calib+dev" is stated. What are the dev, calib and train sizes/ratios? Is the split random, or stratified by language/crop/category?
-4. **Gold set (~200):** random from test, or stratified (e.g. equal across Hindi / Hinglish / English, include some high_risk)? Note English data is thin (only 11 KisanVaani rows on our crops).
-5. **LLM judge:** which model? Gemini free-tier quota is already Sai's bottleneck; should the judge use a different provider (and key)?
-6. **Crop-recommendation / exact match metric:** define a dataset or drop it? (My call per PLAN.md; no source exists.)
-7. **Overdue dates:** the seed file, split and gold batches were due Oct 24-27. Given the Oct 30 deadline, should I take the shortcut of splitting immediately over Roshan's existing files plus whatever Hindi data I have, and skip waiting for the others' hand-checks?
-8. **Branch:** create `anushka/data` and work there, per PLAN.md git rules?
+## Open questions
+1. **[ASK]** Is "emergency" routed purely by rules, or should the classifier also learn it (no KCC training rows exist)?
+2. **[ASK]** Gate label: judge `correct` only, or `correct` + `partly correct`, counts as "edge answer is fine"?
+3. **[ASK]** Does Kiran have any local code/data not pushed? If so, merge it here instead of rewriting.
+4. **[ASK]** Offline safety filter: block, or replace with a deferral message ("please contact KCC 1551")?
