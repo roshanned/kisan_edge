@@ -27,3 +27,7 @@ outputs/mock_*.jsonl
 corpus/raw/
 corpus/index/
 cache/
+# cloud + edge run outputs are needed for scoring and the report
+!outputs/cloud_*.jsonl
+!outputs/edge_*.jsonl
+!data/snapshots/**

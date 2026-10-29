@@ -1,0 +1,12 @@
+# DRAFT, verify against the current CIB&RC banned/restricted list before the final report (MANUAL_TODO, cloud #6).
+# One lowercase name per line. Only products that are long-established as banned for agricultural use in India.
+endosulfan
+ddt
+bhc
+hch
+aldrin
+dieldrin
+chlordane
+heptachlor
+toxaphene
+lindane

@@ -1,0 +1,17 @@
+{
+  "pm_kisan": {"aliases": ["pm kisan", "pmkisan", "kisan samman", "सम्मान निधि", "पीएम किसान"],
+    "summary": "Income support of Rs 6,000 per year to eligible farmer families, paid in three instalments of Rs 2,000. Needs Aadhaar-linked bank account and e-KYC.",
+    "helpline": "155261 or 011-24300606", "website": "pmkisan.gov.in", "needs_verification": true},
+  "pmfby": {"aliases": ["pmfby", "fasal bima", "crop insurance", "फसल बीमा", "bima yojana"],
+    "summary": "Crop insurance. Farmer premium is at most 2% (kharif food/oilseed crops), 1.5% (rabi food/oilseed crops) and 5% (commercial/horticultural crops); the rest is paid by the government. Report crop loss within 72 hours to the insurer, the bank or the Crop Insurance app.",
+    "helpline": "14447", "website": "pmfby.gov.in", "needs_verification": true},
+  "kcc_loan": {"aliases": ["kcc loan", "kisan credit card", "credit card", "किसान क्रेडिट"],
+    "summary": "Kisan Credit Card gives short-term farm credit from banks at subsidised interest with a prompt-repayment incentive. Apply at your bank branch or cooperative society with land papers.",
+    "helpline": "ask the bank branch", "website": "pmkisan.gov.in (KCC form)", "needs_verification": true},
+  "soil_health_card": {"aliases": ["soil health", "soil card", "मृदा स्वास्थ्य", "mitti jaanch"],
+    "summary": "Free card with soil test results and fertilizer advice for your field, renewed every two years. Ask the nearest Krishi Vigyan Kendra or agriculture office.",
+    "helpline": "KCC 1551", "website": "soilhealth.dac.gov.in", "needs_verification": true},
+  "kisan_call_centre": {"aliases": ["kisan call", "kcc 1551", "1551", "call centre", "helpline"],
+    "summary": "Free helpline where agriculture experts answer farmers' questions in local languages.",
+    "helpline": "1551 or 1800-180-1551", "website": "mkisan.gov.in", "needs_verification": true}
+}

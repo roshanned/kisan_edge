@@ -1,0 +1,306 @@
+{
+ "Bareilly": {
+  "lat": 28.36678,
+  "lon": 79.43167
+ },
+ "Kheri": {
+  "lat": 28.46737,
+  "lon": 80.57794
+ },
+ "Sitapur": {
+  "lat": 27.56192,
+  "lon": 80.68265
+ },
+ "Bulandshahar": {
+  "lat": 28.40392,
+  "lon": 77.85773
+ },
+ "Saharanpur": {
+  "lat": 29.9679,
+  "lon": 77.54522
+ },
+ "Shahjahanpur": {
+  "lat": 27.88165,
+  "lon": 79.90918
+ },
+ "Aligarh": {
+  "lat": 27.88145,
+  "lon": 78.07464
+ },
+ "Hardoi": {
+  "lat": 27.39491,
+  "lon": 80.13165
+ },
+ "Gonda": {
+  "lat": 27.13,
+  "lon": 81.96
+ },
+ "Badaun": {
+  "lat": 28.03811,
+  "lon": 79.12668
+ },
+ "Kanpur Dehat": {
+  "lat": 26.46523,
+  "lon": 80.34975
+ },
+ "Faizabad": {
+  "lat": 26.79909,
+  "lon": 82.2047
+ },
+ "Allahabad": {
+  "lat": 25.44478,
+  "lon": 81.84322
+ },
+ "Jaunpur": {
+  "lat": 25.75356,
+  "lon": 82.68689
+ },
+ "Pilibhit": {
+  "lat": 28.63124,
+  "lon": 79.80436
+ },
+ "Bahraich": {
+  "lat": 27.57429,
+  "lon": 81.59474
+ },
+ "Mathura": {
+  "lat": 27.5035,
+  "lon": 77.67215
+ },
+ "Unnao": {
+  "lat": 26.54706,
+  "lon": 80.48781
+ },
+ "Muzaffarnagar": {
+  "lat": 29.47091,
+  "lon": 77.70332
+ },
+ "Azamgarh": {
+  "lat": 26.06832,
+  "lon": 83.18358
+ },
+ "Basti": {
+  "lat": 26.78817,
+  "lon": 82.71617
+ },
+ "Ghazipur": {
+  "lat": 25.58333,
+  "lon": 83.58526
+ },
+ "Raebareli": {
+  "lat": 26.2309,
+  "lon": 81.23315
+ },
+ "Barabanki": {
+  "lat": 26.93,
+  "lon": 81.19
+ },
+ "Moradabad": {
+  "lat": 28.83893,
+  "lon": 78.77684
+ },
+ "Mirzapur": {
+  "lat": 25.1449,
+  "lon": 82.56534
+ },
+ "Sultanpur": {
+  "lat": 26.25788,
+  "lon": 82.07269
+ },
+ "Bijnor": {
+  "lat": 29.373,
+  "lon": 78.13636
+ },
+ "Pratapgarh": {
+  "lat": 25.89509,
+  "lon": 81.9424
+ },
+ "Fatehpur": {
+  "lat": 25.92774,
+  "lon": 80.81266
+ },
+ "Ambedkar Nagar": {
+  "lat": 26.43,
+  "lon": 82.54
+ },
+ "Etah": {
+  "lat": 27.55879,
+  "lon": 78.65692
+ },
+ "Rampur": {
+  "lat": 28.81014,
+  "lon": 79.02699
+ },
+ "Meerut": {
+  "lat": 28.98002,
+  "lon": 77.70636
+ },
+ "Gorakhpur": {
+  "lat": 26.76628,
+  "lon": 83.36889
+ },
+ "Kushi Nagar": {
+  "lat": 26.74134,
+  "lon": 83.88689
+ },
+ "Chandauli": {
+  "lat": 25.25803,
+  "lon": 83.26825
+ },
+ "Mainpuri": {
+  "lat": 27.22857,
+  "lon": 79.02882
+ },
+ "Jhansi": {
+  "lat": 25.45887,
+  "lon": 78.57994
+ },
+ "Lalitpur": {
+  "lat": 24.69007,
+  "lon": 78.41915
+ },
+ "Maharahganj": {
+  "lat": 26.38126,
+  "lon": 81.27436
+ },
+ "Amethi ( Shahu Ji Maharaj)": {
+  "lat": 26.15696,
+  "lon": 81.80519
+ },
+ "Kannauj": {
+  "lat": 27.05524,
+  "lon": 79.9188
+ },
+ "Agra": {
+  "lat": 27.18333,
+  "lon": 78.01667
+ },
+ "Ballia": {
+  "lat": 28.20069,
+  "lon": 79.36668
+ },
+ "Jalaun": {
+  "lat": 26.1451,
+  "lon": 79.3366
+ },
+ "Sambal (Bhim Nagar)": {
+  "lat": 28.58,
+  "lon": 78.57
+ },
+ "Kanpur City": {
+  "lat": 26.45,
+  "lon": 80.35
+ },
+ "Deoria": {
+  "lat": 26.50167,
+  "lon": 83.77936
+ },
+ "Etawah": {
+  "lat": 26.77615,
+  "lon": 79.02133
+ },
+ "Baghpat": {
+  "lat": 28.94485,
+  "lon": 77.21865
+ },
+ "Hathras": {
+  "lat": 27.59551,
+  "lon": 78.05201
+ },
+ "Sonbhadra": {
+  "lat": 24.69,
+  "lon": 83.07
+ },
+ "Lucknow": {
+  "lat": 26.83928,
+  "lon": 80.92313
+ },
+ "Auraiya": {
+  "lat": 26.46517,
+  "lon": 79.50918
+ },
+ "Farrukhabad": {
+  "lat": 27.39134,
+  "lon": 79.5793
+ },
+ "Firozabad": {
+  "lat": 27.15092,
+  "lon": 78.39781
+ },
+ "Shamli (Prabudh Nager)": {
+  "lat": 29.45,
+  "lon": 77.31
+ },
+ "Banda": {
+  "lat": 25.47758,
+  "lon": 80.33491
+ },
+ "Jyotiba Phule Nagar": {
+  "lat": 28.9,
+  "lon": 78.47
+ },
+ "Hamirpur": {
+  "lat": 25.9553,
+  "lon": 80.14842
+ },
+ "Kanshiram Nagar": {
+  "lat": 27.81,
+  "lon": 78.65
+ },
+ "Balrampur": {
+  "lat": 27.42949,
+  "lon": 82.18545
+ },
+ "Siddharth Nagar": {
+  "lat": 27.28,
+  "lon": 83.11
+ },
+ "Varanasi": {
+  "lat": 25.31668,
+  "lon": 83.01041
+ },
+ "Mau": {
+  "lat": 25.94167,
+  "lon": 83.56111
+ },
+ "Chitrakoot": {
+  "lat": 25.21473,
+  "lon": 80.91645
+ },
+ "Shivasti": {
+  "lat": 27.68,
+  "lon": 81.93
+ },
+ "Gautam Buddha Nagar": {
+  "lat": 28.54,
+  "lon": 77.39
+ },
+ "Mahoba": {
+  "lat": 25.2905,
+  "lon": 79.87533
+ },
+ "Hapur (Panchsheel Nagar)": {
+  "lat": 28.73,
+  "lon": 77.78
+ },
+ "Kaushambi": {
+  "lat": 25.53,
+  "lon": 81.38
+ },
+ "Ghaziabad": {
+  "lat": 28.66535,
+  "lon": 77.43915
+ },
+ "Sant Kabir Nagar": {
+  "lat": 26.77,
+  "lon": 83.07
+ },
+ "Sant Ravidas Nagar Bhadohi": {
+  "lat": 25.4,
+  "lon": 82.57
+ },
+ "Amroha": {
+  "lat": 28.90314,
+  "lon": 78.46984
+ }
+}
