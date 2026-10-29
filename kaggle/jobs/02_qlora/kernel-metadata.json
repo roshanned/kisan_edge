@@ -1,0 +1,16 @@
+{
+  "id": "roshanned/kisan-edge-02-qlora",
+  "title": "kisan-edge-02-qlora",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "",
+  "dataset_sources": ["roshanned/kisan-edge-code"],
+  "competition_sources": [],
+  "kernel_sources": ["roshanned/kisan-edge-01-pilot"],
+  "model_sources": []
+}

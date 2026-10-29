@@ -1,0 +1,45 @@
+# Prefix match (left word boundary). Things that change daily or need a lookup: weather, prices, schemes.
+weather
+mausam
+mosam
+forecast
+barish
+barsat
+baarish
+rain
+temperature
+तापमान
+मौसम
+पूर्वानुमान
+बारिश
+वर्षा
+मंडी
+mandi
+bhav
+bhaav
+price
+rate$
+भाव
+कीमत
+दाम
+today
+aaj ka
+आज का
+yojana
+yojna
+scheme
+subsidy
+anudan
+insurance
+bima
+beema
+pm-kisan
+pm kisan
+pmfby
+kcc$
+योजना
+सब्सिडी
+अनुदान
+बीमा
+किस्त
+kist

@@ -1,0 +1,15 @@
+pandas>=2.0
+pyarrow
+huggingface_hub
+transformers>=4.51,<5
+accelerate
+peft<0.18
+bitsandbytes
+sacremoses
+sentencepiece
+IndicTransToolkit
+requests
+matplotlib
+pytest
+scikit-learn
+numpy

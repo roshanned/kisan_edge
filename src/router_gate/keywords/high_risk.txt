@@ -1,0 +1,127 @@
+# Prefix match (left word boundary). End a term with $ to also require a right boundary.
+# Anything where a wrong or too-confident answer can burn a crop, hurt a person or cost money:
+# doses, chemical names, mixing, banned/legal, insurance claims.
+# --- dose / quantity phrases ---
+dose
+dosage
+matra
+mātra
+मात्रा
+kitna dalein
+kitna dalna
+kitna dalu
+kitna daalen
+kitni matra
+कितना डालें
+कितना डालना
+कितना डालूं
+कितनी मात्रा
+कितने मिलीलीटर
+कितना रखें
+how much to
+how many ml
+quantity of
+per litre
+per liter
+प्रति लीटर
+प्रति एकड़
+per acre$
+ml$
+मिलीलीटर
+मिली$
+# --- pesticide words ---
+spray
+sprayer
+स्प्रे
+छिड़क
+chhidk
+pesticide
+insecticide
+fungicide
+herbicide
+weedicide
+keetnashak
+kitnashak
+कीटनाशक
+फफूंदनाशक
+फफूंदी नाशक
+खरपतवारनाशक
+खरपतवार नाशक
+दीमक की दवा
+dawa
+दवा
+rat poison
+rodenticide
+चूहे मारने
+chuhe marne
+zinc phosphide
+जिंक फॉस्फाइड
+# --- common active ingredients ---
+monocrotophos
+मोनोक्रोटोफॉस
+chlorpyriphos
+chlorpyrifos
+क्लोरपायरीफॉस
+imidacloprid
+इमिडाक्लोप्रिड
+glyphosate
+ग्लाइफोसेट
+paraquat
+पैराक्वाट
+endosulfan
+एंडोसल्फान
+carbendazim
+कार्बेन्डाजिम
+mancozeb
+मैंकोज़ेब
+मैंकोजेब
+cypermethrin
+साइपरमेथ्रिन
+propiconazole
+प्रोपिकोनाज़ोल
+प्रोपिकोनाजोल
+2,4-d
+atrazine
+एट्राज़ीन
+# --- mixing ---
+mix karke
+mila kar
+mila sakte
+milakar
+mix$
+मिलाकर
+मिलाना
+मिला सकते
+एक ही टैंक
+same tank
+tank mix
+# --- legal / banned / licence ---
+banned
+ban$
+prohibited
+pratibandhit
+प्रतिबंधित
+licence
+license
+लाइसेंस
+लाइसेन्स
+saza
+सजा
+कानूनी
+kanooni
+kanuni
+legal
+illegal
+court
+कोर्ट
+# --- insurance CLAIMS (plain 'bima' questions stay live_data) ---
+claim
+दावा
+रिजेक्ट
+reject
+खारिज
+shikayat
+शिकायत
+compensation
+मुआवजा
+muavja
