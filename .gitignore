@@ -17,3 +17,9 @@ kaggle/results/
 !data/processed/gold_candidates.jsonl
 !outputs/scores_*.jsonl
 outputs/mock_*.jsonl
+# Kiran's files (router/gate/queue)
+!data/processed/redteam.jsonl
+!data/processed/filter_probe.jsonl
+!data/processed/router_labels.jsonl
+!outputs/router.jsonl
+!outputs/hybrid_*.jsonl

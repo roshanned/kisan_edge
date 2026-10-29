@@ -11,3 +11,5 @@ IndicTransToolkit
 requests
 matplotlib
 pytest
+scikit-learn
+numpy

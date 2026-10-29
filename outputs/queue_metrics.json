@@ -1,0 +1,56 @@
+{
+ "good": {
+  "jobs": 583,
+  "delivery_rate": 1.0,
+  "p50_ticks": 0,
+  "p90_ticks": 0,
+  "stale_rate": 0.0,
+  "duplicate_send_rate": 0.0,
+  "sends": 595
+ },
+ "good_no_queue(A4)": {
+  "jobs": 583,
+  "delivery_rate": 0.979,
+  "p50_ticks": 0,
+  "p90_ticks": 0,
+  "stale_rate": 0.0,
+  "duplicate_send_rate": 0.0,
+  "sends": 583
+ },
+ "patchy": {
+  "jobs": 583,
+  "delivery_rate": 0.998,
+  "p50_ticks": 5,
+  "p90_ticks": 50,
+  "stale_rate": 0.088,
+  "duplicate_send_rate": 0.0,
+  "sends": 873
+ },
+ "patchy_no_queue(A4)": {
+  "jobs": 583,
+  "delivery_rate": 0.583,
+  "p50_ticks": 0,
+  "p90_ticks": 6,
+  "stale_rate": 0.0,
+  "duplicate_send_rate": 0.0,
+  "sends": 491
+ },
+ "poor": {
+  "jobs": 583,
+  "delivery_rate": 0.671,
+  "p50_ticks": 767,
+  "p90_ticks": 1973,
+  "stale_rate": 0.981,
+  "duplicate_send_rate": 0.0,
+  "sends": 1073
+ },
+ "poor_no_queue(A4)": {
+  "jobs": 583,
+  "delivery_rate": 0.136,
+  "p50_ticks": 2,
+  "p90_ticks": 89,
+  "stale_rate": 0.312,
+  "duplicate_send_rate": 0.0,
+  "sends": 204
+ }
+}

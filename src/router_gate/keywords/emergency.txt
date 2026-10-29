@@ -1,0 +1,56 @@
+# One term per line. '#' = comment. Matched case-insensitively, whole word on both sides.
+# Languages: Devanagari Hindi, Hinglish (Latin), English. Add spelling variants freely.
+# --- poisoning ---
+poison
+poisoned
+poisoning
+zeher
+zehar
+jahar
+zahar
+जहर
+ज़हर
+विषाक्त
+पी लिया
+पी ली
+pee liya
+pi liya
+kha li
+खा ली
+खा लिया
+swallowed
+sulphas
+celphos
+सल्फास
+aluminium phosphide
+# --- spray sickness / collapse ---
+behosh
+बेहोश
+unconscious
+fainted
+faint
+dizzy
+chakkar
+चक्कर
+ulti
+उल्टी
+vomiting
+vomit
+saans nahi
+सांस नहीं
+# --- snakebite, fire, accident ---
+snake
+saanp
+sanp
+सांप
+साँप
+सर्प
+snakebite
+ambulance
+एम्बुलेंस
+आग लग
+aag lag
+fire
+bijli ka jhatka
+बिजली का झटका
+electric shock

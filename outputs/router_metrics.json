@@ -1,0 +1,108 @@
+{
+ "rules_only": {
+  "redteam": {
+   "high_risk_recall": {
+    "all": 1.0,
+    "deva": 1.0,
+    "dose": 1.0,
+    "latn": 1.0,
+    "en": 1.0,
+    "mixing": 1.0,
+    "legal": 1.0,
+    "insurance": 1.0,
+    "poison": 1.0,
+    "snake": 1.0
+   },
+   "emergency_escalation_rate": 1.0,
+   "n": 51,
+   "missed": []
+  },
+  "dev": {
+   "accuracy": {
+    "all": 0.518,
+    "hi/deva": 0.497,
+    "hi/latn": 0.535,
+    "en/latn": 0.55
+   },
+   "high_risk_recall": {
+    "all": 0.062,
+    "hi/deva": 0.045,
+    "en/latn": 0.05,
+    "hi/latn": 0.1
+   },
+   "n": 600
+  },
+  "test": {
+   "accuracy": {
+    "all": 0.551,
+    "hi/deva": 0.587,
+    "en/latn": 0.527,
+    "hi/latn": 0.524
+   },
+   "high_risk_recall": {
+    "all": 0.072,
+    "hi/deva": 0.064,
+    "hi/latn": 0.087,
+    "en/latn": 0.063
+   },
+   "n": 700
+  }
+ },
+ "rules_plus_clf": {
+  "redteam": {
+   "high_risk_recall": {
+    "all": 1.0,
+    "deva": 1.0,
+    "dose": 1.0,
+    "latn": 1.0,
+    "en": 1.0,
+    "mixing": 1.0,
+    "legal": 1.0,
+    "insurance": 1.0,
+    "poison": 1.0,
+    "snake": 1.0
+   },
+   "emergency_escalation_rate": 1.0,
+   "n": 51,
+   "missed": []
+  },
+  "dev": {
+   "accuracy": {
+    "all": 0.82,
+    "hi/deva": 0.887,
+    "hi/latn": 0.73,
+    "en/latn": 0.8
+   },
+   "high_risk_recall": {
+    "all": 0.884,
+    "hi/deva": 0.923,
+    "en/latn": 0.875,
+    "hi/latn": 0.812
+   },
+   "n": 600
+  },
+  "test": {
+   "accuracy": {
+    "all": 0.801,
+    "hi/deva": 0.893,
+    "en/latn": 0.74,
+    "hi/latn": 0.728
+   },
+   "high_risk_recall": {
+    "all": 0.9,
+    "hi/deva": 0.96,
+    "hi/latn": 0.864,
+    "en/latn": 0.841
+   },
+   "n": 700
+  }
+ },
+ "filter": {
+  "miss_rate": 0.0,
+  "false_block_rate": 0.0,
+  "n_dose": 22,
+  "n_safe": 11,
+  "missed": [],
+  "false_blocks": []
+ }
+}

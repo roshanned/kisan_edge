@@ -8,6 +8,12 @@ Code goes in `src/router_gate/` (router, intent clf, gate, output filter), `src/
 
 Kiran's items are all late: red-team set (due Oct 27), router labels, keyword lists. R / A1 / hybrid need B1, B2 and B3, which do not exist yet.
 
+## STATUS (Oct 29 night): code is done, humans are not
+
+All code tasks below are implemented on this branch. Read `docs/kiran/README.md` (how it works), `docs/kiran/DECISIONS.md`
+(what was decided, incl. rows marked CONFIRM) and `docs/kiran/MANUAL_TODO.md` (12 human tasks). Still blocked on other people's
+files: gate AUROC/AURC/ECE, R, A1, hybrid accuracy, H1, H3. The open questions at the bottom were answered with defaults in DECISIONS.md.
+
 ## What already exists (do not redo)
 
 - `data/processed/questions.jsonl`: frozen split (test 700, calib 600, dev 600, train 16,435). Has `query_type` and a first-pass `category` (`general | live_data | high_risk` only; **no `emergency` rows exist**).
