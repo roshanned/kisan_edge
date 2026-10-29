@@ -13,3 +13,10 @@ matplotlib
 pytest
 scikit-learn
 numpy
+pypdf
+beautifulsoup4
+datasketch
+faiss-cpu
+sentence-transformers
+google-genai
+python-dotenv

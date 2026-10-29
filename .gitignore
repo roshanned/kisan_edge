@@ -23,3 +23,7 @@ outputs/mock_*.jsonl
 !data/processed/router_labels.jsonl
 !outputs/router.jsonl
 !outputs/hybrid_*.jsonl
+.DS_Store
+corpus/raw/
+corpus/index/
+cache/
