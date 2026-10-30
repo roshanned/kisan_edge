@@ -1,50 +1,36 @@
 # Project status (Oct 30, 2026, mid-submission day)
 
-All code lives on `main`. 50 tests pass. **No model has produced answers yet**, so there are no accuracy numbers. That is the main gap for the mid-submission.
+`main` has everything. **What is left for today is in [TODO.md](TODO.md).** Details per area: `docs/kiran/` (router, queue), `docs/cloud/` (cloud side).
 
-## What is done
+## Done
 
 | Part | Done |
 |---|---|
-| **Data (Anushka)** | Data cleaned and split once (700 test, 600 calib, 600 dev, 16,435 train). 200 gold candidates in 4 batches of 50. Judge, scoring script, per-language report, judge-vs-human check. Report draft in `reports/mid/` |
-| **Edge model (Roshan)** | Hinglish and English data, Hindi translations, 100-question model pilot, generation and QLoRA scripts |
-| **Cloud (Sai's part, finished by Claude)** | Agent loop with function calling, 3 tools (weather, mandi price, schemes), safety filter, Gemini client with cache and retries, resumable batch runner for B1/A2/A3/B4, weather forecasts for 76 UP districts (dated 2026-10-30). Guide: `docs/cloud/` |
-| **Router and queue (Kiran's part, finished by Claude)** | Router, offline dose filter, gate metrics, queue simulator, hybrid runner (full, R, A1, A4), 51 red-team questions. Guide: `docs/kiran/` |
+| **Data** | Cleaned and split once (700 test, 600 calib, 600 dev, 16,435 train). 200 gold candidates; an AI pre-check dropped 42 bad ones, **158 remain**. Judge, scoring, tables, chart |
+| **Small model (Roshan)** | Llama-3.2-3B chosen from a 100-question pilot; fine-tuned; **B2 (base) and B3 (tuned) run on all 200 gold questions** |
+| **Cloud** | Agent with weather, market-price and scheme tools, safety filter, resumable runner. **A2 (cloud, tools, no document search) run on 200 questions** with `gemini-3.5-flash-lite` |
+| **Router, gate, queue** | Router, dose filter, gate, queue simulator. **Combined system, A1 and R run and scored** |
+| **Report** | `reports/mid/report.pdf` written with tables and a chart, no empty sections |
+| **Hugging Face dataset** | Public at [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data). **Out of date**: last updated Oct 25, so it lacks the split, gold set, model answers, scores and weather files |
 
-Real numbers so far: router 80% accurate on test and sends 90% of high-risk questions to the cloud; queue delivers 100% / 99.8% / 67% on good / patchy / poor links.
+## Results (158 gold questions, AI judge; share of answers judged fully correct)
 
-## What is NOT done and why
-- **Cloud code has never called Gemini.** No API key in the repo. Only tested with fakes.
-- **No RAG corpus.** Government sites could not be scraped; documents must be downloaded by hand.
-- **No mandi prices.** Needs a free data.gov.in key.
-- **Scheme facts and banned-pesticide list are from memory.** Marked unverified.
-- **Nobody has hand-checked any gold question** (0 of 200).
-- Red-team questions, keyword lists and the router and queue settings are Claude's drafts and need a human read.
+| Run | Correct | Run | Correct |
+|---|---|---|---|
+| B2 small base | 1.9% | A1 combined, base model | 39.9% |
+| B3 small tuned | 10.1% | R combined, random routing | 40.5% |
+| A2 cloud (tools) | 46.8% | Combined system | 43.0% |
 
-## To do for the mid-submission, in order
+- **Tuning (H2):** +8.2 points overall, +5.0 on Hindi. Target was +10 on Hindi. Not met.
+- **Combined system (H1):** 92% of the cloud score (target 90%), but 83 of 100 questions go to the cloud (target 50 or fewer). Half met. The fixed safety rules cause this, not the gate.
+- **Gate:** the small model's confidence does not predict correct answers (AUROC 0.18, worse than chance). The combined system (43.0%) is barely better than random routing (40.5%).
 
-**Now (30 min, one person each, all in parallel)**
-1. **Anushka:** send the train split to Roshan. Put `GEMINI_API_KEY` in `.env`. Hand-check your 50 gold questions.
-2. **Sai:** put the Gemini key in `.env`; run `python -m src.cloud.query ... --run B1 --limit 20` (debug first). Then start B1 on the gold set; quota makes it slow. Start A2 after.
-3. **Roshan:** run B2 (base model) on the gold set; start QLoRA on the train split; then B3.
-4. **Kiran / anyone:** read the 51 red-team questions and keyword lists (Hindi).
-5. **Everyone else:** hand-check your 50 gold questions and send them to Anushka.
+## Not done
+- **B1 and A3** (need document search): no trusted documents collected yet. Sites cannot be scraped; must be downloaded by hand.
+- **Market prices:** need a free data.gov.in key.
+- **Human checks:** 0 of 158 gold questions human-checked (only AI pre-checked); AI judge not yet compared with human labels.
+- **Unverified facts:** scheme details, banned-pesticide list, and the 51 test questions and word lists Claude drafted.
+- Trained gate on dev/calib data, 4-bit export and phone-speed test, fault tests.
 
-**Then**
-6. Anushka merges the gold sheets (`merge_gold`) and scores every output file (B1, B2, B3, A1, A2, R).
-7. Run the gate, R, A1 commands in `docs/kiran/README.md` as soon as B1, B2, B3 exist.
-8. Hand-label ~50 judge outputs and run `judge_check agree`.
-9. Fill the TODO blocks in `reports/mid/report.typ` (drafts: `reports/mid/kiran_section.md`; each person writes their own).
-10. Tag `mid-submission` and submit.
-
-**Fallback if B1, B3 or the corpus are not ready today:** submit with what exists (data, split, judge, router, queue, edge pilot, cloud code), say clearly which runs are pending and why, and finish them before the Nov 12 scoring deadline.
-
-**Decisions the team must make**
-- H1 may be unreachable: live-data and high-risk questions always go to the cloud (66-85% of gold). Accept and report honestly, or narrow high-risk (`docs/kiran/DECISIONS.md`).
-- Confirm B4 = plain LLM, no RAG, no tools (`docs/cloud/README.md`).
-- Confirm Claude's choices marked CONFIRM in `docs/kiran/DECISIONS.md` (queue numbers are invented).
-
-## After Oct 30 (final, Nov 15)
-Full 700-question runs of everything; RAG corpus of 200-400 docs; Recall@5, citation and tool metrics, fault injection (Sai); 4-bit model export and phone-speed test, QLoRA re-runs (Roshan); full gate classifier and queue metrics, H1 verdict (Kiran); BhashaBench loaders and judge agreement on 100 questions, final report (Anushka). Code freeze Nov 14.
-
-More detail: `docs/kiran/` (router and queue), `docs/cloud/` (cloud), each with a `MANUAL_TODO.md`.
+## Final submission (Nov 15)
+Full 700-question runs of everything, fix the gate, collect documents and run B1/A3, judge check on 100 questions, final report. Code freeze Nov 14.

@@ -1,8 +1,6 @@
 # Cloud side: developer guide (Sai's layer)
 
-Built on top of Sai's RAG skeleton (`src/cloud/rag/*`, `rag_ingest.py`, `llm/gemini_client.py`). **Nothing here has run against the
-live Gemini API or the BGE-M3 index yet**: there is no API key in the repo, no corpus, and the heavy packages (faiss,
-sentence-transformers, google-genai) are not installed on this machine. Everything else is tested with fakes (`pytest tests/test_cloud.py`, 8 tests).
+Built on top of Sai's RAG skeleton (`src/cloud/rag/*`, `rag_ingest.py`, `llm/gemini_client.py`). **Update Oct 30:** the agent, tools and Gemini function calling have now run for real: A2 (tools, no retrieval) on the 200 gold questions with `gemini-3.5-flash-lite` (`outputs/cloud_A2.jsonl`; Roshan fixed a `thought_signature` issue in `gemini_client.py`). **Retrieval has not run**: there is no corpus, and faiss / sentence-transformers are not installed on every machine. B1 and A3 need it. Tests use fakes (`pytest tests/test_cloud.py`, 8 tests).
 Human tasks are in [MANUAL_TODO.md](MANUAL_TODO.md).
 
 ## Flow
