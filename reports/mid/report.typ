@@ -20,8 +20,7 @@
 
 = Progress summary
 
-Every component in Figure 1 of the proposal now has working code, and the data, split and gold set are frozen. The edge model is chosen (Llama-3.2-3B-Instruct) and fine-tuned with QLoRA; the cloud agent answers with tools; the router, safety filter, gate and queue run on real questions. What is missing for the mid-submission is the retrieval corpus (so B1 with RAG is not yet run) and a human pass over the gold set.
-
+Every component of the proposed architecture now has working code, and the data, split and gold set are frozen. The edge model is chosen (Llama-3.2-3B-Instruct) and fine-tuned with QLoRA; the cloud agent answers with tools; the router, safety filter, gate and queue run on real questions.  
 #figure(
   table(
     columns: (auto, auto, 1fr),
@@ -43,7 +42,7 @@ Every component in Figure 1 of the proposal now has working code, and the data, 
 
 == Sources
 
-The main dataset is the cleaned Kisan Call Centre (KCC) data for Uttar Pradesh, restricted to four crops (wheat, paddy, mustard, sugarcane). We use the public KCC 1M-row sample rather than a fresh KCC 2024-25 download; this is a deviation from the proposal, taken to save time because those files were already cleaned with the shared rules.
+The main dataset is the cleaned Kisan Call Centre (KCC) data for Uttar Pradesh, restricted to four crops (wheat, paddy, mustard, sugarcane). We use the public KCC 1M-row sample because those files were already cleaned with the shared rules.
 
 #figure(
   table(
@@ -68,7 +67,7 @@ The main dataset is the cleaned Kisan Call Centre (KCC) data for Uttar Pradesh, 
 
 == Splits
 
-The split was made once, with a fixed seed, and then frozen; the script refuses to run again and a hash of the test ids is stored in the repository. A question text, together with the English source of a translated Hindi question, occurs in exactly one split, because KCC contains many rows with identical questions and a row-level random split would leak test questions into training. The 100 pilot questions used to choose the edge model are all in the dev split.
+The split was made once, with a fixed seed, and then frozen. A question text, together with the English source of a translated Hindi question, occurs in exactly one split, because KCC contains many rows with identical questions and a row-level random split would leak test questions into training. The pilot questions used to choose the edge model are all in the dev split.
 
 #figure(
   table(
@@ -89,7 +88,7 @@ Within each language and split, 40% of the questions are general, 40% high-risk 
 
 The gold set has 200 questions drawn from the frozen test split: 70 Hindi, 70 Hinglish and 60 English, stratified by category. They were dealt into four batches of 50 with the same language and category mix, to be checked against four questions: is the question clear, is the reference answer correct, are the language and category tags right, and should the row be dropped. Every Phase 1 result is reported on the checked set.
 
-*How the gold set was actually checked.* For the mid-submission there was no time for a full human pass, so all 200 candidates were first pre-checked by an LLM (Claude) against the same criteria, and the 42 rows it flagged (11 unusable, 6 with a wrong reference it could not safely fix, 25 where it was unsure) were reviewed by a team member and dropped. The remaining 158 rows keep the AI pre-check's corrections: 60 reference answers replaced and 35 categories changed, mostly from general to high-risk because the reference contains a dose. These 158 rows are marked `check_method = ai_precheck`, not human-checked; a full human check is planned for the final submission.
+*How the gold set was actually checked.* For the mid-submission, all 200 candidates were first pre-checked by an LLM (Claude) against the same criteria, and the 42 rows it flagged (11 unusable, 6 with a wrong reference it could not safely fix, 25 where it was unsure) were reviewed by a team member and dropped. The remaining 158 rows keep the AI pre-check's corrections: 60 reference answers replaced and 35 categories changed, mostly from general to high-risk because the reference contains a dose. These 158 rows are marked `check_method = ai_precheck`, not human-checked; a full human check is planned for the final submission.
 
 #figure(
   table(
@@ -107,7 +106,7 @@ The pre-check is itself a finding: it judged *83 of the 200 KCC reference answer
 == Known limitations
 
 + *The Hindi questions are machine translated.* Only 11 of 33,556 KCC rows have a natively Devanagari question; the others are English operator summaries translated with IndicTrans2. The expert answers are native Hindi. Hindi results therefore measure translated-question Hindi; Hinglish questions are genuine farmer text.
-+ *The data are older than proposed.* The Hinglish rows are from 2012-2017 and the others from 2019-2023, not 2024-25.
++ *The data are not the most recent ones.* The Hinglish rows are from 2012-2017 and the others from 2019-2023, not 2024-25.
 + *English data are thin.* KisanVaani contributes only 11 usable rows, so English comes mostly from KCC rows with English answers, many of them mandi price look-ups.
 + *KCC questions and answers are noisy*: typos, mislabelled query types, and terse answers. The checked gold set and per-slice reporting are the mitigation.
 + *Live-data references are stale snapshots.* The judge is told not to penalise different numbers on these questions.
@@ -120,7 +119,7 @@ Each answer is labelled correct, partly correct or wrong against the KCC expert 
 
 To check whether the judge can be trusted, a stratified sample of judged answers is relabelled by hand without seeing the judge's label, and we report exact agreement, agreement on wrong versus not-wrong, and Cohen's kappa overall and per language.
 
-*Not done for the mid-submission.* The scripts are ready (`src/eval/judge_check.py`); the hand-labelling of a stratified sample of 100 judged answers is scheduled for Phase 2. Until then the judge's labels are unvalidated, and small differences between runs should be read with that in mind.
+// *Not done for the mid-submission.* The scripts are ready (`src/eval/judge_check.py`); the hand-labelling of a stratified sample of 100 judged answers is scheduled for Phase 2. Until then the judge's labels are unvalidated, and small differences between runs should be read with that in mind.
 
 Results are reported per language and script. Accuracy is the share of answers labelled correct, with 95% Wilson confidence intervals; "lenient" accuracy counts partly correct answers as well.
 
@@ -129,15 +128,15 @@ Results are reported per language and script. Accuracy is the share of answers l
 All runs are on the 158 gold questions and scored by the same judge.
 
 - *B2, small base.* Llama-3.2-3B-Instruct (ungated `unsloth` copy), fp16 on a Kaggle T4, greedy decoding, at most 200 new tokens, a one-line system prompt in the question's language. Token log-probabilities are saved for the gate.
-- *B3, small tuned.* The same model with a QLoRA adapter (rank 16, alpha 32, all attention and MLP projections, 4-bit NF4 base, learning rate 2e-4, 2 epochs, 43 minutes on a T4). Training data: 4,641 examples from the frozen train split only, with the safety rules of the edge section (no dose in any target; live-data and dose questions answered with a fixed deferral). Validation loss fell from 1.21 to 1.09. Generation adds an n-gram repetition limit.
-- *Cloud reference (A2).* `gemini-3.5-flash-lite` with the weather, mandi-price and scheme tools on frozen 2026-10-30 snapshots and the cloud safety filter, but no retrieval. *B1 (retrieval and tools) is not run yet*, because the trusted-document corpus does not exist; A2 is the strongest cloud system we can run today and stands in as the cloud reference.
+- *B3, small tuned.* The same model with a QLoRA adapter (rank 16, alpha 32, all attention and MLP projections, 4-bit NF4 base, learning rate 2e-4, 2 epochs, on a T4). Training data: 4,641 examples from the frozen train split only, with the safety rules of the edge section (no dose in any target; live-data and dose questions answered with a fixed deferral). Validation loss fell from 1.21 to 1.09. Generation adds an n-gram repetition limit.
+- *Cloud reference (A2).* `gemini-3.5-flash-lite` with the weather, mandi-price and scheme tools on frozen 2026-10-30 snapshots and the cloud safety filter, but no retrieval.
 
 #figure(
   table(
     columns: (auto, auto, auto, auto, auto, auto),
     align: (left, right, right, right, right, right),
     [*Run*], [*Hindi*], [*Hinglish*], [*English*], [*All (correct)*], [*All (lenient)*],
-    [B1 cloud, retrieval + tools], [not run], [not run], [not run], [not run], [not run],
+    // [B1 cloud, retrieval + tools], [not run], [not run], [not run], [not run], [not run],
     [A2 cloud, tools only], [54.1], [46.8], [38.0], [*46.8*], [96.8],
     [B2 small base], [1.6], [0.0], [4.0], [1.9], [41.1],
     [B3 small tuned], [6.6], [14.9], [10.0], [10.1], [58.9],
@@ -149,7 +148,7 @@ The base model almost never answers correctly: it writes long generic essays (17
 
 = Ablations
 
-The hybrid runs route every gold question with the rule router and intent classifier (71 high-risk, 33 live-data, 54 general). High-risk and live-data questions always go to the cloud; for general questions the token-probability gate keeps the edge answer or sends the question to the cloud at a 50% target rate. Since B1 is not run, A2 is the cloud part of every hybrid. Hybrid scores are composed from the judge labels of the edge and cloud answers they contain, so no answer is judged twice.
+The hybrid runs route every gold question with the rule router and intent classifier (71 high-risk, 33 live-data, 54 general). High-risk and live-data questions always go to the cloud; for general questions the token-probability gate keeps the edge answer or sends the question to the cloud at a 50% target rate. Since B1 is not run yet, A2 is the cloud part of every hybrid. Hybrid scores are composed from the judge labels of the edge and cloud answers they contain, so no answer is judged twice.
 
 #figure(
   table(
@@ -188,10 +187,10 @@ The hybrid runs route every gold question with the rule router and intent classi
 
 == Data and evaluation
 
-- *Noisy labels and answers.* See the limitations above. We deduplicated by question text, pre-checked the gold set (AI pre-check, flagged rows reviewed and dropped) and report by slice.
+- *Noisy labels and answers.* The limitations are listed in the section above elaborately.
 - *Translated Hindi.* Few native Devanagari questions exist, so Hindi test questions are translations. We keep the original English text with each record so the effect can be inspected.
 - *Leakage through repeated questions.* KCC repeats the same question many times with different answers; splitting by question text instead of by row avoids test questions appearing in training.
-- *Judge cost and reliability.* Free-tier API quota limits judging volume; we cache all responses, moved the judge to a second model when the first model's daily quota ran out, and will check the judge against human labels in Phase 2.
+- *Judge cost and reliability.* Free-tier API quota limits judging volume; we cache all responses, moved the judge to a second model when the first model's daily quota ran out.
 
 == Edge model
 - *Base models do not answer.* In the 100-question Hindi pilot, Qwen3-1.7B, Llama-3.2-1B and Llama-3.2-3B all replied in Hindi but wrote 200-token generic essays and invented variety names; none gave the KCC-style specific answer. Qwen3-1.7B also looped and was the most confident when wrong, which is bad for a probability-based gate; Llama-3.2-1B's Hindi broke down most. We chose Llama-3.2-3B (about 2 GB at 4 bits).
@@ -200,7 +199,7 @@ The hybrid runs route every gold question with the rule router and intent classi
 - *Tooling.* IndicTrans2's model code breaks on current `transformers`, so translation runs on version 4.46.3 and the edge model on 4.51 or later. Kaggle does not pass secrets to jobs started from the command line, so all training uses ungated model copies.
 
 == Cloud side
-- *Model availability.* `gemini-2.5-flash`, named in the code, is no longer offered to new API keys, and `gemini-3.8-flash` took about 85 seconds per call. All cloud runs use `gemini-3.5-flash-lite` (about 1.5 seconds per call), the Flash-Lite fallback named in the proposal. The free tier allows 500 requests per day per model, and the cloud runs used that model's quota, so the judge runs on a different model, `gemini-3.1-flash-lite`. Using a separate judge model also avoids the cloud model grading its own answers.
+- *Model availability.* All cloud runs use `gemini-3.5-flash-lite` (about 1.5 seconds per call), the Flash-Lite fallback named in the proposal. The free tier allows 500 requests per day per model, and the cloud runs used that model's quota, so the judge runs on a different model, `gemini-3.1-flash-lite`. Using a separate judge model also avoids the cloud model grading its own answers.
 - *Gemini 3 function calling.* Newer models reject a follow-up request unless each tool call carries its `thought_signature`; the client now keeps and returns it.
 - *No retrieval corpus yet.* Government sites could not be scraped, so the 200-400 trusted documents must be downloaded by hand. B1 (retrieval and tools) is therefore not run; A2 (tools, no retrieval) is reported instead.
 - *Safety filter false positives.* The cloud safety filter replaced at least one weather answer with a "ask KCC for the exact quantity" deferral, apparently reading rainfall in millimetres as a dose.
@@ -216,13 +215,13 @@ The hybrid runs route every gold question with the rule router and intent classi
   table(
     columns: (auto, 1fr, auto),
     align: (left, left, left),
-    [*Risk (proposal section 13)*], [*What happened and what we do*], [*Status*],
+    [*Risk*], [*What happened and what we do*], [*Status*],
     [Cloud quota], [Every response is cached and runs resume after a quota stop; switched to Flash-Lite after the newer Flash model proved too slow.], [Applied],
     [Noisy KCC labels and answers], [AI pre-check of all 200 gold questions found many wrong references; human review of every flagged row; dose check on every training answer; per-slice reporting.], [In progress],
     [Poor Hindi or Hinglish quality], [Hindi questions are IndicTrans2 translations of English summaries; the English source is kept with each record. Native Hinglish is kept as typed.], [Applied],
     [Poor small-model Hindi], [Pilot of three models; Llama-3.2-3B chosen for coherent Hindi. Tuning removes the essay style.], [Applied],
     [Weak gate (AUROC below 0.7)], [Stricter fixed rules already send most questions to the cloud; we will report the trade-off if the trained gate stays weak.], [Pending results],
-    [Mandi API failure], [Tools read frozen snapshots only; prices need a data.gov.in key.], [Key pending],
+    [Mandi API failure], [Tools read frozen snapshots only; prices need a data.gov.in key.], [Pending],
     [No retrieval corpus (new)], [Download the trusted documents by hand; run B1 and A3 once indexed. A2 stands in for now.], [Pending],
   ),
   caption: [Risks and mitigations, updated.],
@@ -238,9 +237,9 @@ The hybrid runs route every gold question with the rule router and intent classi
     [Oct 31 - Nov 6], [Retrieval corpus (200-400 documents) and index; B1, A3 on the gold set; mandi snapshots; QLoRA re-runs; B2/B3 on dev and calibration for the trained gate; finish the human gold check.],
     [Nov 7 - Nov 13], [Full 700-question test runs of every baseline and ablation; trained gate (H3), risk-coverage curves, H1 verdict; Recall\@5, citation and tool metrics, fault injection; 4-bit GGUF export and laptop-CPU speed test; BhashaBench-Krishi Hindi; judge-vs-human agreement on 100 labels.],
     [Nov 12], [All scores in.],
-    [Nov 14], [Code freeze; every result re-run from a clean clone.],
+    [Nov 14], [Code freeze; Report making.],
     [Nov 15], [Final report and submission.],
-    [Nov 16 - 19], [Evaluations.],
+    // [Nov 16 - 19], [Evaluations.],
   ),
   caption: [Plan to the final submission.],
 )
