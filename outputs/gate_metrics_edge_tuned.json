@@ -1,0 +1,21 @@
+{
+ "eval_rows": 158,
+ "edge_accuracy": 0.101,
+ "phase1_no_calib": true,
+ "token_prob": {
+  "auroc": 0.1774,
+  "aurc": 0.9743,
+  "ece": 0.633,
+  "n": 158,
+  "cloud_call_rate": 0.5,
+  "false_keep_rate": 0.556,
+  "unnecessary_send_rate": 1.0,
+  "kept_accuracy": 0.0
+ },
+ "classifier": "not fitted: need >=50 dev rows with both labels, have 0",
+ "per_group_token_prob_auroc": {
+  "en/latn": 0.0889,
+  "hi/deva": 0.386,
+  "hi/latn": 0.1929
+ }
+}

@@ -22,6 +22,10 @@ def main():
         tmp = Path(tmp)
         shutil.copytree(ROOT / "src", tmp / "src", ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         shutil.copy(ROOT / "requirements.txt", tmp)
+        # Anushka's frozen split + gold set, so jobs train/evaluate on exactly what's in git.
+        for name in ["questions.jsonl", "gold.jsonl"]:
+            if (ROOT / "data/processed" / name).exists():
+                shutil.copy(ROOT / "data/processed" / name, tmp)
         (tmp / "dataset-metadata.json").write_text(json.dumps({
             "title": "kisan-edge-code", "id": DATASET, "licenses": [{"name": "CC0-1.0"}]}))
 

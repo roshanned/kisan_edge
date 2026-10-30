@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import json
 import os
@@ -51,7 +52,7 @@ class GeminiClient:
                 contents.append(types.Content(role="user", parts=[types.Part.from_text(text=m["text"])]))
             elif m["role"] == "model":
                 parts = ([types.Part.from_text(text=m["text"])] if m.get("text") else []) + \
-                        [types.Part.from_function_call(name=c["name"], args=c["args"]) for c in m["tool_calls"]]
+                        [_call_part(types, c) for c in m["tool_calls"]]
                 contents.append(types.Content(role="model", parts=parts))
             else:
                 contents.append(types.Content(role="user", parts=[
@@ -64,12 +65,26 @@ class GeminiClient:
                 resp = self.client.models.generate_content(model=self.model, contents=contents, config=cfg)
                 parts = resp.candidates[0].content.parts or []
                 return {"text": "".join(p.text for p in parts if getattr(p, "text", None)),
-                        "tool_calls": [{"name": p.function_call.name, "args": dict(p.function_call.args or {})}
-                                       for p in parts if getattr(p, "function_call", None)]}
+                        "tool_calls": [_call_dict(p) for p in parts if getattr(p, "function_call", None)]}
             except Exception as e:  # quota (429) and server errors: back off, then give up so the batch can resume later
                 if attempt == 3 or not any(c in str(e) for c in ("429", "500", "503", "RESOURCE_EXHAUSTED", "UNAVAILABLE")):
                     raise
                 time.sleep(15 * 2 ** attempt)
+
+
+def _call_dict(p):
+    """Gemini 3 models reject a follow-up request unless each function call keeps its thought_signature."""
+    c = {"name": p.function_call.name, "args": dict(p.function_call.args or {})}
+    if getattr(p, "thought_signature", None):
+        c["thought_signature"] = base64.b64encode(p.thought_signature).decode()  # JSON-safe for the cache
+    return c
+
+
+def _call_part(types, c):
+    part = types.Part.from_function_call(name=c["name"], args=c["args"])
+    if c.get("thought_signature"):
+        part.thought_signature = base64.b64decode(c["thought_signature"])
+    return part
 
 
 def _schema(s):
