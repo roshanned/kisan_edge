@@ -11,6 +11,21 @@ A phone-sized, LoRA-tuned language model that answers farmers' questions in Hind
 
 ## Data and access
 
+> **Rule: push ALL data to the Hugging Face dataset [kisan-edge/kisan-edge-data](https://huggingface.co/datasets/kisan-edge/kisan-edge-data).**
+> GitHub is for code. Datasets, translations, model answers (`outputs/*.jsonl`), scores, snapshots, RAG documents and anything large go to the HF dataset, so the whole team can load the same files. Small files the report needs (tables, figures, `gold.jsonl`) can stay in git as well.
+
+**How to upload (one-time setup, then one command):**
+1. Get access: ask Roshan to add you to the [kisan-edge](https://huggingface.co/kisan-edge) HF organization.
+2. Create a **fine-grained** token at https://huggingface.co/settings/tokens with **write access to repos in the `kisan-edge` org**, then log in: `python -c "from huggingface_hub import login; login()"`. Never commit the token.
+3. Upload a file or a folder (keep the same folder layout as in the repo):
+   ```bash
+   # one file
+   hf upload kisan-edge/kisan-edge-data outputs/cloud_B1.jsonl outputs/cloud_B1.jsonl --repo-type dataset --commit-message "B1 on gold"
+   # a whole folder
+   hf upload kisan-edge/kisan-edge-data corpus/raw corpus/raw --repo-type dataset --commit-message "RAG corpus PDFs"
+   ```
+4. Write a short commit message saying what you added and from which script, and update the dataset card table if you add a new kind of file.
+
 | What | Where | Access |
 |---|---|---|
 | Code | This repo; edge-model work is on branch `roshan/edge` | Public |
