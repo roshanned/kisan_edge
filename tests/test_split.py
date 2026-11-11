@@ -34,7 +34,7 @@ def test_no_question_text_shared_between_splits():
 
 
 def test_pilot_only_in_dev():
-    pilot = set(Path("data/raw/hf/processed/pilot_ids.txt").read_text().split())
+    pilot = set(Path("data/processed/pilot_ids.txt").read_text().split())
     assert {x["split"] for x in rows() if x["id"] in pilot} == {"dev"}
 
 

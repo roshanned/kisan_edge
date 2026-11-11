@@ -31,3 +31,10 @@ cache/
 !outputs/cloud_*.jsonl
 !outputs/edge_*.jsonl
 !data/snapshots/**
+tools_ext/
+outputs/demo_queue.jsonl
+!data/processed/redteam_v2.jsonl
+!data/processed/redteam_v3.jsonl
+logs/
+.vscode/
+# final-phase files still being written by running jobs are committed when finished

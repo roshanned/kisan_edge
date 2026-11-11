@@ -6,7 +6,8 @@ Output format (PLAN.md section 5), one JSON line per question:
 Usage:
   python -m src.edge.generate --model Qwen/Qwen3-1.7B --questions data/processed/pilot.jsonl \
       --out outputs/pilot_qwen3-1.7b.jsonl
-  add --adapter <dir> to run a QLoRA-tuned model (B3); add --load-4bit to save VRAM.
+  add --adapter <dir> to run a QLoRA-tuned model (B3); add --load-4bit to save VRAM;
+  add --splits test,calib,dev to answer only those splits of questions.jsonl.
 """
 import argparse
 import json
@@ -49,9 +50,13 @@ def main():
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--max-new-tokens", type=int, default=200)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--splits", default=None, help="comma list, e.g. test,calib,dev; default all rows")
     args = ap.parse_args()
 
-    rows = read_jsonl(args.questions)[:args.limit]
+    rows = read_jsonl(args.questions)
+    if args.splits:
+        rows = [r for r in rows if r["split"] in args.splits.split(",")]
+    rows = rows[:args.limit]
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     done = {json.loads(l)["id"] for l in out_path.open(encoding="utf-8")} if out_path.exists() else set()

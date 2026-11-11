@@ -23,7 +23,7 @@ class Store:
     def __init__(self, index_dir):
         self.dir = Path(index_dir)
         self.dir.mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(self.dir / "rag.sqlite")
+        self.db = sqlite3.connect(self.dir / "rag.sqlite", check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
 

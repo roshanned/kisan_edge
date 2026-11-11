@@ -14,6 +14,7 @@ from pathlib import Path
 
 DATASET = "roshanned/kisan-edge-code"
 ROOT = Path(__file__).resolve().parent.parent
+EXTRAS = ["models/Llama-3.2-3B-Instruct-split-r16-e2", "data/raw/bhashabench/bhashabench_krishi/hi.parquet"]
 
 
 def main():
@@ -26,6 +27,14 @@ def main():
         for name in ["questions.jsonl", "gold.jsonl"]:
             if (ROOT / "data/processed" / name).exists():
                 shutil.copy(ROOT / "data/processed" / name, tmp)
+        # The B3 adapter (jobs 06/08 reuse it instead of retraining) and the BhashaBench-Krishi Hindi file.
+        for extra in EXTRAS:
+            src = ROOT / extra
+            if src.is_dir():
+                shutil.copytree(src, tmp / extra, ignore=shutil.ignore_patterns("checkpoint-*"))
+            elif src.exists():
+                (tmp / extra).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(src, tmp / extra)
         (tmp / "dataset-metadata.json").write_text(json.dumps({
             "title": "kisan-edge-code", "id": DATASET, "licenses": [{"name": "CC0-1.0"}]}))
 

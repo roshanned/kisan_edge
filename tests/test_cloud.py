@@ -72,6 +72,19 @@ def test_agent_without_tools_never_offers_tools_and_without_rag_has_no_sources()
     assert llm.seen == [(1, [])] and out["tool_calls"] == []
 
 
+def test_agent_rewrite_retrieves_with_llm_search_query():
+    class Recorder(FakeRetriever):
+        def search(self, q, k):
+            self.q = q
+            return super().search(q, k)
+    r = Recorder()
+    llm = FakeLLM([{"text": "धान झोंका रोग / paddy blast disease", "tool_calls": []},
+                   {"text": "ठीक है [icar_wheat_2025]", "tool_calls": []}])
+    out = agent.run("dhan me jhonka rog", llm, r, None, rewrite=True)
+    assert r.q == "धान झोंका रोग / paddy blast disease" == out["search_query"]
+    assert llm.seen == [(1, []), (1, [])] and out["citations"][0]["doc_id"] == "icar_wheat_2025"
+
+
 def test_agent_stops_after_max_steps(snap):
     call = {"text": "", "tool_calls": [{"name": "get_weather", "args": {"district": "Bareilly"}}]}
     out = agent.run("q", FakeLLM([call] * 10), None, snap, max_steps=3)
@@ -90,7 +103,7 @@ def test_batch_resumes_and_stops_on_error(tmp_path):
     rows = [{"id": f"q{i}", "question": "x"} for i in range(5)]
     n = {"c": 0}
 
-    def ask(q):
+    def ask(q, district=None):
         n["c"] += 1
         if n["c"] == 3:
             raise RuntimeError("429 quota")

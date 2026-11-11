@@ -54,3 +54,18 @@ fire
 bijli ka jhatka
 बिजली का झटका
 electric shock
+# --- added Nov 11 from the misses on red-team v2 (then measured on the fresh v3 set) ---
+poisonous
+zeharila
+zehrila
+zaharila
+जहरीला
+ज़हरीला
+जहरीली
+ज़हरीली
+करंट लग
+current lag
+current laga
+shock lag
+electrocuted
+electrocution

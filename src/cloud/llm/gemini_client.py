@@ -3,40 +3,50 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
 import time
 from pathlib import Path
+
+from src.common.ratelimit import Pacer, estimate_tokens, retry_after
 
 
 class GeminiClient:
     """Caches every response so the same request is never sent twice; throttles to GEMINI_RPM; retries 429/5xx.
 
-    chat() supports function calling. NOT yet run against the live API (no key in the repo): first run is
-    MANUAL_TODO cloud #1. Debug on 20 questions before the full run.
+    chat() supports function calling. Thread-safe, so a batch can run several questions at once (query.py --workers):
+    the cache and the request spacing are shared under locks. Gemma models return their reasoning as parts marked
+    `thought`; those are dropped. GEMINI_THINKING (minimal | low | medium | high) sets the thinking level.
+    GEMINI_TPM caps input tokens per minute (free-tier Gemma: 16,000), see src/common/ratelimit.py.
     """
 
-    def __init__(self, model=None, cache_path="cache/gemini.sqlite"):
+    def __init__(self, model=None, cache_path="cache/gemini.sqlite", thinking=None):
         from google import genai  # imported here so tests and the offline pipeline need no google-genai
         self.model = model or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+        # GEMINI_THINKING applies to Gemma models only, so cached Gemini calls (red-team, recall queries) still match.
+        self.thinking = thinking or (os.environ.get("GEMINI_THINKING") if self.model.startswith("gemma") else None) or None
         self.client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-        self.gap = 60.0 / float(os.environ.get("GEMINI_RPM", "10"))
-        self.last_call = 0.0
+        self.pacer = Pacer(os.environ.get("GEMINI_RPM", "10"), os.environ.get("GEMINI_TPM"))
         self.calls = 0  # real (non-cached) requests this session
+        self.lock = threading.Lock()
         Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
-        self.db = sqlite3.connect(cache_path)
+        self.db = sqlite3.connect(cache_path, check_same_thread=False)
         self.db.execute("CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, response TEXT)")
 
     def generate(self, prompt, system=None, temperature=0.0):
         return self.chat([{"role": "user", "text": prompt}], system, [], temperature)["text"]
 
     def chat(self, messages, system=None, tool_specs=(), temperature=0.0):
-        key = hashlib.sha256(json.dumps([self.model, system, messages, [t["name"] for t in tool_specs], temperature],
-                                        ensure_ascii=False, sort_keys=True).encode()).hexdigest()
-        row = self.db.execute("SELECT response FROM cache WHERE key = ?", (key,)).fetchone()
+        # The thinking level joins the key only when set, so older cache entries (none set) still match.
+        parts = [self.model, system, messages, [t["name"] for t in tool_specs], temperature] + ([self.thinking] if self.thinking else [])
+        key = hashlib.sha256(json.dumps(parts, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+        with self.lock:
+            row = self.db.execute("SELECT response FROM cache WHERE key = ?", (key,)).fetchone()
         if row:
             return json.loads(row[0])
         out = self._request(messages, system, tool_specs, temperature)
-        self.db.execute("INSERT INTO cache VALUES (?, ?)", (key, json.dumps(out, ensure_ascii=False)))
-        self.db.commit()
+        with self.lock:
+            self.db.execute("INSERT OR REPLACE INTO cache VALUES (?, ?)", (key, json.dumps(out, ensure_ascii=False)))
+            self.db.commit()
         return out
 
     def _request(self, messages, system, tool_specs, temperature):
@@ -45,7 +55,8 @@ class GeminiClient:
             system_instruction=system, temperature=temperature,
             tools=[types.Tool(function_declarations=[types.FunctionDeclaration(
                 name=t["name"], description=t["description"], parameters=_schema(t["parameters"])) for t in tool_specs])] if tool_specs else None,
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True))
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            thinking_config=types.ThinkingConfig(thinking_level=self.thinking) if self.thinking else None)
         contents = []
         for m in messages:
             if m["role"] == "user":
@@ -57,19 +68,22 @@ class GeminiClient:
             else:
                 contents.append(types.Content(role="user", parts=[
                     types.Part.from_function_response(name=r["name"], response={"result": r["result"]}) for r in m["results"]]))
-        for attempt in range(4):
-            time.sleep(max(0.0, self.last_call + self.gap - time.time()))
-            self.last_call = time.time()
+        tokens = estimate_tokens((system or "") + json.dumps(messages, ensure_ascii=False) + json.dumps(list(tool_specs)))
+        for attempt in range(10):
+            self.pacer.wait(tokens)
+            self.calls += 1
             try:
-                self.calls += 1
                 resp = self.client.models.generate_content(model=self.model, contents=contents, config=cfg)
                 parts = resp.candidates[0].content.parts or []
+                parts = [p for p in parts if not getattr(p, "thought", False)]
                 return {"text": "".join(p.text for p in parts if getattr(p, "text", None)),
                         "tool_calls": [_call_dict(p) for p in parts if getattr(p, "function_call", None)]}
             except Exception as e:  # quota (429) and server errors: back off, then give up so the batch can resume later
-                if attempt == 3 or not any(c in str(e) for c in ("429", "500", "503", "RESOURCE_EXHAUSTED", "UNAVAILABLE")):
+                if attempt == 9 or not any(c in str(e) for c in ("429", "500", "503", "RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL")):
                     raise
-                time.sleep(15 * 2 ** attempt)
+                if "PerDay" in str(e):  # daily quota: no point retrying today; the batch stops and resumes later
+                    raise
+                time.sleep(retry_after(e, 10 * 2 ** min(attempt, 3)))
 
 
 def _call_dict(p):

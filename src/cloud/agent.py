@@ -20,6 +20,18 @@ TOOL_RULES = """For weather, market prices or government schemes call the matchi
 Cite tool facts as [tool:<tool_name>] and say the 'as_of' date. If a tool returns an ERROR, fix the argument and retry once, or say the information is unavailable."""
 
 
+# Many farmer questions are romanized Hindi ("dhan me jhonka rog"), which the embedder matches poorly against
+# Hindi/English documents, so retrieval uses an LLM-written search query instead of the raw question.
+REWRITE = """Rewrite the farmer's question as a search query for an index of Indian agriculture documents.
+Write one line: the query in Hindi (Devanagari script), then ' / ', then the same query in English.
+Name the crop and the specific pest, disease, variety, fertilizer, scheme or practice asked about. Do not answer the question."""
+
+
+def search_query(question, llm):
+    """Hindi + English search query for retrieval; falls back to the question if the model returns nothing."""
+    return (llm.chat([{"role": "user", "text": question}], REWRITE, [])["text"] or "").strip() or question
+
+
 def system_prompt(use_rag, use_tools):
     return "\n".join([BASE] + ([RAG_RULES] if use_rag else []) + ([TOOL_RULES] if use_tools else []))
 
@@ -28,9 +40,13 @@ def source_block(chunks):
     return "\n\n".join(f"[{c['doc_id']}] {c['title']} ({c['source']}, {c['date']})\n{c['text']}" for c in chunks)
 
 
-def run(question, llm, retriever=None, tools=None, k=5, min_score=0.4, max_steps=MAX_STEPS):
-    """Returns the PLAN.md section 5 cloud fields (answer, citations, tool_calls) plus 'safety_events' and 'steps'."""
-    chunks = [c for c in retriever.search(question, k) if c["score"] >= min_score] if retriever else []
+def run(question, llm, retriever=None, tools=None, k=5, min_score=0.4, max_steps=MAX_STEPS, rewrite=False, district=None):
+    """Returns the PLAN.md section 5 cloud fields (answer, citations, tool_calls) plus 'safety_events', 'steps'
+    and 'search_query'. rewrite=True retrieves with search_query() (one extra LLM call) instead of the raw question.
+    district: the farmer's district if known (the phone app knows it; KCC records have it), given as context so
+    weather and price questions without a place name use the right district instead of a guess."""
+    query = search_query(question, llm) if retriever and rewrite else question
+    chunks = [c for c in retriever.search(query, k) if c["score"] >= min_score] if retriever else []
     prompt = (f"Sources:\n{source_block(chunks) or '(no relevant sources found)'}\n\n" if retriever else "") + f"Question: {question}"
     msgs, calls, text = [{"role": "user", "text": prompt}], [], ""
     system = system_prompt(retriever is not None, tools is not None)
@@ -55,4 +71,5 @@ def run(question, llm, retriever=None, tools=None, k=5, min_score=0.4, max_steps
     cites = [{"doc_id": d, "date": dt} for d, dt in dates.items()]
     as_of = tools.as_of if tools else None
     cites += [{"doc_id": f"tool:{c['name']}", "date": as_of} for c in calls if c["status"] == "ok" and f"tool:{c['name']}" in cited]
-    return {"answer": text, "citations": cites, "tool_calls": calls, "safety_events": events, "steps": steps}
+    return {"answer": text, "citations": cites, "tool_calls": calls, "safety_events": events, "steps": steps,
+            "search_query": query if retriever else None}

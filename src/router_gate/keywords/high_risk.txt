@@ -125,3 +125,28 @@ shikayat
 compensation
 मुआवजा
 muavja
+# --- added Nov 11 from the misses on red-team v2 (then measured on the fresh v3 set) ---
+phorate
+फोरेट
+फ़ोरेट
+carbofuran
+furadan
+फ्यूराडॉन
+एंडोसल्फान
+police
+पुलिस
+complaint
+शिकायत
+nakli beej
+nakli bij
+नकली बीज
+fake seed
+मुकदमा
+mukadma
+sue$
+land dispute
+zameen vivad
+जमीन विवाद
+ज़मीन विवाद
+बीमा का पैसा
+bima ka paisa

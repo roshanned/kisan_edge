@@ -10,6 +10,8 @@ To change model (e.g. flash-lite when the quota is gone), switch the WHOLE run: 
 """
 import argparse
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from pathlib import Path
 
@@ -27,28 +29,38 @@ def load_questions(path, split=None, gold=False):
     return [r for r in rows if not split or r["split"] == split]
 
 
-def run_batch(rows, ask, run, out, provider, as_of, limit=0):
-    """Appends one record per question; skips ids already in the file, so a quota stop is resumable."""
+def run_batch(rows, ask, run, out, provider, as_of, limit=0, workers=1):
+    """Appends one record per question; skips ids already in the file, so a quota stop is resumable.
+    workers > 1 asks several questions at once (the LLM client is thread-safe); file order then follows completion."""
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     done = {json.loads(line)["id"] for line in open(out, encoding="utf-8")} if out.exists() else set()
     todo = [r for r in rows if r["id"] not in done][: limit or None]
-    failed = 0
-    with open(out, "a", encoding="utf-8") as f:
-        for i, r in enumerate(todo, 1):
-            try:
-                res = ask(r["question"])
-            except Exception as e:  # quota or network: stop cleanly, rerun later to resume
-                print(f"STOP at {r['id']}: {str(e)[:120]}")
-                failed = 1
-                break
-            rec = {"id": r["id"], "run": run, "answer": res["answer"], "citations": res["citations"],
-                   "tool_calls": res["tool_calls"], "as_of": as_of, "provider": provider, "safety_events": res["safety_events"]}
+    stop, lock, n = threading.Event(), threading.Lock(), [0]
+
+    def one(r, f):
+        if stop.is_set():
+            return
+        try:
+            res = ask(r["question"], r.get("district"))
+        except Exception as e:  # quota or network: stop cleanly, rerun later to resume
+            print(f"STOP at {r['id']}: {str(e)[:300]}", flush=True)
+            stop.set()
+            return
+        rec = {"id": r["id"], "run": run, "answer": res["answer"], "citations": res["citations"],
+               "tool_calls": res["tool_calls"], "as_of": as_of, "provider": provider, "safety_events": res["safety_events"]}
+        if res.get("search_query"):
+            rec["search_query"] = res["search_query"]
+        with lock:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
             f.flush()
-            print(f"{i}/{len(todo)} {r['id']}")
-    print(f"{len(done)} already done, {len(todo)} attempted -> {out}")
-    return failed
+            n[0] += 1
+            print(f"{n[0]}/{len(todo)} {r['id']}", flush=True)
+
+    with open(out, "a", encoding="utf-8") as f, ThreadPoolExecutor(max(1, workers)) as ex:
+        list(ex.map(lambda r: one(r, f), todo))
+    print(f"{len(done)} already done, {n[0]} of {len(todo)} answered -> {out}")
+    return int(stop.is_set())
 
 
 def main():
@@ -65,6 +77,8 @@ def main():
     p.add_argument("--index-dir", default="corpus/index")
     p.add_argument("--model")
     p.add_argument("--k", type=int, default=5)
+    p.add_argument("--workers", type=int, default=1, help="questions asked in parallel (keep RPM in .env in mind)")
+    p.add_argument("--no-rewrite", action="store_true", help="retrieve with the raw question, not an LLM-written search query")
     p.add_argument("--as-of", default=date.today().isoformat(), help="snapshot date for tools; keep it fixed for the whole evaluation")
     p.add_argument("--live", action="store_true", help="(reserved) live tool data; evaluation must use snapshots")
     args = p.parse_args()
@@ -78,12 +92,12 @@ def main():
         retriever = Retriever(args.index_dir)
     tools = Tools(args.as_of) if use_tools else None
 
-    def ask(q):
-        return agent.run(q, llm, retriever, tools, args.k)
+    def ask(q, district=None):
+        return agent.run(q, llm, retriever, tools, args.k, rewrite=not args.no_rewrite, district=district)
 
     if args.questions:
         run_batch(load_questions(args.questions, args.split, args.gold), ask, args.run,
-                  args.out or f"outputs/cloud_{args.run}.jsonl", llm.model, args.as_of, args.limit)
+                  args.out or f"outputs/cloud_{args.run}.jsonl", llm.model, args.as_of, args.limit, args.workers)
     elif args.question:
         print(json.dumps(ask(args.question), ensure_ascii=False, indent=2))
     else:

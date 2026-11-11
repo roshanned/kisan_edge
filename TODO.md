@@ -1,35 +1,27 @@
-# TODO for the mid-submission (Oct 30)
+# TODO for the final submission (Nov 15)
 
-Plain list. Do these in order. "Time" is a rough guess.
+Everything that can run without a person has been run (see `STATUS.md` and `reports/final/`). What is left needs a human: a decision, a login, or a Hindi reader. In order of importance.
 
-## What we already have
-- Answers from the small model (before and after tuning), from the cloud model (with tools, no document search), and from the combined system, all scored.
-- Results tables, a chart and the report (`reports/mid/report.pdf`).
-- Document search (B1) and the "no tools" run (A3) are **not** done, because we have no document collection. The report says so.
+## Must do before submitting
 
-## Must do today
-
-| # | What | Who | Time |
+| # | What | Why it matters | Time |
 |---|---|---|---|
-| 1 | **Spot-check what the AI changed in the gold set.** The AI dropped 42 bad questions and rewrote 60 answers and 35 categories (sheets in `data/processed/gold_batches/precheck/`). A team member already reviewed the drops, but **nobody has checked the rewrites**. Read as many as you can, Hindi ones first. Note any you disagree with. | Anushka + one Hindi reader | 30 min |
-| 2 | **Check 50 of the AI judge's scores by hand** (`python -m src.eval.judge_check sample --n 50`, fill in the sheet, then `python -m src.eval.judge_check agree`). Write down how often you agree with the judge. Put the number in the report. | Anushka | 30 min |
-| 3 | **Only if you changed any gold question in step 1:** run `python -m src.eval.merge_gold`, re-score each run (`python -m src.eval.score --run B3 --outputs outputs/edge_tuned.jsonl --judge gemini`, same for the others), then `python -m src.eval.report`. If there is no time, leave the numbers and say in the report that the spot-check found N problems. | Anushka | 20-60 min |
-| 4 | **Read the report PDF start to finish.** Fix anything that is not true. Each person checks their own section. | Everyone | 30 min |
-| 5 | **Upload the new files to the Hugging Face dataset** (it was last updated Oct 25): split, gold, model answers, scores, weather files. Commands are in the README. | Roshan (has the token) | 10 min |
-| 6 | Make sure no password or key is in the repo (`.env` must not be committed). | Anyone | 5 min |
-| 7 | **Tag `mid-submission` on GitHub and submit** the report PDF and the GitHub link. | Repo owner | 10 min |
+| 1 | **Read `reports/final/report.pdf` end to end.** Fix anything that is not true or not clear. | It is the graded deliverable. | 45 min |
+| 2 | **Approve the git commit, push, merge to `main` and tag `final-submission`.** Nothing from the final phase is committed yet. | Graders look at GitHub. | 10 min |
+| 3 | **Check 100 judge labels by hand**: open `reports/final/judge_check_sheet.csv`, fill `human_label` (correct / partly_correct / wrong) without looking at `judge_label` first, then run `python -m src.eval.judge_check --dir outputs/final --report-dir reports/final agree`. Put the agreement into the report (section "Evaluation method"). | Every accuracy number rests on the LLM judge. Judge-vs-judge agreement is already reported, but it is not a human check. | 60-90 min |
+| 4 | **Upload the final outputs to the Hugging Face dataset** `kisan-edge/kisan-edge-data` (folder `outputs/final/`, `data/processed/redteam_v2.jsonl`, `redteam_v3.jsonl`, `corpus/recall_queries.jsonl`). Commands are in the README. | The README says all data lives there. | 10 min |
+| 5 | Prepare the slides and rehearse the live demo (`python -m src.demo ...`, see README "Demo"). | Nov 16-19 presentation. | 1-2 h |
 
-## Be ready to explain (the report already says these)
-- The small model got 10% right after tuning (2% before). The target was +10 points on Hindi; we got +5. Not met yet.
-- The combined system gets 92% of the cloud model's score but sends 83 of 100 questions to the cloud (target was 50 or less). The safety rules force most questions to the cloud.
-- The "is this answer sure?" signal from the small model does not work (worse than a coin flip). Needs a better method in the final phase.
-- Scores come from an AI judge that has not been checked against humans yet (item 2), on gold questions that an AI cleaned up and humans have not fully checked (item 1). Both are stated in the report.
+## Should do (each one improves a reported number or removes a caveat)
 
-## Can wait until after submission
-- Sai: collect 50-100 trusted documents, then run B1 and A3. Get a free data.gov.in key for market prices. (`docs/cloud/MANUAL_TODO.md`)
-- Kiran or anyone: read the 51 test questions and word lists Claude drafted (`docs/kiran/MANUAL_TODO.md`).
-- Decide: keep "always send risky questions to the cloud" or narrow it (`docs/kiran/DECISIONS.md`).
-- Roshan: retrain a better tuned model; run on the dev and calibration sets.
+| # | What | Effect |
+|---|---|---|
+| 6 | A Hindi speaker reads the red-team sets `redteam_v2.jsonl` (69) and `redteam_v3.jsonl` (72), and the keywords added on Nov 11 (bottom of `src/router_gate/keywords/*.txt`). Mark `human_reviewed: true` (or fix rows) and re-run `python -m src.router_gate.eval_router` and `python -m src.eval.run_final`. | Removes "LLM-written, machine-checked only" from the safety numbers |
+| 7 | Human check of the 158 gold questions (`data/processed/gold.jsonl`, `check_method = ai_precheck`). | The gold columns become human-checked |
+| 8 | Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` against official lists (both were written from memory). | Cloud safety filter and scheme tool facts |
+| 9 | Get a free data.gov.in API key, put `DATA_GOV_API_KEY` in `.env`, run `python -m src.cloud.fetch_snapshots mandi`. | The mandi-price tool has no data, so price questions get "unavailable" |
+| 10 | Accept the terms of the gated datasets on Hugging Face: `bharatgenai/BhashaBench-Krishi` (native Hindi, 2,757 Qs; we used the machine-translated Hindi subset of the ungated BhashaBench-Multi) and `sthanika-ai/Indic-KCC-Agri-Advisory-Benchmark` (evaluation-only licence). Then `python -m src.edge.bhashabench --native --parquet <file>` on Kaggle. | Native-Hindi benchmark numbers |
+| 11 | Confirm or change decisions D17-D26 in `docs/kiran/DECISIONS.md` (model switch to Gemma, district context, red-team method, judge-quota savings). | The team owns the choices |
 
-## Final submission (Nov 15) in one line
-Run everything on the full 700-question test set, fix the gate, finish documents and B1/A3, check the judge on 100 questions, write the final report. Code freeze Nov 14.
+## Already done for you (no action needed)
+B2/B3 on 1,900 questions, BhashaBench, 2 QLoRA seed re-runs, 4-bit GGUF + llama.cpp speed (Kaggle CPU and this laptop), B1/A2/A3 on the 700 test questions, one judge for every run, judge-vs-judge agreement, trained gate (H3), hybrids H / R / A1 / A4, queue traces, red-team v2/v3, Recall@5, citation faithfulness, tool metrics, fault injection, H1/H2/H3 verdicts, final report draft, live demo script.

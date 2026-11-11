@@ -1,0 +1,29 @@
+{
+ "n": 158,
+ "mode": "gate",
+ "trace": "none",
+ "queue": true,
+ "target_rate": 0.5,
+ "cloud_calls_per_100": 82.9,
+ "answered_by": {
+  "edge": 27,
+  "cloud": 131,
+  "deferral": 0
+ },
+ "filter_blocked": 10,
+ "queue_metrics": {
+  "jobs": 131,
+  "delivery_rate": 1.0,
+  "p50_ticks": 0,
+  "p90_ticks": 0,
+  "stale_rate": 0.0,
+  "duplicate_send_rate": 0.0,
+  "sends": 131
+ },
+ "route_counts": {
+  "general": 54,
+  "live_data": 33,
+  "high_risk": 71,
+  "emergency": 0
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "k": 5,
+ "raw_query": {
+  "all": {
+   "recall": 0.6,
+   "n": 60
+  },
+  "deva": {
+   "recall": 0.725,
+   "n": 40
+  },
+  "latn": {
+   "recall": 0.35,
+   "n": 20
+  }
+ },
+ "rewritten_query": {
+  "all": {
+   "recall": 0.917,
+   "n": 60
+  },
+  "deva": {
+   "recall": 0.875,
+   "n": 40
+  },
+  "latn": {
+   "recall": 1.0,
+   "n": 20
+  }
+ },
+ "rewrite_model": "gemma-4-26b-a4b-it"
+}

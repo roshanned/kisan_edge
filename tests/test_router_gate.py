@@ -37,16 +37,20 @@ def fake_rows(n, split, seed):
         y = int(rng.random() < 0.5)
         lp = -(0.4 + rng.random() * (0.6 if y else 1.4))
         rows.append({"id": f"{split}{i}", "split": split, "answer": "x" * rng.randint(5, 80), "mean_logprob": lp, "min_logprob": 3 * lp,
-                     "n_tokens": 30, "lang": "hi", "script": "deva", "category": "general", "crop_known": True, "y": y, "group": "hi/deva"})
+                     "n_tokens": 30, "lang": "hi", "script": "deva", "category": "general", "crop_known": True, "unknown": 0.1, "deferral": False,
+                     "y": y, "group": "hi/deva"})
     return rows
 
 
 def test_gate_evaluate_with_classifier_and_rate():
     rows = fake_rows(300, "dev", 1) + fake_rows(300, "calib", 2) + fake_rows(300, "test", 3)
-    out, ev, conf, cut = gate.evaluate(rows, 0.5)
+    out, ev, conf, gates = gate.evaluate(rows, 0.5)
     assert len(ev) == 300 and not out["phase1_no_calib"]
     assert out["token_prob"]["auroc"] > 0.6 and isinstance(out["classifier"], dict)
     assert abs(out["token_prob"]["cloud_call_rate"] - 0.5) < 0.1
+    assert 0 <= out["h3_bootstrap"]["p_classifier_better"] <= 1
+    keep = gates["classifier"].conf(ev) >= gates["classifier"].cut  # a saved gate reproduces the reported decisions
+    assert abs((~keep).mean() - out["classifier"]["cloud_call_rate"]) < 1e-3
 
 
 def test_aurc_prefers_good_confidence():

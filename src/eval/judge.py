@@ -1,18 +1,23 @@
 """LLM judge: labels one answer as correct / partly_correct / wrong against the KCC reference answer.
 
 Backends:
-  gemini  Gemini REST API. Key from env GEMINI_API_KEY (or .env), model from GEMINI_MODEL.
-          Every response is cached on disk, so a question is never sent twice.
+  gemini  Gemini REST API. Key from env GEMINI_API_KEY (or .env), model from JUDGE_MODEL (else GEMINI_MODEL),
+          pace from JUDGE_RPM (else GEMINI_RPM). Every response is cached on disk, so a question is never sent
+          twice. Thread-safe, so src.eval.score --workers can judge several answers at once. Final-phase judge:
+          gemma-4-31b-it with minimal thinking (its reasoning parts, marked `thought`, are skipped).
   mock    word-overlap heuristic. Only for testing the pipeline offline; its labels are NOT results.
 """
 import hashlib
 import json
 import os
 import re
+import threading
 import time
 from pathlib import Path
 
 import requests
+
+from src.common.ratelimit import Pacer, estimate_tokens, retry_after
 
 LABELS = ["correct", "partly_correct", "wrong"]
 CACHE = Path("outputs/cache/judge_cache.jsonl")
@@ -73,9 +78,10 @@ class GeminiJudge:
         self.key = os.environ.get("GEMINI_API_KEY", "")
         if not self.key:
             raise SystemExit("GEMINI_API_KEY is empty. Put it in .env (GEMINI_API_KEY=...) or use --judge mock.")
-        self.model = model or os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
-        self.gap = 60.0 / float(rpm or os.environ.get("GEMINI_RPM", 10))
-        self.last = 0.0
+        self.model = model or os.environ.get("JUDGE_MODEL") or os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
+        self.pacer = Pacer(rpm or os.environ.get("JUDGE_RPM") or os.environ.get("GEMINI_RPM", 10),
+                           os.environ.get("JUDGE_TPM"))
+        self.lock = threading.Lock()
         self.cache = {}
         if CACHE.exists():
             for line in CACHE.open(encoding="utf-8"):
@@ -84,20 +90,26 @@ class GeminiJudge:
 
     def _call(self, prompt):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
-        body = {"contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"temperature": 0, "responseMimeType": "application/json"}}
-        for attempt in range(6):
-            wait = self.gap - (time.time() - self.last)
-            if wait > 0:
-                time.sleep(wait)
-            self.last = time.time()
-            resp = requests.post(url, json=body, headers={"x-goog-api-key": self.key}, timeout=60)
-            if resp.status_code in (429, 500, 502, 503, 504):
+        cfg = {"temperature": 0, "responseMimeType": "application/json"}
+        if self.model.startswith("gemma"):
+            cfg["thinkingConfig"] = {"thinkingLevel": "minimal"}
+        body = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": cfg}
+        for attempt in range(10):
+            self.pacer.wait(estimate_tokens(prompt))
+            try:
+                resp = requests.post(url, json=body, headers={"x-goog-api-key": self.key}, timeout=180)
+            except requests.RequestException:
                 time.sleep(min(2 ** attempt * 5, 120))
                 continue
+            if resp.status_code == 429 and "PerDay" in resp.text:
+                raise RuntimeError(f"daily quota used up for {self.model}; rerun tomorrow (answers so far are cached)")
+            if resp.status_code in (429, 500, 502, 503, 504):
+                time.sleep(retry_after(resp.text, min(2 ** attempt * 5, 120)))
+                continue
             resp.raise_for_status()
-            return resp.json()["candidates"][0]["content"]["parts"][0]["text"]
-        raise RuntimeError("Gemini kept failing (429/5xx); try again later or lower GEMINI_RPM")
+            parts = resp.json()["candidates"][0]["content"].get("parts", [])
+            return "".join(p.get("text", "") for p in parts if not p.get("thought"))
+        raise RuntimeError("Gemini kept failing (429/5xx); try again later or lower JUDGE_RPM")
 
     def __call__(self, q, answer):
         prompt = build_prompt(q, answer)

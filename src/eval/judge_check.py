@@ -2,6 +2,10 @@
 
   python -m src.eval.judge_check sample --n 50     -> reports/mid/judge_check_sheet.csv (fill human_label)
   python -m src.eval.judge_check agree             -> reports/mid/judge_agreement.md (+ marks scores human_checked)
+  python -m src.eval.judge_check judges --n 150 --model gemini-3.5-flash-lite
+        a second LLM judge relabels a stratified sample of the same answers -> <dir>/judge_vs_judge.json
+        (no human needed; it measures consistency between judges, not correctness)
+Add --dir outputs/final --report-dir reports/final (before the sub-command) for the final-phase files.
 
 human_label is one of: correct, partly_correct, wrong (the sheet shows the judge's label last, so label first).
 """
@@ -10,6 +14,7 @@ import csv
 import json
 import random
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from src.data.common import read_jsonl, write_jsonl
@@ -17,28 +22,48 @@ from src.eval.judge import LABELS
 
 SHEET = Path("reports/mid/judge_check_sheet.csv")
 REPORT = Path("reports/mid/judge_agreement.md")
+# Runs whose answers were judged directly; hybrid scores are copies of these, so sampling them would double-count.
+RUN_FILES = {"B1": "cloud_B1", "A2": "cloud_A2", "A3": "cloud_A3", "B2": "edge_base_full", "B3": "edge_tuned_full"}
 
 
-def sample(n, seed=11):
-    qs = {q["id"]: q for q in read_jsonl("data/processed/questions.jsonl")}
+def judged_rows(d):
+    """(scores, {(run, id): answer}). Final layout: only the directly judged runs; otherwise every file in d."""
+    d = Path(d)
+    if all((d / f"scores_{r}.jsonl").exists() for r in ("B1", "B3")):
+        scores = [s for r in RUN_FILES if (d / f"scores_{r}.jsonl").exists() for s in read_jsonl(d / f"scores_{r}.jsonl")]
+        answers = {(r, a["id"]): a["answer"] for r, f in RUN_FILES.items() if (d / f"{f}.jsonl").exists()
+                   for a in read_jsonl(d / f"{f}.jsonl")}
+        return scores, answers
     answers = {}
-    for f in Path("outputs").glob("*.jsonl"):
+    for f in d.glob("*.jsonl"):
         if f.name.startswith("scores_"):
             continue
         for r in read_jsonl(f):
             answers[(r.get("run") or f.stem, r["id"])] = r.get("final_answer") or r.get("answer")
-    scores = [s for f in sorted(Path("outputs").glob("scores_*.jsonl")) for s in read_jsonl(f) if s["judge"] != "mock"]
-    if not scores:
-        raise SystemExit("no non-mock scores found in outputs/scores_*.jsonl")
-    random.Random(seed).shuffle(scores)
-    by_lang = {}
-    for s in scores:  # stratify by language bucket so Hindi / Hinglish / English are all covered
-        by_lang.setdefault((s["lang"], s["script"]), []).append(s)
+    return [s for f in sorted(d.glob("scores_*.jsonl")) for s in read_jsonl(f) if s["judge"] != "mock"], answers
+
+
+def stratified(scores, n, seed, keys=("lang", "script")):
+    """n rows, round-robin over buckets so every language (and run, if in keys) is covered."""
+    rows = list(scores)
+    random.Random(seed).shuffle(rows)
+    by = {}
+    for s in rows:
+        by.setdefault(tuple(s[k] for k in keys), []).append(s)
     picked = []
-    while len(picked) < n and any(by_lang.values()):
-        for k in list(by_lang):
-            if by_lang[k] and len(picked) < n:
-                picked.append(by_lang[k].pop())
+    while len(picked) < n and any(by.values()):
+        for k in sorted(by):
+            if by[k] and len(picked) < n:
+                picked.append(by[k].pop())
+    return picked
+
+
+def sample(n, seed=11, d="outputs"):
+    qs = {q["id"]: q for q in read_jsonl("data/processed/questions.jsonl")}
+    scores, answers = judged_rows(d)
+    if not scores:
+        raise SystemExit(f"no non-mock scores found in {d}/scores_*.jsonl")
+    picked = stratified(scores, n, seed)
     SHEET.parent.mkdir(parents=True, exist_ok=True)
     with SHEET.open("w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
@@ -46,9 +71,8 @@ def sample(n, seed=11):
                     "human_label", "judge_label"])
         for s in picked:
             q = qs[s["id"]]
-            ans = next((a for (run, i), a in answers.items() if i == s["id"] and run == s["run"]), "")
             w.writerow([s["id"], s["run"], s["lang"], s["script"], s["category"], q["question"],
-                        q["reference_answer"], ans, "", s["label"]])
+                        q["reference_answer"], answers.get((s["run"], s["id"]), ""), "", s["label"]])
     print(f"wrote {len(picked)} rows to {SHEET}")
 
 
@@ -60,7 +84,7 @@ def kappa(pairs):
     return (po - pe) / (1 - pe) if pe < 1 else 1.0
 
 
-def agree():
+def agree(d="outputs"):
     rows = [r for r in csv.DictReader(SHEET.open(encoding="utf-8-sig")) if r["human_label"].strip()]
     if not rows:
         raise SystemExit(f"{SHEET} has no human_label filled in yet")
@@ -87,7 +111,7 @@ def agree():
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     human = {(r["run"], r["id"]): r["human_label"].strip().lower() for r in rows}
-    for f in Path("outputs").glob("scores_*.jsonl"):
+    for f in Path(d).glob("scores_*.jsonl"):
         recs = read_jsonl(f)
         for s in recs:
             if (s["run"], s["id"]) in human:
@@ -95,10 +119,55 @@ def agree():
         write_jsonl(recs, f)
 
 
+def judges(n, model, d, seed=5):
+    """A second LLM judge relabels a stratified sample (over run and language); agreement with the main judge."""
+    from src.eval.judge import GeminiJudge
+    qs = {q["id"]: q for q in read_jsonl("data/processed/questions.jsonl")}
+    scores, answers = judged_rows(d)
+    picked = [s for s in stratified(scores, n, seed, ("run", "lang", "script")) if answers.get((s["run"], s["id"])) is not None]
+    second = GeminiJudge(model=model, rpm=14)
+
+    def one(s):
+        try:
+            return second(qs[s["id"]], answers[(s["run"], s["id"])])
+        except Exception as e:  # quota: leave this row out
+            print("second judge failed:", str(e)[:120])
+            return None
+
+    with ThreadPoolExecutor(4) as ex:
+        labels = list(ex.map(one, picked))
+    done = [(s, b) for s, b in zip(picked, labels) if b]
+    pairs = [(s["label"], b["label"]) for s, b in done]
+    is_correct = lambda x: x == "correct"
+    res = {"second_judge": model, "n": len(pairs),
+           "exact_agreement": round(sum(a == b for a, b in pairs) / len(pairs), 3), "kappa": round(kappa(pairs), 3),
+           "agreement_correct_vs_not": round(sum(is_correct(a) == is_correct(b) for a, b in pairs) / len(pairs), 3),
+           "agreement_wrong_vs_not": round(sum((a == "wrong") == (b == "wrong") for a, b in pairs) / len(pairs), 3),
+           "main_correct_rate": round(sum(is_correct(a) for a, _ in pairs) / len(pairs), 3),
+           "second_correct_rate": round(sum(is_correct(b) for _, b in pairs) / len(pairs), 3),
+           "confusion_main_x_second": {f"{a}|{b}": c for (a, b), c in sorted(Counter(pairs).items())},
+           "by_run_exact_agreement": {r: round(sum(s["label"] == b["label"] for s, b in done if s["run"] == r) /
+                                               sum(s["run"] == r for s, _ in done), 3) for r in sorted({s["run"] for s, _ in done})}}
+    Path(d, "judge_vs_judge.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+    print(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", default="outputs")
+    ap.add_argument("--report-dir", default=None)
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sample").add_argument("--n", type=int, default=50)
     sub.add_parser("agree")
+    j = sub.add_parser("judges")
+    j.add_argument("--n", type=int, default=150)
+    j.add_argument("--model", default="gemini-3.5-flash-lite")
     a = ap.parse_args()
-    sample(a.n) if a.cmd == "sample" else agree()
+    if a.report_dir:
+        SHEET, REPORT = Path(a.report_dir) / "judge_check_sheet.csv", Path(a.report_dir) / "judge_agreement.md"
+    if a.cmd == "sample":
+        sample(a.n, d=a.dir)
+    elif a.cmd == "agree":
+        agree(a.dir)
+    else:
+        judges(a.n, a.model, a.dir)

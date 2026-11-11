@@ -21,27 +21,33 @@ def main():
     ap = argparse.ArgumentParser()
     for a in ["--run", "--hybrid", "--edge", "--edge-scores", "--cloud", "--cloud-scores"]:
         ap.add_argument(a, required=True)
+    ap.add_argument("--out-dir", default="outputs")
     args = ap.parse_args()
+    compose(args.run, args.hybrid, args.edge, args.edge_scores, args.cloud, args.cloud_scores, args.out_dir)
+
+
+def compose(run, hybrid, edge, edge_scores, cloud, cloud_scores, out_dir="outputs"):
+    """Returns (rows, stats); also writes <out_dir>/scores_<run>.jsonl. Paths, or already-loaded lists of rows."""
+    rows = lambda x: read_jsonl(x) if isinstance(x, str) else x
 
     parts = {
-        "edge": ({r["id"]: r["answer"] for r in read_jsonl(args.edge)},
-                 {s["id"]: s for s in read_jsonl(args.edge_scores)}),
-        "cloud": ({r["id"]: r["answer"] for r in read_jsonl(args.cloud)},
-                  {s["id"]: s for s in read_jsonl(args.cloud_scores)}),
+        "edge": ({r["id"]: r["answer"] for r in rows(edge)}, {s["id"]: s for s in rows(edge_scores)}),
+        "cloud": ({r["id"]: r["answer"] for r in rows(cloud)}, {s["id"]: s for s in rows(cloud_scores)}),
     }
     out, stats = [], Counter()
-    for h in read_jsonl(args.hybrid):
+    for h in rows(hybrid):
         answers, scores = parts.get(h["answered_by"], ({}, {}))
         s = scores.get(h["id"])
         # Only reuse a label if the final answer is exactly the text that was judged.
         if s is None or answers.get(h["id"]) != h["final_answer"]:
             stats["not_composable"] += 1
             continue
-        out.append({**s, "run": args.run, "answered_by": h["answered_by"], "route": h["route"],
+        out.append({**s, "run": run, "answered_by": h["answered_by"], "route": h["route"],
                     "composed_from": h["answered_by"]})
         stats[h["answered_by"]] += 1
-    write_jsonl(out, f"outputs/scores_{args.run}.jsonl")
-    print(f"{args.run}: {len(out)} composed {dict(stats)}; labels {dict(Counter(r['label'] for r in out))}")
+    write_jsonl(out, f"{out_dir}/scores_{run}.jsonl")
+    print(f"{run}: {len(out)} composed {dict(stats)}; labels {dict(Counter(r['label'] for r in out))}")
+    return out, stats
 
 
 if __name__ == "__main__":
