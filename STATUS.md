@@ -3,6 +3,18 @@
 Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `roshan/edge` (not yet merged to `main`).
 This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D27). Every command, in order: `scripts/final_pipeline.sh`.
 
+## CLAIMED: another Claude session is doing these on Roshan's laptop. Do NOT run them.
+
+Claimed Nov 12, 19:10 IST, until this section is removed. Starting them anywhere else would duplicate API calls and, on this laptop, corrupt the output files (two writers append to the same file).
+
+| Claimed task | State at 19:10 |
+|---|---|
+| `scripts/cloud_chain.sh`: B1 -> B1 regeneration -> A2 -> A3 -> fault injection | B1 at 471/700 |
+| `scripts/judge_chain.sh`: seed re-runs, fill-in, B1, A2, A3 | judging B3_s1 |
+| Pending items 2-8 below (cloud metrics, judge-vs-judge, `run_final`, report text and PDF, README, judge-check sheet, slides) | to follow when the chains finish |
+
+A second session can safely do only items 9-16 ("Needs a human") or read-only review. If you must take over, first check that no `src.cloud.query` / `src.eval.score` process is running (`logs/cloud_chain.log`, `logs/judge_chain_2.log` stop growing).
+
 ## Done
 
 | Area | What exists | Where |
