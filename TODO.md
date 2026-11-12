@@ -1,6 +1,6 @@
 # TODO for the final submission (Nov 15)
 
-Everything that can run without a person has been run (see `STATUS.md` and `reports/final/`). What is left needs a human: a decision, a login, or a Hindi reader. In order of importance.
+Only the steps that need a human: a decision, a login, or a Hindi reader. The full pending list, including the automatic steps still running, is in `STATUS.md`. In order of importance.
 
 ## Must do before submitting
 
@@ -22,6 +22,3 @@ Everything that can run without a person has been run (see `STATUS.md` and `repo
 | 9 | Get a free data.gov.in API key, put `DATA_GOV_API_KEY` in `.env`, run `python -m src.cloud.fetch_snapshots mandi`. | The mandi-price tool has no data, so price questions get "unavailable" |
 | 10 | Accept the terms of the gated datasets on Hugging Face: `bharatgenai/BhashaBench-Krishi` (native Hindi, 2,757 Qs; we used the machine-translated Hindi subset of the ungated BhashaBench-Multi) and `sthanika-ai/Indic-KCC-Agri-Advisory-Benchmark` (evaluation-only licence). Then `python -m src.edge.bhashabench --native --parquet <file>` on Kaggle. | Native-Hindi benchmark numbers |
 | 11 | Confirm or change decisions D17-D26 in `docs/kiran/DECISIONS.md` (model switch to Gemma, district context, red-team method, judge-quota savings). | The team owns the choices |
-
-## Already done for you (no action needed)
-B2/B3 on 1,900 questions, BhashaBench, 2 QLoRA seed re-runs, 4-bit GGUF + llama.cpp speed (Kaggle CPU and this laptop), B1/A2/A3 on the 700 test questions, one judge for every run, judge-vs-judge agreement, trained gate (H3), hybrids H / R / A1 / A4, queue traces, red-team v2/v3, Recall@5, citation faithfulness, tool metrics, fault injection, H1/H2/H3 verdicts, final report draft, live demo script.

@@ -17,7 +17,8 @@ for run in "$@"; do
     B3_calib) judge B3_calib $F/edge_tuned_full.jsonl calib ;;
     B3_dev) judge B3_dev $F/edge_tuned_full.jsonl dev ;;
     B1|A2|A3)  # wait until the cloud run has all 700 answers
-      until [ -f $F/cloud_$run.jsonl ] && [ "$(grep -c . $F/cloud_$run.jsonl)" -ge 700 ]; do sleep 60; done
+      until [ -f $F/cloud_$run.jsonl ] && [ "$(grep -c . $F/cloud_$run.jsonl)" -ge 700 ] \
+            && { [ $run != B1 ] || [ -f $F/.B1_regenerated ]; }; do sleep 60; done  # B1: after the D27 regeneration
       judge $run $F/cloud_$run.jsonl test ;;
     B3_s1|B3_s2) judge $run $F/edge_tuned_${run#B3_}.jsonl test "--script deva" ;;
   esac
