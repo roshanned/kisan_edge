@@ -36,8 +36,16 @@ def system_prompt(use_rag, use_tools):
     return "\n".join([BASE] + ([RAG_RULES] if use_rag else []) + ([TOOL_RULES] if use_tools else []))
 
 
+MAX_SOURCE_CHARS = 30000  # about 8k tokens; a few badly split documents give 10-46k-character chunks (DECISIONS.md D28)
+
+
 def source_block(chunks):
-    return "\n\n".join(f"[{c['doc_id']}] {c['title']} ({c['source']}, {c['date']})\n{c['text']}" for c in chunks)
+    """Numbered sources for the prompt. Only when they total more than MAX_SOURCE_CHARS is each chunk cut to an equal
+    share, so the request fits the free tier's 16k input tokens a minute; no B1 test question below the cap changes."""
+    total = sum(len(c["text"]) for c in chunks)
+    share = MAX_SOURCE_CHARS // max(1, len(chunks)) if total > MAX_SOURCE_CHARS else None
+    return "\n\n".join(f"[{c['doc_id']}] {c['title']} ({c['source']}, {c['date']})\n{c['text'][:share] if share else c['text']}"
+                       for c in chunks)
 
 
 def run(question, llm, retriever=None, tools=None, k=5, min_score=0.4, max_steps=MAX_STEPS, rewrite=False, district=None):
