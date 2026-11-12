@@ -38,3 +38,4 @@ outputs/demo_queue.jsonl
 logs/
 .vscode/
 # final-phase files still being written by running jobs are committed when finished
+outputs/final/.B1_regenerated
