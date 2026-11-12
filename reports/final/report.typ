@@ -139,7 +139,9 @@ Every answer is labelled correct, partly correct or wrong against the reference 
   caption: [Edge model, base vs tuned, on the test set. BhashaBench: a fixed random sample of the machine-translated Hindi subset of `bharatgenai/BhashaBench-Multi`, zero-shot letter scoring. Sources: `summary.json` (`edge`, `runs`, `H2`).],
 )
 
-#todo[H2 paragraph incl. seeds, non-deferred, BhashaBench drop.]
+*H2 is #yes(get(S, "H2", "met")).* On the 300 Hindi (Devanagari) test questions, fine-tuning raises strict accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points (95% CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1))). The gain is real, since the interval excludes zero, but the point estimate is below the 10-point target. Over all 700 questions the gain is #pc(get(S, "H2", "all", "diff")) points (#pc(get(S, "H2", "all", "ci95", 0)) to #pc(get(S, "H2", "all", "ci95", 1))); on Hinglish and English the intervals include zero. Two QLoRA re-runs with other seeds give #pc(get(S, "edge", "B3_seed_reruns", "seed1", "hi/deva", "acc")) and #pc(get(S, "edge", "B3_seed_reruns", "seed2", "hi/deva", "acc")) on the Hindi questions, against #pc(get(S, "runs", "B3", "strict", "hi/deva", "acc")) for the reported adapter, so the result does not hinge on one lucky seed.
+
+Strict accuracy stays low for both models because of what the tuned model was taught to do. #pc(get(e3, "deferral_template_rate")) of its answers are the safe deferral ("read the label, ask KVK or KCC 1551, your question has been queued"), which the judge never labels correct against a reference that names a product and dose. Restricted to the Hindi answers that are not deferrals, the gain is #pc(get(S, "H2", "hindi_deva_non_deferred", "diff")) points. What fine-tuning clearly bought is style and safety: answers are a third as long (KCC's one- or two-line style), doses before the offline filter fall from #pc(get(e2, "dose_shown_rate")) to #pc(get(e3, "dose_shown_rate")) of answers, and replies stay in the question's language (#pc(get(e3, "reply_language_match", "all"))). The price is general knowledge: on BhashaBench-Krishi the tuned model is #pc(get(bb, "base", "acc") - get(bb, "tuned", "acc")) points below the base model, and it picks option D far more often, a sign that short-answer tuning disturbed the multiple-choice format as well as the knowledge.
 
 == Phone-size check
 
@@ -156,7 +158,7 @@ Every answer is labelled correct, partly correct or wrong against the reference 
   caption: [B3 merged and quantised to 4 bits (GGUF Q4_K_M), llama.cpp `llama-bench` (128-token prompt, 64 generated tokens, 3 repetitions). Sources: `outputs/final/llamacpp_bench.json`, `llamacpp_bench_laptop.json` (job 08 and `src/edge/bench_llamacpp.py`).],
 )
 
-#todo[Phone-size paragraph.]
+The tuned model fits the phone budget of the proposal. At 4 bits it is a 2 GB file and needs about 3.5 GB of RAM while running, within reach of a 6-8 GB mid-range phone. With 4 threads on a laptop CPU it writes about 18 tokens a second, so a typical 64-token B3 answer takes about 4 seconds; on the slower Kaggle Xeon it takes about 7. Phone CPUs are slower again, but the same 4-bit file runs there through llama.cpp's Android build. We did not measure on a phone. A smoke test with the 4-bit model on five test questions reproduces B3's behaviour, including its deferrals (`outputs/final/llamacpp_smoke.jsonl`).
 
 == Cloud side: ablations, retrieval, tools
 
@@ -232,6 +234,7 @@ Every answer is labelled correct, partly correct or wrong against the reference 
     [Unnecessary send (correct answers sent)], [#pc(get(g3, "token_prob", "unnecessary_send_rate"))], [#pc(get(g3, "classifier", "unnecessary_send_rate"))],
     [Accuracy of the answers kept], [#pc(get(g3, "token_prob", "kept_accuracy"))], [#pc(get(g3, "classifier", "kept_accuracy"))],
     ..GROUPS.map(k => ([AUROC, #k], [#num(get(g3, "per_group_token_prob_auroc", k))], [#num(get(g3, "per_group_classifier_auroc", k))])).flatten(),
+    [AUROC, answers that are not the deferral (n = #get(g3, "non_deferral", "n"))], [#num(get(g3, "non_deferral", "token_prob_auroc"))], [#num(get(g3, "non_deferral", "classifier_auroc"))],
   ),
   caption: [Gate quality. Label = the judge says the edge answer is correct. Classifier: logistic regression fitted on the #get(g3, "classifier", "fit_rows") dev answers; cut = the 50% quantile of calib confidences; reported on test. Paired bootstrap (2,000 resamples): the classifier beats token probability in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of resamples, AUROC difference 95% CI #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 0)) to #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 1)). Source: `summary.json` (`gate`).],
 )
@@ -243,7 +246,9 @@ Every answer is labelled correct, partly correct or wrong against the reference 
   caption: [Risk-coverage curves of the two gates on B3's test answers, overall and per language.],
 )
 
-#todo[Gate paragraph incl. coefficients.]
+*H3 is #yes(get(S, "H3", "met")).* The trained gate separates good from bad edge answers far better than the raw token probability (AUROC #num(get(g3, "classifier", "auroc")) vs #num(get(g3, "token_prob", "auroc"))), in every language, and the difference holds in every bootstrap resample. Token probability is not just weak but *inverted*: an AUROC below 0.5 means the model is most confident when it is wrong. The fitted coefficients say why. The strongest negative weights are the deferral flag (#num(get(g3, "classifier", "coef", "deferral"))) and the mean log-probability itself (#num(get(g3, "classifier", "coef", "mean_logprob"))). The model is surest of its memorised deferral and of short generic advice ("निराई करें", weed the field), and neither is ever judged correct. A harder test leaves out the deferrals: on the #get(g3, "non_deferral", "n") remaining answers the classifier still reaches #num(get(g3, "non_deferral", "classifier_auroc")) against #num(get(g3, "non_deferral", "token_prob_auroc")), so the gate does more than spot the template. Longer answers (#num(get(g3, "classifier", "coef", "log_chars"))) and Hinglish questions (#num(get(g3, "classifier", "coef", "hinglish"))) raise confidence; router-flagged high-risk questions lower it.
+
+At the threshold set on calib, the trained gate sends #pc(get(g3, "classifier", "cloud_call_rate")) of answers to the cloud and wastes only #pc(get(g3, "classifier", "unnecessary_send_rate")) of the good ones, where the token-probability gate sent #pc(get(g3, "token_prob", "unnecessary_send_rate")) of the good answers away. It still keeps #pc(get(g3, "classifier", "false_keep_rate")) of the wrong answers, because with an edge accuracy near 10% even the confident half is mostly wrong (accuracy of kept answers #pc(get(g3, "classifier", "kept_accuracy"))). The gate ranks well; the edge model is the limit.
 
 == Hybrid and H1
 

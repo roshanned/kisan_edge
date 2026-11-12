@@ -195,6 +195,10 @@ def evaluate(rows, target_rate, fit_split="dev", calib_split="calib", eval_split
             out["h3_bootstrap"] = bootstrap_h3(y, pe, tp)
     else:
         out["classifier"] = f"not fitted: need >=50 dev rows with both labels, have {len(fit)}"
+    # Harder test: only answers that are NOT the deferral template (a deferral is never judged correct, so it is easy).
+    nd = [i for i, r in enumerate(ev) if not r["deferral"]]
+    out["non_deferral"] = {"n": len(nd), "accuracy": round(float(y[nd].mean()), 3) if nd else None,
+                           **{f"{name}_auroc": _auc(y[nd], np.asarray(conf)[nd]) for name, conf in conf_by.items()}}
     for name, conf in conf_by.items():
         out[f"per_group_{name}_auroc"] = {
             g: _auc(np.array([r["y"] for r in ev if r["group"] == g]),
