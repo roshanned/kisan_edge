@@ -115,7 +115,7 @@ Every answer is labelled correct, partly correct or wrong against the reference 
   caption: [Share (%) of the 700 test questions judged correct (300 Hindi, 250 Hinglish, 150 English). Lenient also counts partly correct; deferred = the judge saw a deferral (helpline, "will answer later"). Hybrid scores are composed from the judge labels of the edge and cloud answers they show. Source: `outputs/final/summary.json` (`runs`).],
 )
 
-#todo[Comment on the main table.]
+The cloud agent (B1) is by far the strongest single system, #pc(get(S, "comparisons", "B1_minus_B3", "diff")) points above the tuned edge model. Absolute accuracies are low for every run because the references are raw KCC answers (about four in ten judged wrong on the gold sample) and because deferrals never count as correct. On the 158 gold questions with corrected references, B1 reaches #pc(get(S, "runs_gold", "B1", "strict", "all", "acc"))% and the hybrid #pc(get(S, "runs_gold", "H", "strict", "all", "acc"))% (appendix). The ordering of the runs is the same on both sets.
 
 == Edge model and H2
 
@@ -269,7 +269,11 @@ At the threshold set on calib, the trained gate sends #pc(get(g3, "classifier", 
 #figure(image("figures/h1_frontier.png", width: 72%),
   caption: [Accuracy vs cloud-call rate as the gate cut moves from "send everything gated" to "keep everything gated", for each router and policy. Dashed: 90% of B1; dotted: 50% cloud calls.])
 
-#todo[H1 paragraph; offline usefulness; R vs H; A1 vs H_tok; H_A2/H_A3.]
+*H1 is #yes(get(S, "H1", "met")): the accuracy half holds, the cloud-call half does not.* The full hybrid (B3 + B1, trained gate, routing as designed) reaches #pc(get(S, "H1", "hybrid_acc"))% against #pc(get(S, "H1", "B1_acc"))% for cloud-only, #pc(get(S, "H1", "pct_of_B1"))% of B1. The difference is #pc(get(S, "comparisons", "H_minus_B1", "diff")) points (95% CI #pc(get(S, "comparisons", "H_minus_B1", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_B1", "ci95", 1))), so the hybrid is statistically indistinguishable from cloud-only, while answering #pc(get(S, "offline_usefulness", "kept_offline_share"))% of questions on the phone. But it still sends #pc(get(S, "H1", "cloud_rate"))% of questions to the cloud. The cause is the router, not the gate: with the intent classifier, #get(S, "hybrid", "H", "route_counts", "high_risk") of the 700 test questions are high-risk and #get(S, "hybrid", "H", "route_counts", "live_data") need live data, so #pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)% go to the cloud before the gate is consulted.
+
+The trade-off table and the curve show what meeting H1 would cost. Moving the gate cut alone cannot get below about 69% cloud calls under the designed routing. Dropping the intent classifier (rules only), or letting high-risk questions through the gate with the dose filter as their only guard, makes lower rates possible, but accuracy falls with them: 90% of B1 needs about 60% cloud calls, and at 50% cloud calls the best variant reaches only #pc(get(S, "h1_tradeoff", "rules only, gate_all", "pct_of_B1"))% of B1. These variants also give up the safety the router provides: rules alone catch only #pc(get(ro, "redteam_v3_heldout", "risky_recall"))% of held-out risky questions. We keep the safe design and report H1 as not met.
+
+*What the parts contribute.* The edge answers the gate keeps offline are judged correct #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% of the time (#pc(get(S, "offline_usefulness", "kept_answer_accuracy_lenient"))% lenient), above the tuned model's #pc(get(S, "runs", "B3", "strict", "all", "acc"))% overall, so the gate keeps the questions the small model can answer. With no link at all, a farmer gets a correct or partly correct answer to #pc(get(S, "offline_usefulness", "useful_offline_share"))% of questions, plus the safe interim message (or emergency numbers) for the rest. Random routing at the same cloud rate (R) is #pc(get(S, "comparisons", "H_minus_R", "diff")) points below the gated hybrid (CI #pc(get(S, "comparisons", "H_minus_R", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_R", "ci95", 1))). Replacing the tuned edge model with the base model (A1, token-probability gate) costs #pc(get(S, "comparisons", "H_tok_minus_A1", "diff")) points against the same gate on the tuned model, and the dose filter has to block #get(S, "hybrid", "A1", "filter_blocked") base answers against #get(S, "hybrid", "H", "filter_blocked") tuned ones: fine-tuning moves safety work from the filter into the model. Both differences are small, because the edge answers only a quarter of the questions; their intervals touch zero.
 
 == Queue and connectivity (A4)
 
@@ -284,7 +288,7 @@ At the threshold set on calib, the trained gate sends #pc(get(g3, "classifier", 
   caption: [Full hybrid (H) through the queue simulator: one question per minute, waits in minutes. A question whose answer never arrives counts as wrong. Traces are illustrative two-state link models (DECISIONS.md D9), not measured. Source: `summary.json` (`queue`).],
 )
 
-#todo[Queue paragraph.]
+The queue is what keeps the hybrid useful on a bad link. On the patchy trace the queue delivers every cloud-bound question (median wait #get(qq, "Q_patchy", "p50_ticks") minutes, 90th percentile #get(qq, "Q_patchy", "p90_ticks")) and accuracy stays at #pc(get(qq, "Q_patchy", "accuracy"))%. Without the queue (A4) only #pc(get(qq, "Q_patchy_A4", "delivery_rate"))% arrive and accuracy falls to #pc(get(qq, "Q_patchy_A4", "accuracy"))%. On the poor trace the queue still delivers #pc(get(qq, "Q_poor", "delivery_rate"))% against #pc(get(qq, "Q_poor_A4", "delivery_rate"))% without it, but answers wait hours, and #pc(get(qq, "Q_poor", "stale_rate"))% of live-data answers go stale and are re-asked once. Deduplication never fires on test, because the split has no repeated questions (it is unit-tested on synthetic duplicates). These traces are illustrative, so the size of the gap matters less than its direction.
 
 = Discussion
 
@@ -309,3 +313,22 @@ Every number in this report is in `outputs/final/summary.json` or another file n
 = Contributions
 
 The project was planned as four workstreams (PLAN.md): data and evaluation (Anushka Sharma), edge model (Roshan K), cloud side (Sai Rithvik), and router, gate, queue and integration (Kiran R). Up to the mid-submission each person worked on their layer and checked a batch of gold questions. From October 30, Roshan K carried the whole project. The final phase described here (full-test runs of every system, the trained gate, red-team v2 and v3, the cloud metrics, the GGUF export, the analysis pipeline and this report) was carried out by Roshan K with an AI coding assistant (Claude), which wrote much of the code and this draft and read the generated red-team items. Where a step needed a human and none was available, the report says so: the gold set and the red-team sets were checked by an LLM, not by a native Hindi speaker, and the LLM judge has not yet been checked against human labels.
+
+#heading(numbering: none)[Appendix: results on the 158-question gold subset]
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto, auto, auto, auto, auto),
+    align: (left, left, right, right, right, right, right),
+    [*Run*], [*What*], [*Hindi*], [*Hinglish*], [*English*], [*All, strict \[95% CI\]*], [*Lenient*],
+    ..("B1", "A2", "A3", "B2", "B3", "H", "H_tok", "R", "A1").map(run => {
+      let r = get(S, "runs_gold", run)
+      if r == none { () } else {
+        let g = r.strict
+        ([*#run*], [#get(S, "runs", run, "what")], ..GROUPS.map(k => [#pc(g.at(k).acc)]),
+         [*#pc(g.all.acc)* \[#pc(g.all.ci95.at(0))-#pc(g.all.ci95.at(1))\]], [#pc(r.lenient)])
+      }
+    }).flatten(),
+  ),
+  caption: [Share (%) of the gold questions judged correct (61 Hindi, 47 Hinglish, 50 English; references corrected by an LLM pre-check, not by a person). Source: `summary.json` (`runs_gold`).],
+)
