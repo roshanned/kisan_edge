@@ -12,6 +12,6 @@ Read [STATUS.md](STATUS.md) first: what is done, what is running, and the ordere
 - Free-tier limits per model: 30 requests and 16,000 input tokens per minute; `src/common/ratelimit.py` paces both.
 - Heavy GPU work goes to Kaggle (`kaggle/push_code.py`, then `kaggle kernels push`), not the laptop.
 - Every number in the report must come from `outputs/final/summary.json` or another file named in its caption; `python -m src.eval.run_final` rebuilds them without model calls.
-- Never commit `.env`, API keys or personal data. Do not merge to `main` or tag without Roshan's approval.
+- Never commit `.env`, API keys or personal data. Work on `main` only (all other branches are merged). Do not tag `final-submission` without Roshan's approval.
 - Things only a human can do (hand-labelling, Hindi review, logins, approvals) go in STATUS.md "Needs a human"; never claim them as done.
 - Tests: `pytest -q` (62 tests, no network).

@@ -1,6 +1,6 @@
 # Project status: final phase (updated Nov 12, 2026, evening)
 
-Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `roshan/edge` (not yet merged to `main`).
+Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `main` (the only working branch; all other branches are merged into it).
 This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D27). Every command, in order: `scripts/final_pipeline.sh`.
 
 ## CLAIMED: another Claude session is doing these on Roshan's laptop. Do NOT run them.
@@ -52,7 +52,7 @@ Rough timing: about 2.3 B1/A3 questions a minute (agent limited to 16k input tok
 8. Slides for the presentation (results from `summary.json`; demo steps in `docs/DEMO.md`).
 
 **Needs a human:**
-9. Approve merge of `roshan/edge` into `main` and tag `final-submission`; submit report PDF + GitHub link by Nov 15.
+9. Approve tagging `final-submission` on `main`; submit report PDF + GitHub link by Nov 15.
 10. Hand-label 100 judge outputs (`reports/final/judge_check_sheet.csv`), run `... judge_check --dir outputs/final --report-dir reports/final agree`, put the number in the report.
 11. Hindi speaker reads red-team v2/v3 and the Nov 11 keyword additions; human check of the 158 gold questions.
 12. Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` (written from memory).
