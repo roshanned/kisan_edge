@@ -404,8 +404,13 @@ def main():
                 "B1_acc": round(acc(SC["B1"], rids)[0] / len(rids), 4)}
         gq = [q for q in rq if q["id"] in gold]
         S["runs_gold"][run] = {"strict": by_group(sc, gq), "lenient": round(acc(sc, [q["id"] for q in gq], False)[0] / len(gq), 4)}
+    # paired comparisons on the same questions (difference in strict accuracy, 95% bootstrap interval)
+    allsc = {**SC, **sc_h}
+    S["comparisons"] = {f"{a}_minus_{b}": paired_bootstrap(allsc[a], allsc[b], ids)
+                        for a, b in (("H", "B1"), ("H", "R"), ("H", "A1"), ("H_tok", "A1"), ("H", "H_tok"), ("B1", "B3"))
+                        if a in allsc and b in allsc}
     if "B2" in SC and "B3" in SC:
-        hindi = [q["id"] for q in qs if q["script"] == "deva"]
+        hindi =[q["id"] for q in qs if q["script"] == "deva"]
         S["H2"] = {"hindi_deva": paired_bootstrap(SC["B3"], SC["B2"], hindi), "all": paired_bootstrap(SC["B3"], SC["B2"], ids),
                    "hinglish": paired_bootstrap(SC["B3"], SC["B2"], [q["id"] for q in qs if q["lang"] == "hi" and q["script"] == "latn"]),
                    "english": paired_bootstrap(SC["B3"], SC["B2"], [q["id"] for q in qs if q["lang"] == "en"])}

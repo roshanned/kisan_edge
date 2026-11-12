@@ -1,0 +1,73 @@
+{
+ "n": 700,
+ "mode": "gate",
+ "trace": "poor",
+ "queue": false,
+ "target_rate": 0.5,
+ "policy": "safety",
+ "gate": "classifier",
+ "cut": 0.2041,
+ "cloud_calls_per_100": 74.6,
+ "answered_by": {
+  "edge": 178,
+  "cloud": 74,
+  "deferral": 448
+ },
+ "filter_blocked": 8,
+ "queue_metrics": {
+  "jobs": 522,
+  "delivery_rate": 0.142,
+  "p50_ticks": 2,
+  "p90_ticks": 74,
+  "stale_rate": 0.211,
+  "duplicate_send_rate": 0.0,
+  "sends": 195
+ },
+ "route_counts": {
+  "general": 219,
+  "live_data": 125,
+  "high_risk": 356,
+  "emergency": 0
+ },
+ "accuracy": 0.1129,
+ "lenient": 0.1743,
+ "by_group": {
+  "hi/deva": {
+   "acc": 0.1167,
+   "k": 35,
+   "n": 300,
+   "ci95": [
+    0.0851,
+    0.1579
+   ]
+  },
+  "hi/latn": {
+   "acc": 0.096,
+   "k": 24,
+   "n": 250,
+   "ci95": [
+    0.0654,
+    0.1389
+   ]
+  },
+  "en/latn": {
+   "acc": 0.1333,
+   "k": 20,
+   "n": 150,
+   "ci95": [
+    0.088,
+    0.197
+   ]
+  },
+  "all": {
+   "acc": 0.1129,
+   "k": 79,
+   "n": 700,
+   "ci95": [
+    0.0915,
+    0.1384
+   ]
+  }
+ },
+ "cloud_rate": 0.7457
+}

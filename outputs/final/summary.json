@@ -1,0 +1,2150 @@
+{
+ "n_test": 700,
+ "judge": "gemma-4-31b-it (minimal thinking)",
+ "cloud_model": "gemma-4-26b-a4b-it",
+ "edge_model": "Llama-3.2-3B-Instruct (+ QLoRA r16, 2 epochs, seed 42 for B3)",
+ "edge": {
+  "B2": {
+   "n": 700,
+   "mean_tokens": 177.2,
+   "dose_shown_rate": 0.0829,
+   "deferral_template_rate": 0.0,
+   "reply_language_match": {
+    "hi/deva": 1.0,
+    "hi/latn": 1.0,
+    "en/latn": 0.9533,
+    "all": 0.99
+   }
+  },
+  "B3": {
+   "n": 700,
+   "mean_tokens": 64.3,
+   "dose_shown_rate": 0.0114,
+   "deferral_template_rate": 0.39,
+   "reply_language_match": {
+    "hi/deva": 1.0,
+    "hi/latn": 0.868,
+    "en/latn": 0.9867,
+    "all": 0.95
+   }
+  },
+  "B3_seed_reruns": {
+   "seed1": {
+    "hi/deva": {
+     "acc": 0.08,
+     "k": 24,
+     "n": 300,
+     "ci95": [
+      0.0543,
+      0.1163
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.0,
+     "k": 0,
+     "n": 250,
+     "ci95": [
+      0.0,
+      0.0151
+     ]
+    },
+    "en/latn": {
+     "acc": 0.0,
+     "k": 0,
+     "n": 150,
+     "ci95": [
+      0.0,
+      0.025
+     ]
+    },
+    "all": {
+     "acc": 0.0343,
+     "k": 24,
+     "n": 700,
+     "ci95": [
+      0.0231,
+      0.0505
+     ]
+    }
+   },
+   "seed2": {
+    "hi/deva": {
+     "acc": 0.1,
+     "k": 30,
+     "n": 300,
+     "ci95": [
+      0.0709,
+      0.1392
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.0,
+     "k": 0,
+     "n": 250,
+     "ci95": [
+      0.0,
+      0.0151
+     ]
+    },
+    "en/latn": {
+     "acc": 0.0,
+     "k": 0,
+     "n": 150,
+     "ci95": [
+      0.0,
+      0.025
+     ]
+    },
+    "all": {
+     "acc": 0.0429,
+     "k": 30,
+     "n": 700,
+     "ci95": [
+      0.0302,
+      0.0605
+     ]
+    }
+   }
+  },
+  "bhashabench_krishi_hi": {
+   "base": {
+    "n": 3000,
+    "acc": 0.3357,
+    "ci95": [
+     0.319,
+     0.3528
+    ],
+    "by_level": {
+     "Easy": 0.3972,
+     "Hard": 0.2857,
+     "Medium": 0.2894
+    }
+   },
+   "tuned": {
+    "n": 3000,
+    "acc": 0.298,
+    "ci95": [
+     0.2819,
+     0.3146
+    ],
+    "by_level": {
+     "Easy": 0.3256,
+     "Hard": 0.2736,
+     "Medium": 0.2777
+    }
+   }
+  },
+  "gguf": {
+   "file_gb": 2.01,
+   "peak_rss_gb": 3.24,
+   "prompt_tok_s": 22.1,
+   "gen_tok_s": 8.6,
+   "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "threads": 4,
+   "quant": "Q4_K_M"
+  },
+  "gguf_laptop": {
+   "machine": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+   "logical_cpus": 20,
+   "ram_gb": 16.9,
+   "runs": [
+    {
+     "threads": 4,
+     "peak_rss_gb": 3.5,
+     "prompt_tok_s": 74.1,
+     "gen_tok_s": 17.9,
+     "cpu": "13th Gen Intel(R) Core(TM) i7-13700H",
+     "model_size_gb": 2.01
+    },
+    {
+     "threads": 8,
+     "peak_rss_gb": 3.51,
+     "prompt_tok_s": 92.2,
+     "gen_tok_s": 20.7,
+     "cpu": "13th Gen Intel(R) Core(TM) i7-13700H",
+     "model_size_gb": 2.01
+    }
+   ]
+  }
+ },
+ "gate": {
+  "B3": {
+   "eval_rows": 700,
+   "edge_accuracy": 0.094,
+   "phase1_no_calib": false,
+   "calib_rows": 600,
+   "target_rate": 0.5,
+   "token_prob": {
+    "auroc": 0.1559,
+    "aurc": 0.9783,
+    "ece": 0.64,
+    "n": 700,
+    "cloud_call_rate": 0.494,
+    "false_keep_rate": 0.554,
+    "unnecessary_send_rate": 0.955,
+    "kept_accuracy": 0.008,
+    "cut_from": "calib confidences"
+   },
+   "classifier": {
+    "auroc": 0.8687,
+    "aurc": 0.7975,
+    "ece": 0.2189,
+    "n": 700,
+    "cloud_call_rate": 0.49,
+    "false_keep_rate": 0.465,
+    "unnecessary_send_rate": 0.061,
+    "kept_accuracy": 0.174,
+    "fit_rows": 600,
+    "coef": {
+     "mean_logprob": -0.974,
+     "min_logprob": 0.18,
+     "log_tokens": -0.314,
+     "log_chars": 0.821,
+     "deva": -0.088,
+     "hinglish": 0.464,
+     "crop_known": 0.0,
+     "live_data": -0.111,
+     "high_risk": -0.604,
+     "unknown_rate": 0.075,
+     "deferral": -1.329
+    }
+   },
+   "h3_classifier_beats_token_prob": true,
+   "h3_bootstrap": {
+    "p_classifier_better": 1.0,
+    "auroc_diff_ci95": [
+     0.6427,
+     0.7757
+    ]
+   },
+   "non_deferral": {
+    "n": 427,
+    "accuracy": 0.155,
+    "token_prob_auroc": 0.2739,
+    "classifier_auroc": 0.7693
+   },
+   "per_group_token_prob_auroc": {
+    "en/latn": 0.0637,
+    "hi/deva": 0.2628,
+    "hi/latn": 0.1614
+   },
+   "per_group_classifier_auroc": {
+    "en/latn": 0.9333,
+    "hi/deva": 0.8128,
+    "hi/latn": 0.8441
+   }
+  },
+  "B2": {
+   "eval_rows": 700,
+   "edge_accuracy": 0.05,
+   "phase1_no_calib": true,
+   "calib_rows": 0,
+   "target_rate": 0.5,
+   "token_prob": {
+    "auroc": 0.6232,
+    "aurc": 0.9292,
+    "ece": 0.592,
+    "n": 700,
+    "cloud_call_rate": 0.48,
+    "false_keep_rate": 0.511,
+    "unnecessary_send_rate": 0.314,
+    "kept_accuracy": 0.066,
+    "cut_from": "calib confidences"
+   },
+   "classifier": "not fitted: need >=50 dev rows with both labels, have 0",
+   "non_deferral": {
+    "n": 700,
+    "accuracy": 0.05,
+    "token_prob_auroc": 0.6232
+   },
+   "per_group_token_prob_auroc": {
+    "en/latn": 0.6019,
+    "hi/deva": 0.5569,
+    "hi/latn": 0.5756
+   }
+  }
+ },
+ "hybrid": {
+  "H": {
+   "n": 700,
+   "mode": "gate",
+   "trace": "none",
+   "queue": true,
+   "target_rate": 0.5,
+   "policy": "safety",
+   "gate": "classifier",
+   "cut": 0.2041,
+   "cloud_calls_per_100": 74.6,
+   "answered_by": {
+    "edge": 178,
+    "cloud": 522,
+    "deferral": 0
+   },
+   "filter_blocked": 8,
+   "queue_metrics": {
+    "jobs": 522,
+    "delivery_rate": 1.0,
+    "p50_ticks": 0,
+    "p90_ticks": 0,
+    "stale_rate": 0.0,
+    "duplicate_send_rate": 0.0,
+    "sends": 522
+   },
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "accuracy": 0.28,
+   "lenient": 0.47,
+   "by_group": {
+    "hi/deva": {
+     "acc": 0.32,
+     "k": 96,
+     "n": 300,
+     "ci95": [
+      0.2698,
+      0.3748
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.224,
+     "k": 56,
+     "n": 250,
+     "ci95": [
+      0.1767,
+      0.2796
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2933,
+     "k": 44,
+     "n": 150,
+     "ci95": [
+      0.2264,
+      0.3706
+     ]
+    },
+    "all": {
+     "acc": 0.28,
+     "k": 196,
+     "n": 700,
+     "ci95": [
+      0.248,
+      0.3144
+     ]
+    }
+   },
+   "cloud_rate": 0.7457,
+   "pct_of_B1": 0.98,
+   "n_questions": 700,
+   "B1_acc_same_questions": 0.2857
+  },
+  "H_tok": {
+   "n": 700,
+   "mode": "gate",
+   "trace": "none",
+   "queue": true,
+   "target_rate": 0.5,
+   "policy": "safety",
+   "gate": "token_prob",
+   "cut": -0.3839,
+   "cloud_calls_per_100": 92.0,
+   "answered_by": {
+    "edge": 56,
+    "cloud": 644,
+    "deferral": 0
+   },
+   "filter_blocked": 8,
+   "queue_metrics": {
+    "jobs": 644,
+    "delivery_rate": 1.0,
+    "p50_ticks": 0,
+    "p90_ticks": 0,
+    "stale_rate": 0.0,
+    "duplicate_send_rate": 0.0,
+    "sends": 644
+   },
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "accuracy": 0.2657,
+   "lenient": 0.4429,
+   "by_group": {
+    "hi/deva": {
+     "acc": 0.31,
+     "k": 93,
+     "n": 300,
+     "ci95": [
+      0.2603,
+      0.3645
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.248,
+     "k": 62,
+     "n": 250,
+     "ci95": [
+      0.1986,
+      0.3051
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2067,
+     "k": 31,
+     "n": 150,
+     "ci95": [
+      0.1496,
+      0.2784
+     ]
+    },
+    "all": {
+     "acc": 0.2657,
+     "k": 186,
+     "n": 700,
+     "ci95": [
+      0.2343,
+      0.2997
+     ]
+    }
+   },
+   "cloud_rate": 0.92,
+   "pct_of_B1": 0.93,
+   "n_questions": 700,
+   "B1_acc_same_questions": 0.2857
+  },
+  "R": {
+   "n": 700,
+   "mode": "random",
+   "trace": "none",
+   "queue": true,
+   "target_rate": 0.5,
+   "policy": "safety",
+   "gate": "classifier",
+   "cut": 0.2041,
+   "cloud_calls_per_100": 74.4,
+   "answered_by": {
+    "edge": 179,
+    "cloud": 521,
+    "deferral": 0
+   },
+   "filter_blocked": 8,
+   "queue_metrics": {
+    "jobs": 521,
+    "delivery_rate": 1.0,
+    "p50_ticks": 0,
+    "p90_ticks": 0,
+    "stale_rate": 0.0,
+    "duplicate_send_rate": 0.0,
+    "sends": 521
+   },
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "accuracy": 0.27,
+   "lenient": 0.45,
+   "by_group": {
+    "hi/deva": {
+     "acc": 0.32,
+     "k": 96,
+     "n": 300,
+     "ci95": [
+      0.2698,
+      0.3748
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.224,
+     "k": 56,
+     "n": 250,
+     "ci95": [
+      0.1767,
+      0.2796
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2467,
+     "k": 37,
+     "n": 150,
+     "ci95": [
+      0.1846,
+      0.3214
+     ]
+    },
+    "all": {
+     "acc": 0.27,
+     "k": 189,
+     "n": 700,
+     "ci95": [
+      0.2384,
+      0.3041
+     ]
+    }
+   },
+   "cloud_rate": 0.7443,
+   "pct_of_B1": 0.945,
+   "n_questions": 700,
+   "B1_acc_same_questions": 0.2857
+  },
+  "A1": {
+   "n": 700,
+   "mode": "gate",
+   "trace": "none",
+   "queue": true,
+   "target_rate": 0.5,
+   "policy": "safety",
+   "gate": "token_prob",
+   "cut": -0.4436,
+   "cloud_calls_per_100": 87.4,
+   "answered_by": {
+    "edge": 88,
+    "cloud": 612,
+    "deferral": 0
+   },
+   "filter_blocked": 58,
+   "queue_metrics": {
+    "jobs": 612,
+    "delivery_rate": 1.0,
+    "p50_ticks": 0,
+    "p90_ticks": 0,
+    "stale_rate": 0.0,
+    "duplicate_send_rate": 0.0,
+    "sends": 612
+   },
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "accuracy": 0.26,
+   "lenient": 0.4329,
+   "by_group": {
+    "hi/deva": {
+     "acc": 0.3,
+     "k": 90,
+     "n": 300,
+     "ci95": [
+      0.2509,
+      0.3541
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.22,
+     "k": 55,
+     "n": 250,
+     "ci95": [
+      0.1731,
+      0.2754
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2467,
+     "k": 37,
+     "n": 150,
+     "ci95": [
+      0.1846,
+      0.3214
+     ]
+    },
+    "all": {
+     "acc": 0.26,
+     "k": 182,
+     "n": 700,
+     "ci95": [
+      0.2289,
+      0.2937
+     ]
+    }
+   },
+   "cloud_rate": 0.8743,
+   "pct_of_B1": 0.91,
+   "n_questions": 700,
+   "B1_acc_same_questions": 0.2857
+  }
+ },
+ "h1_tradeoff": {
+  "rules+clf, safety (design)": {
+   "accuracy": 0.28,
+   "pct_of_B1": 0.98,
+   "cloud_rate": 0.7457,
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "h1_met": false
+  },
+  "rules only, safety": {
+   "accuracy": 0.2386,
+   "pct_of_B1": 0.8351,
+   "cloud_rate": 0.5029,
+   "route_counts": {
+    "general": 579,
+    "live_data": 98,
+    "high_risk": 23,
+    "emergency": 0
+   },
+   "h1_met": false
+  },
+  "rules+clf, gate_all": {
+   "accuracy": 0.2586,
+   "pct_of_B1": 0.9051,
+   "cloud_rate": 0.6043,
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "h1_met": false
+  },
+  "rules only, gate_all": {
+   "accuracy": 0.2357,
+   "pct_of_B1": 0.825,
+   "cloud_rate": 0.49,
+   "route_counts": {
+    "general": 579,
+    "live_data": 98,
+    "high_risk": 23,
+    "emergency": 0
+   },
+   "h1_met": false
+  },
+  "frontier": {
+   "rules+clf/safety": [
+    {
+     "keep_share": 0.0,
+     "cloud_rate": 1.0,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.1,
+     "cloud_rate": 0.9686,
+     "accuracy": 0.2786
+    },
+    {
+     "keep_share": 0.2,
+     "cloud_rate": 0.9371,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.3,
+     "cloud_rate": 0.9057,
+     "accuracy": 0.29
+    },
+    {
+     "keep_share": 0.4,
+     "cloud_rate": 0.8743,
+     "accuracy": 0.29
+    },
+    {
+     "keep_share": 0.5,
+     "cloud_rate": 0.8429,
+     "accuracy": 0.2943
+    },
+    {
+     "keep_share": 0.6,
+     "cloud_rate": 0.8129,
+     "accuracy": 0.2929
+    },
+    {
+     "keep_share": 0.7,
+     "cloud_rate": 0.7857,
+     "accuracy": 0.2886
+    },
+    {
+     "keep_share": 0.8,
+     "cloud_rate": 0.7543,
+     "accuracy": 0.2814
+    },
+    {
+     "keep_share": 0.9,
+     "cloud_rate": 0.7229,
+     "accuracy": 0.2771
+    },
+    {
+     "keep_share": 1.0,
+     "cloud_rate": 0.6914,
+     "accuracy": 0.2686
+    }
+   ],
+   "rules/safety": [
+    {
+     "keep_share": 0.0,
+     "cloud_rate": 1.0,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.1,
+     "cloud_rate": 0.9186,
+     "accuracy": 0.28
+    },
+    {
+     "keep_share": 0.2,
+     "cloud_rate": 0.8371,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.3,
+     "cloud_rate": 0.7557,
+     "accuracy": 0.2843
+    },
+    {
+     "keep_share": 0.4,
+     "cloud_rate": 0.6771,
+     "accuracy": 0.2729
+    },
+    {
+     "keep_share": 0.5,
+     "cloud_rate": 0.5957,
+     "accuracy": 0.2614
+    },
+    {
+     "keep_share": 0.6,
+     "cloud_rate": 0.5143,
+     "accuracy": 0.2429
+    },
+    {
+     "keep_share": 0.7,
+     "cloud_rate": 0.4314,
+     "accuracy": 0.2314
+    },
+    {
+     "keep_share": 0.8,
+     "cloud_rate": 0.3486,
+     "accuracy": 0.2186
+    },
+    {
+     "keep_share": 0.9,
+     "cloud_rate": 0.2657,
+     "accuracy": 0.2114
+    },
+    {
+     "keep_share": 1.0,
+     "cloud_rate": 0.1829,
+     "accuracy": 0.1914
+    }
+   ],
+   "rules+clf/gate_all": [
+    {
+     "keep_share": 0.0,
+     "cloud_rate": 1.0,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.1,
+     "cloud_rate": 0.9171,
+     "accuracy": 0.2829
+    },
+    {
+     "keep_share": 0.2,
+     "cloud_rate": 0.8371,
+     "accuracy": 0.2929
+    },
+    {
+     "keep_share": 0.3,
+     "cloud_rate": 0.76,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.4,
+     "cloud_rate": 0.6814,
+     "accuracy": 0.2714
+    },
+    {
+     "keep_share": 0.5,
+     "cloud_rate": 0.6,
+     "accuracy": 0.2586
+    },
+    {
+     "keep_share": 0.6,
+     "cloud_rate": 0.5186,
+     "accuracy": 0.2429
+    },
+    {
+     "keep_share": 0.7,
+     "cloud_rate": 0.4371,
+     "accuracy": 0.2271
+    },
+    {
+     "keep_share": 0.8,
+     "cloud_rate": 0.3543,
+     "accuracy": 0.2186
+    },
+    {
+     "keep_share": 0.9,
+     "cloud_rate": 0.2729,
+     "accuracy": 0.2114
+    },
+    {
+     "keep_share": 1.0,
+     "cloud_rate": 0.19,
+     "accuracy": 0.1986
+    }
+   ],
+   "rules/gate_all": [
+    {
+     "keep_share": 0.0,
+     "cloud_rate": 1.0,
+     "accuracy": 0.2857
+    },
+    {
+     "keep_share": 0.1,
+     "cloud_rate": 0.9143,
+     "accuracy": 0.28
+    },
+    {
+     "keep_share": 0.2,
+     "cloud_rate": 0.83,
+     "accuracy": 0.2843
+    },
+    {
+     "keep_share": 0.3,
+     "cloud_rate": 0.7457,
+     "accuracy": 0.2814
+    },
+    {
+     "keep_share": 0.4,
+     "cloud_rate": 0.6643,
+     "accuracy": 0.2714
+    },
+    {
+     "keep_share": 0.5,
+     "cloud_rate": 0.58,
+     "accuracy": 0.26
+    },
+    {
+     "keep_share": 0.6,
+     "cloud_rate": 0.4957,
+     "accuracy": 0.2371
+    },
+    {
+     "keep_share": 0.7,
+     "cloud_rate": 0.41,
+     "accuracy": 0.2271
+    },
+    {
+     "keep_share": 0.8,
+     "cloud_rate": 0.3243,
+     "accuracy": 0.2143
+    },
+    {
+     "keep_share": 0.9,
+     "cloud_rate": 0.2386,
+     "accuracy": 0.2057
+    },
+    {
+     "keep_share": 1.0,
+     "cloud_rate": 0.1514,
+     "accuracy": 0.1871
+    }
+   ]
+  }
+ },
+ "offline_usefulness": {
+  "kept_offline_share": 0.2543,
+  "useful_offline_share": 0.1229,
+  "correct_offline_share": 0.0771,
+  "kept_answer_accuracy_strict": 0.3034,
+  "kept_answer_accuracy_lenient": 0.4831,
+  "emergency_routed": 0
+ },
+ "H1": {
+  "B1_acc": 0.2857,
+  "hybrid_acc": 0.28,
+  "pct_of_B1": 0.98,
+  "cloud_rate": 0.7457,
+  "accuracy_ok": true,
+  "cloud_ok": false,
+  "met": false,
+  "best_config_meeting_cloud_target": "rules only, gate_all"
+ },
+ "queue": {
+  "Q_good": {
+   "accuracy": 0.28,
+   "jobs": 522,
+   "delivery_rate": 1.0,
+   "p50_ticks": 0,
+   "p90_ticks": 0,
+   "stale_rate": 0.0,
+   "duplicate_send_rate": 0.0,
+   "sends": 534
+  },
+  "Q_good_A4": {
+   "accuracy": 0.2729,
+   "jobs": 522,
+   "delivery_rate": 0.975,
+   "p50_ticks": 0,
+   "p90_ticks": 0,
+   "stale_rate": 0.0,
+   "duplicate_send_rate": 0.0,
+   "sends": 519
+  },
+  "Q_patchy": {
+   "accuracy": 0.28,
+   "jobs": 522,
+   "delivery_rate": 1.0,
+   "p50_ticks": 2,
+   "p90_ticks": 18,
+   "stale_rate": 0.032,
+   "duplicate_send_rate": 0.0,
+   "sends": 765
+  },
+  "Q_patchy_A4": {
+   "accuracy": 0.1871,
+   "jobs": 522,
+   "delivery_rate": 0.588,
+   "p50_ticks": 0,
+   "p90_ticks": 6,
+   "stale_rate": 0.0,
+   "duplicate_send_rate": 0.0,
+   "sends": 442
+  },
+  "Q_poor": {
+   "accuracy": 0.1629,
+   "jobs": 522,
+   "delivery_rate": 0.682,
+   "p50_ticks": 668,
+   "p90_ticks": 1143,
+   "stale_rate": 0.941,
+   "duplicate_send_rate": 0.0,
+   "sends": 945
+  },
+  "Q_poor_A4": {
+   "accuracy": 0.1129,
+   "jobs": 522,
+   "delivery_rate": 0.142,
+   "p50_ticks": 2,
+   "p90_ticks": 74,
+   "stale_rate": 0.211,
+   "duplicate_send_rate": 0.0,
+   "sends": 195
+  }
+ },
+ "A4": {
+  "good": {
+   "with_queue": 0.28,
+   "no_queue_A4": 0.2729,
+   "delivery_with_queue": 1.0,
+   "delivery_no_queue": 0.975
+  },
+  "patchy": {
+   "with_queue": 0.28,
+   "no_queue_A4": 0.1871,
+   "delivery_with_queue": 1.0,
+   "delivery_no_queue": 0.588
+  },
+  "poor": {
+   "with_queue": 0.1629,
+   "no_queue_A4": 0.1129,
+   "delivery_with_queue": 0.682,
+   "delivery_no_queue": 0.142
+  }
+ },
+ "safety": {
+  "rules_only": {
+   "redteam": {
+    "risky_recall": 1.0,
+    "emergency_escalation": 1.0,
+    "emergency_number_shown": 1.0,
+    "control_over_escalation": null
+   },
+   "redteam_v2_dev": {
+    "risky_recall": 0.963,
+    "emergency_escalation": 1.0,
+    "emergency_number_shown": 1.0,
+    "control_over_escalation": 0.067
+   },
+   "redteam_v3_heldout": {
+    "risky_recall": 0.667,
+    "emergency_escalation": 0.5,
+    "emergency_number_shown": 0.625,
+    "control_over_escalation": 0.278
+   },
+   "test_high_risk_recall_vs_labels": 0.076,
+   "test_route_accuracy_vs_labels": 0.553
+  },
+  "rules_plus_clf": {
+   "redteam": {
+    "risky_recall": 1.0,
+    "emergency_escalation": 1.0,
+    "emergency_number_shown": 1.0,
+    "control_over_escalation": null
+   },
+   "redteam_v2_dev": {
+    "risky_recall": 1.0,
+    "emergency_escalation": 1.0,
+    "emergency_number_shown": 1.0,
+    "control_over_escalation": 0.2
+   },
+   "redteam_v3_heldout": {
+    "risky_recall": 0.926,
+    "emergency_escalation": 0.5,
+    "emergency_number_shown": 0.958,
+    "control_over_escalation": 0.389
+   },
+   "test_high_risk_recall_vs_labels": 0.9,
+   "test_route_accuracy_vs_labels": 0.801
+  },
+  "v2_before_keyword_fix": {
+   "rules_only": {
+    "risky_recall": 0.778,
+    "emergency_escalation": 0.833
+   },
+   "rules_plus_clf": {
+    "risky_recall": 0.907,
+    "emergency_escalation": 0.833
+   }
+  },
+  "filter_probes": {
+   "miss_rate": 0.0,
+   "false_block_rate": 0.0,
+   "n_dose": 22,
+   "n_safe": 11
+  },
+  "offline_dose_rate_shown": 0.0,
+  "offline_answers_blocked_by_filter": 8,
+  "high_risk_label_sent_to_cloud": 0.9536,
+  "B3_raw_dose_rate": 0.0114,
+  "B2_raw_dose_rate": 0.0829
+ },
+ "rag_recall": {
+  "k": 5,
+  "raw_query": {
+   "all": {
+    "recall": 0.6,
+    "n": 60
+   },
+   "deva": {
+    "recall": 0.725,
+    "n": 40
+   },
+   "latn": {
+    "recall": 0.35,
+    "n": 20
+   }
+  },
+  "rewritten_query": {
+   "all": {
+    "recall": 0.917,
+    "n": 60
+   },
+   "deva": {
+    "recall": 0.875,
+    "n": 40
+   },
+   "latn": {
+    "recall": 1.0,
+    "n": 20
+   }
+  },
+  "rewrite_model": "gemma-4-26b-a4b-it"
+ },
+ "cloud_metrics": {
+  "B1": {
+   "n": 700,
+   "safety": {
+    "uncited_dose_replaced_rate": 0.113,
+    "banned_refused_rate": 0.003,
+    "weather_answers_with_dose_replaced": 0.0,
+    "n_weather_answers": 63
+   },
+   "tools": {
+    "questions_needing_a_tool": 99,
+    "tool_choice_accuracy": 0.646,
+    "by_tool": {
+     "get_weather": {
+      "n": 85,
+      "chose_it": 0.729
+     },
+     "get_mandi_price": {
+      "n": 7,
+      "chose_it": 0.286
+     },
+     "lookup_scheme": {
+      "n": 8,
+      "chose_it": 0.0
+     }
+    },
+    "needless_tool_call_rate": 0.005,
+    "calls": 73,
+    "calls_by_status": {
+     "get_weather:ok": 63,
+     "get_weather:error": 8,
+     "get_mandi_price:error": 2
+    },
+    "argument_validity": 0.863,
+    "weather_district_matches_farmer": 0.789,
+    "unapproved_action_rate": 0.0
+   },
+   "citation_rate": 0.74,
+   "faithfulness": {
+    "pairs_available": 2769,
+    "sampled": 60,
+    "labels": {
+     "supported": 52,
+     "partly": 4,
+     "chunk_not_found": 3,
+     "not_supported": 1
+    },
+    "supported_rate": 0.912,
+    "supported_or_partly_rate": 0.982,
+    "judge_model": "gemini-3.5-flash-lite",
+    "examples": [
+     {
+      "id": "kcc1m_fec56d9cb414",
+      "doc": "vp_en_rice_gall_midge_management",
+      "sentence": "**नोट:** कीटनाशकों का प्रयोग केवल CIB&RC द्वारा अनुमोदित लेबल दावों के अनुसार ही करें [vp_en_rice_gall_midge_management]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_4ab3f037fe11",
+      "doc": "vp_en_sugarcane_natural_enemies",
+      "sentence": "* **पौधे:** तिल, सूरजमुखी,Buckwheat, मक्का और मूंग जैसे अंतर-फसल (intercrops) उगाने से लाभ हो सकता है [vp_en_sugarcane_natural_enemies]।",
+      "label": "partly"
+     },
+     {
+      "id": "kcc1m_18afc79c0451",
+      "doc": "vp_hi_90f938_906930_906908_924915928940915_938947_93094b92a928940_",
+      "sentence": "*   **ऊपर से खाद (Top dressing):** रोपाई के 20 दिन और 40 दिन पर यूरिया 22 किलोग्राम प्रति एकड़ की दर से दें [vp_hi_90f938_906930_906908_924915928940915_938947_93094b92a928940_]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_d95080be8c13",
+      "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+      "sentence": "दवाई (शाकनाशी) द्वारा नियंत्रण:** दवाई का उपयोग करना आर्थिक रूप से लाभप्रद है क्योंकि इससे मजदूरी कम लगती है और लाइनों के बीच के खरपतवार भी आसानी से नियंत्रित हो जाते हैं [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_3fd53cdfc0da",
+      "doc": "vp_en_sugarcane_crop_stage_wise_ipm",
+      "sentence": "गन्ने की फसल के लिए, बुवाई के समय मिट्टी में 10 किलोग्राम प्रति एकड़ जिंक सल्फेट (zinc sulphate) का प्रयोग करने की सलाह दी गई है [vp_en_sugarcane_crop_stage_wise_ipm]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_c0e9f2f96418",
+      "doc": "vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f",
+      "sentence": "एक अन्य स्रोत के अनुसार, क्राउन रूट निकलने और व्यांत पूर्ण होने के बीच भी सिंचाई की आवश्यकता हो सकती है [vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_a7d71915c749",
+      "doc": "vp_hi_ग_ह_क_र_ग_क_पहच_न_एव_न_य_त_रण",
+      "sentence": "*   **बीज उपचार:** बुआई से पहले बीज को कार्बोक्सिन, टेबुकोनेजोल या कार्बोन्डाजिम जैसे कवकनाशकों से उपचारित करना चाहिए [vp_hi_ग_ह_क_र_ग_क_पहच_न_एव_न_य_त_रण]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0f17dccb0930",
+      "doc": "tnau_sugarcane_d4",
+      "sentence": "*   बुवाई से पहले सेट का उपचार Carbendazim (0.5 gm/litre या 1gm/litre) के साथ करें [tnau_sugarcane_d4].",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_798c33976273",
+      "doc": "vp_hi_झ_रखण_ड_र_ज_य_म_ध_न_क_उन_नत_ख_त",
+      "sentence": "*   145 दिन वाली किस्मों में **3 बार** यूरिया का टॉपड्रेसिंग करें [vp_hi_झ_रखण_ड_र_ज_य_म_ध_न_क_उन_नत_ख_त]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_47ae05537909",
+      "doc": "vp_en_wheat_crop_stage_wise_ipm",
+      "sentence": "इससे बिना फफूंदनाशक के बीज के अंदर का कवक मर जाता है [vp_en_wheat_crop_stage_wise_ipm]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_2036dbbbd58b",
+      "doc": "tnau_sugarcane_d8",
+      "sentence": "ग्रासी शूट रोग (Grassy shoot disease):** * **लक्षण:** 3-4 महीने की फसल में ऊपर की पत्तियां सफेद और पतली दिखाई देती हैं, और नीचे बहुत अधिक संख्या में सफेद या पीले कल्ले (tillers) निकलने लगते हैं [tnau_sugarcane_d8]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_cade892d7c61",
+      "doc": "vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593",
+      "sentence": "**ध्यान दें:** उर्वरक की पूरी मात्रा जून तक डाल देनी चाहिए ताकि पौधे इसका भरपूर उपयोग कर सकें [vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_2e1b81336062",
+      "doc": "vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593",
+      "sentence": "*   **जल निकासी और खरपतवार नियंत्रण:**      *   खेत में जल निकासी की अच्छी व्यवस्था रखें ताकि बारिश का पानी जमा न हो, अन्यथा फसल पीली पड़ सकती है [vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_4afe61a66104",
+      "doc": "vp_hi_91593f93893e92894b902_915947_93293f90f_92a94d93093893e930_90",
+      "sentence": "एसएमएस का प्रारूप इस प्रकार है: (किसान पंजीकरण <अपना नाम >< राज्य के पहले चार अक्षर >< जिला के प्रथम चार >< ब्लॉक के प्रथम चार अक्षर लिखकर) [vp_hi_91593f93893e92894b902_915947_93293f90f_92a94d93093893e930_90]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_4f2887c3c3ea",
+      "doc": "vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f",
+      "sentence": "**खाद और पोषक तत्व:** * मिट्टी की जांच के आधार पर ही उर्वरकों का प्रयोग करें [vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_53e0ecf40f77",
+      "doc": "vp_en_nutritional_deficiencies_disorders_of_sugarcane",
+      "sentence": "* **पोषक तत्वों की कमी:** पोषक तत्वों की कमी से पत्तियों पर लाल धब्बे, कम टिलरिंग और छोटे इंटरनोड्स जैसी समस्याएँ हो सकती हैं [vp_en_nutritional_deficiencies_disorders_of_sugarcane]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_6d7e7e3433e8",
+      "doc": "tnau_rice_9",
+      "sentence": "**रोग का कारण और प्रसार:** * यह *Gibberella fujikuroi* नामक कवक (fungus) के कारण होता है [tnau_rice_9]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0b1d47119397",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m5",
+      "sentence": "गंभीर स्थिति में पूरा खेत जला हुआ सा दिखने लगता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m5]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_a202df72fc1e",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m5",
+      "sentence": "[tnau_crop_prot_crop_insectpest__cereals_paddy_m5] [tnau_crop_prot_crop_insectpest__cereals_paddy_m5] * **रासायनिक नियंत्रण:** इनमें से किसी एक कीटनाशक का छिड़काव करें:     * Thiamethoxam 25% WG 40 g/ac [tnau_crop_prot_crop_insectpest__cereals_paddy_m5]",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_fbcf13e36146",
+      "doc": "vp_en_crop_stage_wise_ipm",
+      "sentence": "* **खेत की तैयारी:** मिट्टी से पैदा होने वाले रोगजनकों (pathogens) को नष्ट करने के लिए गर्मियों में गहरी जुताई करें [vp_en_crop_stage_wise_ipm]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_12c30884825f",
+      "doc": "vp_en_hybrid_rice_production",
+      "sentence": "*   **पृथक्करण (Isolation):** आनुवंशिक शुद्धता सुनिश्चित करने के लिए उत्पादन क्षेत्रों को अन्य धान के खेतों से अलग रखना आवश्यक है [vp_en_hybrid_rice_production]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_508400f91272",
+      "doc": "vp_en_seed_treatment_seeds_1",
+      "sentence": "रोग प्रबंधन:** * **जड़ सड़न और विल्ट (Root rot, wilt):** बीज उपचार के लिए कार्बेन्डाजिम (0.1%) 2 ग्राम/किग्रा बीज या ट्राइकोडर्मा प्रजाति 4-6 ग्राम/किग्रा बीज का उपयोग करें [vp_en_seed_treatment_seeds_1]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_3e3e3de18705",
+      "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+      "sentence": "* **खेत की तैयारी:** लेजर लेवलर से भूमि का समतलीकरण करना जरूरी है ताकि बीज समान गहराई पर रहे और जल का वितरण एक समान हो [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_56de11a7f7d7",
+      "doc": "tnau_crop_prot_crop_insectpest__sugarcane_9",
+      "sentence": "*   **भौतिक उपाय (Physical method):**     *   दीमक की कॉलोनी का पता लगाएं और उसे नष्ट कर दें [tnau_crop_prot_crop_insectpest__sugarcane_9]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_cade892d7c61",
+      "doc": "vp_en_inm_for_sugarcane",
+      "sentence": "120-135 दिन बाद [vp_en_inm_for_sugarcane]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_20b0c8573309",
+      "doc": "vp_en_sugarcane_pests",
+      "sentence": "* **दीमक (Termites):** यह एक भूमिगत कीट है [vp_en_sugarcane_pests]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_2e7703c02c36",
+      "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+      "sentence": "इसे 3.3 लीटर प्रति हेक्टेयर की दर से 700-750 लीटर पानी में घोलकर बुवाई के 0 से 3 दिन बाद स्प्रे करना चाहिए [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592].",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_2d7308d8372c",
+      "doc": "vp_en_nutritional_deficiencies_of_wheat",
+      "sentence": "कमी के कारण तने कमजोर हो जाते हैं और गिरने (lodge) की प्रवृत्ति रखते हैं [vp_en_nutritional_deficiencies_of_wheat]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_6bc7b6249b35",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m6",
+      "sentence": "लार्वा का सिर लाल सींग जैसा और पिछला हिस्सा पीला होता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m6]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_8782309a5739",
+      "doc": "vp_en_drip_irrigation_system",
+      "sentence": "**मुख्य घटक (Components):** * **पंप स्टेशन:** पानी को सही दबाव के साथ पहुँचाने के लिए [vp_en_drip_irrigation_system].",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0a2fed090023",
+      "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+      "sentence": "*   यूरिया 35 कि.ग्रा./एकड़ का प्रयोग बुआई के समय करें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+      "label": "partly"
+     },
+     {
+      "id": "kcc1m_1ed83aa142a2",
+      "doc": "vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029",
+      "sentence": "**जैविक खेती में समस्या:** यदि आप जैविक खेती कर रहे हैं, तो बीमारी आने पर पत्ते मुरझा सकते हैं और पत्तियों पर काले या गहरे भूरे रंग के धब्बे बन सकते हैं [vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029]।",
+      "label": "partly"
+     },
+     {
+      "id": "kcc1m_1233210e4d21",
+      "doc": "vp_hi_92c93e93892e924940_92793e928_92e947902_90690892a94090f92e_91",
+      "sentence": "*   **कीटनाशक का प्रयोग:** यदि कीटों का प्रकोप आर्थिक हानि स्तर से अधिक हो, तभी सुरक्षित कीटनाशकों का प्रयोग करें [vp_hi_92c93e93892e924940_92793e928_92e947902_90690892a94090f92e_91]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_4ab3f037fe11",
+      "doc": "tnau_crop_prot_crop_insectpest__sugarcane_7",
+      "sentence": "रैटून फसल (ratoon cropping) से बचें [tnau_crop_prot_crop_insectpest__sugarcane_7]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_9a24d3f7dfb1",
+      "doc": "vp_en_inm_for_sugarcane",
+      "sentence": "120-135 दिनों के बाद [vp_en_inm_for_sugarcane]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_386950880a6f",
+      "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+      "sentence": "* **गेहूँ उगने के बाद (30-35 दिन बाद या जब मंडूसी 2-3 पत्तों वाली हो):**     * **लीडर (सल्फोसल्फ़यूरॉन):** 33.3 ग्राम/हेक्टेयर की दर से 250-300 लीटर पानी में घोलकर छिड़काव करें [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_d3dfb588a63f",
+      "doc": "vp_en_useful_resources",
+      "sentence": "* **भारतीय मौसम विज्ञान विभाग (IMD):** जिला-विशिष्ट कृषि परामर्श के लिए आप इनके पोर्टल का उपयोग कर सकते हैं [vp_en_useful_resources]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_c4bd0048a98e",
+      "doc": "vp_hi_ग_ह_क_ज_व_क_ख_त_स_स_ब_ध_त_क_ष_क_र_य_ए_null_1",
+      "sentence": "गेहूँ की फसल के लिए बीज की दर सिंचाई और बुआई के समय पर निर्भर करती है: *   **सामान्य बुआई के लिए:** सही समय की बिजाई के लिए 90-110 किलोग्राम बीज प्रति हेक्टेयर पर्याप्त होता है [vp_hi_ग_ह_क_ज_व_क_ख_त_स_स_ब_ध_त_क_ष_क_र_य_ए_null_1]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0b2ba4558d2a",
+      "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+      "sentence": "प्रति एकड़ की दर से मशीन द्वारा बिजाई के साथ डालें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_30d02d343479",
+      "doc": "vp_en_crop_stage_wise_ipm",
+      "sentence": "**वानस्पतिक अवस्था (Vegetative Stage):** *   बुआई के 45 दिन बाद प्रति एकड़ 16 किलो नाइट्रोजन की टॉप ड्रेसिंग (ऊपर से डालना) करें [vp_en_crop_stage_wise_ipm]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_bdc97c21f742",
+      "doc": "vp_en_biofertilizers",
+      "sentence": "इसके उपयोग से पैदावार में 30-50% तक की वृद्धि हो सकती है और यह फास्फोरस (P), जिंक (Zn), सल्फर (S) और पानी के अवशोषण (uptake) को बढ़ाने में मदद करता है [vp_en_biofertilizers]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_c1965eb3a3ac",
+      "doc": "vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029",
+      "sentence": "*   **उर्वरक और सिंचाई:** उर्वरक डालने के दो दिन पहले खेत से पानी निकाल देना चाहिए [vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_b7c5fda10848",
+      "doc": "vp_hi_ध_न_क_र_ग_क_र_कथ_म",
+      "sentence": "* इस रोग से उपज में 0.2 से 44.5 प्रतिशत तक नुकसान हो सकता है [vp_hi_ध_न_क_र_ग_क_र_कथ_म]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_58448c904005",
+      "doc": "vp_hi_92793e928_915940_92b938932_92e947902_91693092a92493593e930_9",
+      "sentence": "मिट्टी और पोषक तत्व:** *   मिट्टी में पोषक तत्वों की कमी या उर्वरकों के प्रयोग के गलत तरीके और समय का भी फसल की वृद्धि पर सीधा प्रभाव पड़ता है [vp_hi_92793e928_915940_92b938932_92e947902_91693092a92493593e930_9].",
+      "label": "partly"
+     },
+     {
+      "id": "kcc1m_2bcb508fa6f9",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m1",
+      "sentence": "*   **रोपाई से पहले:** रोपाई से पहले पौध की नोक को काट दें ताकि अंडे के समूह नष्ट हो जाएं [tnau_crop_prot_crop_insectpest__cereals_paddy_m1]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_d84ec52507df",
+      "doc": "vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र",
+      "sentence": "9465 जैसी प्रजातियों का चुनाव किया जा सकता है [vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0a861e7557f4",
+      "doc": "vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र",
+      "sentence": "* **कण्डुआ रोग के प्रति प्रतिरोधी किस्म:** नरेन्द्र - 1014 [vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र].",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_e00f09abfd41",
+      "doc": "tnau_rice_11",
+      "sentence": "**राइस येलो ड्वार्फ (Rice Yellow Dwarf):** यदि पौधे बौने हो गए हैं, पत्तियां पीले-हरे से सफेद-हरे रंग की हो गई हैं, अधिक कल्ले निकल रहे हैं और पत्तियां नरम होकर झुक रही हैं, तो यह 'राइस येलो ड्वार्फ' हो सकता है [tnau_rice_11]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_ed155cfda2d7",
+      "doc": "vp_en_rice_gall_midge_management",
+      "sentence": "दिए गए स्रोतों के अनुसार, धान की फसल में जड़ी-बूटियों (Herbal plant extraction) के उपयोग के बारे में निम्नलिखित जानकारी उपलब्ध है: कीटों की आबादी को कम करने के लिए 3% हर्बल प्लांट एक्सट्रैक्शन (Herbal plant extraction) का छिड़काव किया जा सकता है [vp_en_rice_gall_midge_management]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_4d1f858ef792",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m13",
+      "sentence": "यह खेत में अनियमित पैच के रूप में दिखाई देता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m13]।",
+      "label": "not_supported"
+     },
+     {
+      "id": "kcc1m_7a30f01ebe32",
+      "doc": "tnau_crop_prot_crop_insectpest__sugarcane_6",
+      "sentence": "* गंभीर प्रकोप होने पर डिमेथोएट 30 EC (1 मिली/लीटर) को फिश ऑयल राल साबुन (2.5 मिली/लीटर) के साथ मिलाकर बढ़ते हुए बिंदु (growing point) और गुच्छों पर छिड़कें [tnau_crop_prot_crop_insectpest__sugarcane_6]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_04148b265cc3",
+      "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m13",
+      "sentence": "कीटों की निगरानी के लिए लाइट ट्रैप लगाएं [tnau_crop_prot_crop_insectpest__cereals_paddy_m13]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_53e0ecf40f77",
+      "doc": "tnau_sugarcane_d2",
+      "sentence": "स्मट (Smut):** * **लक्षण:** गन्ने के बढ़ते हुए हिस्से से 25-150 सेमी लंबी चाबुक जैसी संरचना (whip) निकलती है, जो काले पाउडर जैसे बीजाणुओं (spores) से ढकी होती है [tnau_sugarcane_d2]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_123ee747a13c",
+      "doc": "tnau_crop_prot_crop_insect_oil_mustard_4",
+      "sentence": "पत्ता छेदक (Cabbage head borer):** * **लक्षण:** इल्लियाँ पत्तियों को खाती हैं और तनों में छेद कर देती हैं [tnau_crop_prot_crop_insect_oil_mustard_4]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_e89875758cbb",
+      "doc": "tnau_sugarcane_pokkah_boe",
+      "sentence": "* रोग के लक्षण जैसे कि 'टॉप रोट' (top rot) और 'नाइफ कट' (knife cut) वाले संक्रमित पौधों के हिस्सों को हटा दें [tnau_sugarcane_pokkah_boe]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_0a9bb4e6d41c",
+      "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+      "sentence": "*   **सूक्ष्मपोषी तत्व:** स्वस्थ पौधों के लिए फसल की मांग के अनुसार जिंक या आयरन सल्फेट का प्रयोग करें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+      "label": "supported"
+     },
+     {
+      "id": "kcc1m_c93376df12b2",
+      "doc": "vp_hi_उत_तर_प_रद_श_म_गन_न_क_व_ज_ञ_न_क_ख_त",
+      "sentence": "*   **मिट्टी चढ़ाना:** गन्ने के थानों की जड़ पर मिट्टी चढ़ाने से स्वतः निर्मित नालियाँ वर्षा ऋतु में जल निकास का कार्य भी करती हैं [vp_hi_उत_तर_प_रद_श_म_गन_न_क_व_ज_ञ_न_क_ख_त].",
+      "label": "supported"
+     }
+    ]
+   }
+  }
+ },
+ "runs": {
+  "B2": {
+   "what": "edge base",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.0267,
+     "k": 8,
+     "n": 300,
+     "ci95": [
+      0.0136,
+      0.0517
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.04,
+     "k": 10,
+     "n": 250,
+     "ci95": [
+      0.0219,
+      0.0721
+     ]
+    },
+    "en/latn": {
+     "acc": 0.1133,
+     "k": 17,
+     "n": 150,
+     "ci95": [
+      0.072,
+      0.174
+     ]
+    },
+    "all": {
+     "acc": 0.05,
+     "k": 35,
+     "n": 700,
+     "ci95": [
+      0.0362,
+      0.0687
+     ]
+    }
+   },
+   "lenient": 0.15,
+   "deferred": 0.0443,
+   "cloud_per_100": 0
+  },
+  "B3": {
+   "what": "edge tuned",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.0967,
+     "k": 29,
+     "n": 300,
+     "ci95": [
+      0.0681,
+      0.1354
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.072,
+     "k": 18,
+     "n": 250,
+     "ci95": [
+      0.046,
+      0.1109
+     ]
+    },
+    "en/latn": {
+     "acc": 0.1267,
+     "k": 19,
+     "n": 150,
+     "ci95": [
+      0.0826,
+      0.1894
+     ]
+    },
+    "all": {
+     "acc": 0.0943,
+     "k": 66,
+     "n": 700,
+     "ci95": [
+      0.0748,
+      0.1182
+     ]
+    }
+   },
+   "lenient": 0.17,
+   "deferred": 0.4857,
+   "cloud_per_100": 0
+  },
+  "B1": {
+   "what": "cloud: LLM + RAG + tools",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.32,
+     "k": 96,
+     "n": 300,
+     "ci95": [
+      0.2698,
+      0.3748
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.264,
+     "k": 66,
+     "n": 250,
+     "ci95": [
+      0.2132,
+      0.3219
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2533,
+     "k": 38,
+     "n": 150,
+     "ci95": [
+      0.1905,
+      0.3285
+     ]
+    },
+    "all": {
+     "acc": 0.2857,
+     "k": 200,
+     "n": 700,
+     "ci95": [
+      0.2535,
+      0.3203
+     ]
+    }
+   },
+   "lenient": 0.47,
+   "deferred": 0.3186,
+   "cloud_per_100": 100
+  },
+  "H": {
+   "what": "hybrid (B3 + B1)",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.32,
+     "k": 96,
+     "n": 300,
+     "ci95": [
+      0.2698,
+      0.3748
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.224,
+     "k": 56,
+     "n": 250,
+     "ci95": [
+      0.1767,
+      0.2796
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2933,
+     "k": 44,
+     "n": 150,
+     "ci95": [
+      0.2264,
+      0.3706
+     ]
+    },
+    "all": {
+     "acc": 0.28,
+     "k": 196,
+     "n": 700,
+     "ci95": [
+      0.248,
+      0.3144
+     ]
+    }
+   },
+   "lenient": 0.47,
+   "deferred": 0.2486,
+   "cloud_per_100": 74.6
+  },
+  "H_tok": {
+   "what": "hybrid (B3 + B1), token-prob gate",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.31,
+     "k": 93,
+     "n": 300,
+     "ci95": [
+      0.2603,
+      0.3645
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.248,
+     "k": 62,
+     "n": 250,
+     "ci95": [
+      0.1986,
+      0.3051
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2067,
+     "k": 31,
+     "n": 150,
+     "ci95": [
+      0.1496,
+      0.2784
+     ]
+    },
+    "all": {
+     "acc": 0.2657,
+     "k": 186,
+     "n": 700,
+     "ci95": [
+      0.2343,
+      0.2997
+     ]
+    }
+   },
+   "lenient": 0.4429,
+   "deferred": 0.3586,
+   "cloud_per_100": 92.0
+  },
+  "R": {
+   "what": "random routing, same cloud rate",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.32,
+     "k": 96,
+     "n": 300,
+     "ci95": [
+      0.2698,
+      0.3748
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.224,
+     "k": 56,
+     "n": 250,
+     "ci95": [
+      0.1767,
+      0.2796
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2467,
+     "k": 37,
+     "n": 150,
+     "ci95": [
+      0.1846,
+      0.3214
+     ]
+    },
+    "all": {
+     "acc": 0.27,
+     "k": 189,
+     "n": 700,
+     "ci95": [
+      0.2384,
+      0.3041
+     ]
+    }
+   },
+   "lenient": 0.45,
+   "deferred": 0.3,
+   "cloud_per_100": 74.4
+  },
+  "A1": {
+   "what": "hybrid with base edge (B2 + B1)",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3,
+     "k": 90,
+     "n": 300,
+     "ci95": [
+      0.2509,
+      0.3541
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.22,
+     "k": 55,
+     "n": 250,
+     "ci95": [
+      0.1731,
+      0.2754
+     ]
+    },
+    "en/latn": {
+     "acc": 0.2467,
+     "k": 37,
+     "n": 150,
+     "ci95": [
+      0.1846,
+      0.3214
+     ]
+    },
+    "all": {
+     "acc": 0.26,
+     "k": 182,
+     "n": 700,
+     "ci95": [
+      0.2289,
+      0.2937
+     ]
+    }
+   },
+   "lenient": 0.4329,
+   "deferred": 0.2943,
+   "cloud_per_100": 87.4
+  }
+ },
+ "runs_gold": {
+  "B2": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.0492,
+     "k": 3,
+     "n": 61,
+     "ci95": [
+      0.0169,
+      0.1349
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.0638,
+     "k": 3,
+     "n": 47,
+     "ci95": [
+      0.0219,
+      0.1716
+     ]
+    },
+    "en/latn": {
+     "acc": 0.1,
+     "k": 5,
+     "n": 50,
+     "ci95": [
+      0.0435,
+      0.2136
+     ]
+    },
+    "all": {
+     "acc": 0.0696,
+     "k": 11,
+     "n": 158,
+     "ci95": [
+      0.0393,
+      0.1204
+     ]
+    }
+   },
+   "lenient": 0.2089
+  },
+  "B3": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.0656,
+     "k": 4,
+     "n": 61,
+     "ci95": [
+      0.0258,
+      0.1568
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.1702,
+     "k": 8,
+     "n": 47,
+     "ci95": [
+      0.0889,
+      0.3014
+     ]
+    },
+    "en/latn": {
+     "acc": 0.14,
+     "k": 7,
+     "n": 50,
+     "ci95": [
+      0.0695,
+      0.2619
+     ]
+    },
+    "all": {
+     "acc": 0.1203,
+     "k": 19,
+     "n": 158,
+     "ci95": [
+      0.0784,
+      0.1802
+     ]
+    }
+   },
+   "lenient": 0.1899
+  },
+  "B1": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3443,
+     "k": 21,
+     "n": 61,
+     "ci95": [
+      0.2375,
+      0.4695
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.2979,
+     "k": 14,
+     "n": 47,
+     "ci95": [
+      0.1865,
+      0.4398
+     ]
+    },
+    "en/latn": {
+     "acc": 0.22,
+     "k": 11,
+     "n": 50,
+     "ci95": [
+      0.1275,
+      0.3524
+     ]
+    },
+    "all": {
+     "acc": 0.2911,
+     "k": 46,
+     "n": 158,
+     "ci95": [
+      0.2259,
+      0.3663
+     ]
+    }
+   },
+   "lenient": 0.462
+  },
+  "H": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3115,
+     "k": 19,
+     "n": 61,
+     "ci95": [
+      0.2094,
+      0.4359
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.3191,
+     "k": 15,
+     "n": 47,
+     "ci95": [
+      0.204,
+      0.4617
+     ]
+    },
+    "en/latn": {
+     "acc": 0.3,
+     "k": 15,
+     "n": 50,
+     "ci95": [
+      0.191,
+      0.4375
+     ]
+    },
+    "all": {
+     "acc": 0.3101,
+     "k": 49,
+     "n": 158,
+     "ci95": [
+      0.2432,
+      0.386
+     ]
+    }
+   },
+   "lenient": 0.4937
+  },
+  "H_tok": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3443,
+     "k": 21,
+     "n": 61,
+     "ci95": [
+      0.2375,
+      0.4695
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.2979,
+     "k": 14,
+     "n": 47,
+     "ci95": [
+      0.1865,
+      0.4398
+     ]
+    },
+    "en/latn": {
+     "acc": 0.14,
+     "k": 7,
+     "n": 50,
+     "ci95": [
+      0.0695,
+      0.2619
+     ]
+    },
+    "all": {
+     "acc": 0.2658,
+     "k": 42,
+     "n": 158,
+     "ci95": [
+      0.2031,
+      0.3397
+     ]
+    }
+   },
+   "lenient": 0.4367
+  },
+  "R": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3443,
+     "k": 21,
+     "n": 61,
+     "ci95": [
+      0.2375,
+      0.4695
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.2979,
+     "k": 14,
+     "n": 47,
+     "ci95": [
+      0.1865,
+      0.4398
+     ]
+    },
+    "en/latn": {
+     "acc": 0.24,
+     "k": 12,
+     "n": 50,
+     "ci95": [
+      0.143,
+      0.3741
+     ]
+    },
+    "all": {
+     "acc": 0.2975,
+     "k": 47,
+     "n": 158,
+     "ci95": [
+      0.2317,
+      0.3729
+     ]
+    }
+   },
+   "lenient": 0.4747
+  },
+  "A1": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3279,
+     "k": 20,
+     "n": 61,
+     "ci95": [
+      0.2233,
+      0.4528
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.2553,
+     "k": 12,
+     "n": 47,
+     "ci95": [
+      0.1525,
+      0.3951
+     ]
+    },
+    "en/latn": {
+     "acc": 0.24,
+     "k": 12,
+     "n": 50,
+     "ci95": [
+      0.143,
+      0.3741
+     ]
+    },
+    "all": {
+     "acc": 0.2785,
+     "k": 44,
+     "n": 158,
+     "ci95": [
+      0.2145,
+      0.353
+     ]
+    }
+   },
+   "lenient": 0.462
+  }
+ },
+ "comparisons": {
+  "H_minus_B1": {
+   "diff": -0.0057,
+   "ci95": [
+    -0.0286,
+    0.0171
+   ]
+  },
+  "H_minus_R": {
+   "diff": 0.01,
+   "ci95": [
+    -0.0029,
+    0.0243
+   ]
+  },
+  "H_minus_A1": {
+   "diff": 0.02,
+   "ci95": [
+    -0.0014,
+    0.0443
+   ]
+  },
+  "H_tok_minus_A1": {
+   "diff": 0.0057,
+   "ci95": [
+    -0.01,
+    0.0214
+   ]
+  },
+  "H_minus_H_tok": {
+   "diff": 0.0143,
+   "ci95": [
+    -0.01,
+    0.0371
+   ]
+  },
+  "B1_minus_B3": {
+   "diff": 0.1914,
+   "ci95": [
+    0.1557,
+    0.23
+   ]
+  }
+ },
+ "H2": {
+  "hindi_deva": {
+   "diff": 0.07,
+   "ci95": [
+    0.03,
+    0.1067
+   ]
+  },
+  "all": {
+   "diff": 0.0443,
+   "ci95": [
+    0.02,
+    0.0686
+   ]
+  },
+  "hinglish": {
+   "diff": 0.032,
+   "ci95": [
+    -0.008,
+    0.072
+   ]
+  },
+  "english": {
+   "diff": 0.0133,
+   "ci95": [
+    -0.0467,
+    0.0733
+   ]
+  },
+  "hindi_deva_non_deferred": {
+   "diff": 0.0712,
+   "ci95": [
+    0.0339,
+    0.1085
+   ],
+   "n": 295
+  },
+  "met": false
+ },
+ "H3": {
+  "token_prob_auroc": 0.1559,
+  "classifier_auroc": 0.8687,
+  "met": true,
+  "bootstrap": {
+   "p_classifier_better": 1.0,
+   "auroc_diff_ci95": [
+    0.6427,
+    0.7757
+   ]
+  }
+ }
+}
