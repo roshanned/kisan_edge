@@ -216,7 +216,9 @@ The tuned model fits the phone budget of the proposal. At 4 bits it is a 2 GB fi
   caption: [Router on the red-team sets. v2 was written by `gemini-3.5-flash-lite` and v3 by `gemini-3.5-flash`, each in Hindi, Hinglish and English, read item by item but not yet by a native speaker. "Emergency number shown" = routed emergency or high-risk, since both offline messages now show 108 / 112. Sources: `outputs/router_metrics.json`, `outputs/final/router_metrics_keywords_v1.json`.],
 )
 
-#todo[Safety paragraph: filter probes, offline dose rate, B3 raw dose rate, high-risk on test.]
+The v1 red-team set says the router is perfect. The held-out sets say otherwise. Written by other models, with vaguer wording ("कुछ काला सा काट लिया", "लाल वाली शीशी पूरी टंकी में उडेल दें"), v2 exposed missed emergencies (electric shock, an animal eating poisonous leaves) and banned products. After those were added to the keyword lists, the fresh v3 set gives the final picture. With the intent classifier, #pc(get(rc, "redteam_v3_heldout", "risky_recall")) of risky questions still go to the cloud, but only #pc(get(rc, "redteam_v3_heldout", "emergency_escalation")) of emergencies are recognised as emergencies; most of the others are routed as high-risk. Because the high-risk offline message now carries 108 / 112 as well (DECISIONS.md D18), #pc(get(rc, "redteam_v3_heldout", "emergency_number_shown")) of v3 emergencies see an emergency number without a connection. One field-fire message was missed entirely. Rules alone would be far less safe (#pc(get(ro, "redteam_v3_heldout", "risky_recall")) of risky questions). Safety costs cloud calls: #pc(get(rc, "redteam_v3_heldout", "control_over_escalation")) of ordinary look-alike questions ("best time of day to spray") are also escalated.
+
+On the test set, the router sends #pc(get(sf, "high_risk_label_sent_to_cloud")) of the questions labelled high-risk to the cloud. The offline dose filter blocks every dose probe and no safe probe (miss rate #pc(get(sf, "filter_probes", "miss_rate")), false blocks #pc(get(sf, "filter_probes", "false_block_rate")); #get(sf, "filter_probes", "n_dose") + #get(sf, "filter_probes", "n_safe") probes). Before the filter, #pc(get(sf, "B3_raw_dose_rate")) of tuned answers and #pc(get(sf, "B2_raw_dose_rate")) of base answers contain a dose; after it, #pc(get(sf, "offline_dose_rate_shown")) of the answers shown offline do. In the cloud, the safety filter replaced an uncited quantity in #pc(get(cm, "B1", "safety", "uncited_dose_replaced_rate")) of B1 answers and refused a banned product in #pc(get(cm, "B1", "safety", "banned_refused_rate")).
 
 == Gate and H3
 
@@ -290,7 +292,15 @@ At the threshold set on calib, the trained gate sends #pc(get(g3, "classifier", 
 
 = Limitations
 
-#todo[Limitations list.]
++ *The judge has not been checked against people.* Every accuracy rests on one LLM judge. Its agreement with a second LLM judge is reported above, but a 100-answer human check is still to be done (`reports/final/judge_check_sheet.csv`). The judge is stricter than the mid-submission's: absolute numbers are not comparable with the mid report, only differences between runs judged here.
++ *Noisy references.* The 700 test questions are graded against raw KCC answers, of which an LLM pre-check judged 42% wrong on the gold sample. This depresses every accuracy and favours answers that repeat KCC's habits. The gold subset (158) is cleaner but small and was cleaned by an LLM, not a person.
++ *Strict accuracy punishes safe deferrals.* A deferral to KCC 1551 is never "correct", so the tuned model and every safety rule are penalised for doing what the design asks. The lenient and deferral columns are reported for this reason.
++ *Translated Hindi.* Hindi test questions are IndicTrans2 translations of English operator summaries; only Hinglish is farmers' own text. BhashaBench-Krishi is also the machine-translated subset.
++ *Synthetic safety and retrieval sets.* Red-team v2/v3 and the Recall\@5 queries were written by LLMs and read by an LLM assistant, not by a native Hindi speaker. Synthetic retrieval queries reuse document wording, so Recall\@5 is an upper bound.
++ *Snapshots, not live data.* Tools read weather snapshots dated 2026-10-30. There are no mandi-price snapshots (no data.gov.in key), so price questions get "unavailable", and the scheme facts were written from memory.
++ *Models changed for quota reasons.* The final cloud agent and judge are Gemma 4 models on the free Gemini-API tier, not the proposal's Gemini Flash; A3 covers a stratified half of the test set (DECISIONS.md D29).
++ *Simulated connectivity.* The good / patchy / poor link traces are illustrative two-state models, not measured rural networks, and phone speed was measured on laptop and server CPUs, not on a phone.
++ *Corpus chunking.* Eleven corpus chunks are 10-46k characters long because some documents were split badly; the source block is capped (D28), but re-chunking would improve retrieval.
 
 = Reproducibility
 
