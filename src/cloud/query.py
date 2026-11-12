@@ -71,6 +71,7 @@ def main():
     p.add_argument("--questions")
     p.add_argument("--split")
     p.add_argument("--gold", action="store_true")
+    p.add_argument("--ids", default=None, help="file with one question id per line: only these (e.g. the A3 half sample)")
     p.add_argument("--run", default="B1", choices=RUNS)
     p.add_argument("--out")
     p.add_argument("--limit", type=int, default=0)
@@ -96,7 +97,11 @@ def main():
         return agent.run(q, llm, retriever, tools, args.k, rewrite=not args.no_rewrite, district=district)
 
     if args.questions:
-        run_batch(load_questions(args.questions, args.split, args.gold), ask, args.run,
+        rows = load_questions(args.questions, args.split, args.gold)
+        if args.ids:
+            keep = set(open(args.ids, encoding="utf-8").read().split())
+            rows = [r for r in rows if r["id"] in keep]
+        run_batch(rows, ask, args.run,
                   args.out or f"outputs/cloud_{args.run}.jsonl", llm.model, args.as_of, args.limit, args.workers)
     elif args.question:
         print(json.dumps(ask(args.question), ensure_ascii=False, indent=2))

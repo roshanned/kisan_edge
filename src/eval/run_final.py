@@ -201,8 +201,13 @@ def hybrid_section(qs, E, C, ES, CS, gates, S):
     }
     for name, (e, c, kw) in configs.items():
         if e in E and c in C and e in ES and c in CS and kw.get("gate") is not None:
-            summ, sc, _ = run_hybrid(name, qs, E[e], C[c], ES[e], CS[c], clf=clf, **kw)
-            summ["pct_of_B1"] = round(summ["accuracy"] / b1_acc, 4) if b1_acc else None
+            # a cloud run made on part of the test set (A3: stratified half) is compared on those questions only
+            have = {r["id"] for r in C[c]}
+            qsub = [q for q in qs if q["id"] in have]
+            summ, sc, _ = run_hybrid(name, qsub, E[e], C[c], ES[e], CS[c], clf=clf, **kw)
+            b1_sub = acc(CS["B1"], [q["id"] for q in qsub])[0] / len(qsub)
+            summ["pct_of_B1"] = round(summ["accuracy"] / b1_sub, 4) if b1_sub else None
+            summ["n_questions"], summ["B1_acc_same_questions"] = len(qsub), round(b1_sub, 4)
             res[name], sc_all[name] = summ, sc
     # H1 trade-off: router variant x policy (all with the B3 gate, B1 cloud)
     tradeoff = {}
@@ -388,9 +393,16 @@ def main():
         if not sc:
             continue
         cloud = 100 if run in C else 0 if run in E else round(100 * S["hybrid"][run]["cloud_rate"], 1)
-        S["runs"][run] = {"what": what[run], "strict": by_group(sc, qs), "lenient": round(acc(sc, ids, False)[0] / len(ids), 4),
-                          "deferred": deferral_rate(sc, ids), "cloud_per_100": cloud}
-        gq = [q for q in qs if q["id"] in gold]
+        cl = run if run in C else {"H_A2": "A2", "H_A3": "A3"}.get(run)
+        rq = [q for q in qs if q["id"] in {r["id"] for r in C[cl]}] if cl else qs  # A3: its 350-question half
+        rids = [q["id"] for q in rq]
+        S["runs"][run] = {"what": what[run] + ("" if len(rq) == len(qs) else f" ({len(rq)}-question stratified half)"),
+                          "n": len(rq), "strict": by_group(sc, rq), "lenient": round(acc(sc, rids, False)[0] / len(rids), 4),
+                          "deferred": deferral_rate(sc, rids), "cloud_per_100": cloud}
+        if run in ("A2", "A3") and "B1" in SC:  # the cloud ablations, paired with B1 on the same questions
+            S["runs"][run]["vs_B1_same_questions"] = paired_bootstrap(sc, SC["B1"], rids) | {
+                "B1_acc": round(acc(SC["B1"], rids)[0] / len(rids), 4)}
+        gq = [q for q in rq if q["id"] in gold]
         S["runs_gold"][run] = {"strict": by_group(sc, gq), "lenient": round(acc(sc, [q["id"] for q in gq], False)[0] / len(gq), 4)}
     if "B2" in SC and "B3" in SC:
         hindi = [q["id"] for q in qs if q["script"] == "deva"]
