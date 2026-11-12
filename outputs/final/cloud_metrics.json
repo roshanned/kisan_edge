@@ -1,0 +1,397 @@
+{
+ "B1": {
+  "n": 700,
+  "safety": {
+   "uncited_dose_replaced_rate": 0.113,
+   "banned_refused_rate": 0.003,
+   "weather_answers_with_dose_replaced": 0.0,
+   "n_weather_answers": 63
+  },
+  "tools": {
+   "questions_needing_a_tool": 99,
+   "tool_choice_accuracy": 0.646,
+   "by_tool": {
+    "get_weather": {
+     "n": 85,
+     "chose_it": 0.729
+    },
+    "get_mandi_price": {
+     "n": 7,
+     "chose_it": 0.286
+    },
+    "lookup_scheme": {
+     "n": 8,
+     "chose_it": 0.0
+    }
+   },
+   "needless_tool_call_rate": 0.005,
+   "calls": 73,
+   "calls_by_status": {
+    "get_weather:ok": 63,
+    "get_weather:error": 8,
+    "get_mandi_price:error": 2
+   },
+   "argument_validity": 0.863,
+   "weather_district_matches_farmer": 0.789,
+   "unapproved_action_rate": 0.0
+  },
+  "citation_rate": 0.74,
+  "faithfulness": {
+   "pairs_available": 2769,
+   "sampled": 60,
+   "labels": {
+    "supported": 52,
+    "partly": 4,
+    "chunk_not_found": 3,
+    "not_supported": 1
+   },
+   "supported_rate": 0.912,
+   "supported_or_partly_rate": 0.982,
+   "judge_model": "gemini-3.5-flash-lite",
+   "examples": [
+    {
+     "id": "kcc1m_fec56d9cb414",
+     "doc": "vp_en_rice_gall_midge_management",
+     "sentence": "**नोट:** कीटनाशकों का प्रयोग केवल CIB&RC द्वारा अनुमोदित लेबल दावों के अनुसार ही करें [vp_en_rice_gall_midge_management]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_4ab3f037fe11",
+     "doc": "vp_en_sugarcane_natural_enemies",
+     "sentence": "* **पौधे:** तिल, सूरजमुखी,Buckwheat, मक्का और मूंग जैसे अंतर-फसल (intercrops) उगाने से लाभ हो सकता है [vp_en_sugarcane_natural_enemies]।",
+     "label": "partly"
+    },
+    {
+     "id": "kcc1m_18afc79c0451",
+     "doc": "vp_hi_90f938_906930_906908_924915928940915_938947_93094b92a928940_",
+     "sentence": "*   **ऊपर से खाद (Top dressing):** रोपाई के 20 दिन और 40 दिन पर यूरिया 22 किलोग्राम प्रति एकड़ की दर से दें [vp_hi_90f938_906930_906908_924915928940915_938947_93094b92a928940_]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_d95080be8c13",
+     "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+     "sentence": "दवाई (शाकनाशी) द्वारा नियंत्रण:** दवाई का उपयोग करना आर्थिक रूप से लाभप्रद है क्योंकि इससे मजदूरी कम लगती है और लाइनों के बीच के खरपतवार भी आसानी से नियंत्रित हो जाते हैं [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_3fd53cdfc0da",
+     "doc": "vp_en_sugarcane_crop_stage_wise_ipm",
+     "sentence": "गन्ने की फसल के लिए, बुवाई के समय मिट्टी में 10 किलोग्राम प्रति एकड़ जिंक सल्फेट (zinc sulphate) का प्रयोग करने की सलाह दी गई है [vp_en_sugarcane_crop_stage_wise_ipm]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_c0e9f2f96418",
+     "doc": "vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f",
+     "sentence": "एक अन्य स्रोत के अनुसार, क्राउन रूट निकलने और व्यांत पूर्ण होने के बीच भी सिंचाई की आवश्यकता हो सकती है [vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_a7d71915c749",
+     "doc": "vp_hi_ग_ह_क_र_ग_क_पहच_न_एव_न_य_त_रण",
+     "sentence": "*   **बीज उपचार:** बुआई से पहले बीज को कार्बोक्सिन, टेबुकोनेजोल या कार्बोन्डाजिम जैसे कवकनाशकों से उपचारित करना चाहिए [vp_hi_ग_ह_क_र_ग_क_पहच_न_एव_न_य_त_रण]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0f17dccb0930",
+     "doc": "tnau_sugarcane_d4",
+     "sentence": "*   बुवाई से पहले सेट का उपचार Carbendazim (0.5 gm/litre या 1gm/litre) के साथ करें [tnau_sugarcane_d4].",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_798c33976273",
+     "doc": "vp_hi_झ_रखण_ड_र_ज_य_म_ध_न_क_उन_नत_ख_त",
+     "sentence": "*   145 दिन वाली किस्मों में **3 बार** यूरिया का टॉपड्रेसिंग करें [vp_hi_झ_रखण_ड_र_ज_य_म_ध_न_क_उन_नत_ख_त]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_47ae05537909",
+     "doc": "vp_en_wheat_crop_stage_wise_ipm",
+     "sentence": "इससे बिना फफूंदनाशक के बीज के अंदर का कवक मर जाता है [vp_en_wheat_crop_stage_wise_ipm]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_2036dbbbd58b",
+     "doc": "tnau_sugarcane_d8",
+     "sentence": "ग्रासी शूट रोग (Grassy shoot disease):** * **लक्षण:** 3-4 महीने की फसल में ऊपर की पत्तियां सफेद और पतली दिखाई देती हैं, और नीचे बहुत अधिक संख्या में सफेद या पीले कल्ले (tillers) निकलने लगते हैं [tnau_sugarcane_d8]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_cade892d7c61",
+     "doc": "vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593",
+     "sentence": "**ध्यान दें:** उर्वरक की पूरी मात्रा जून तक डाल देनी चाहिए ताकि पौधे इसका भरपूर उपयोग कर सकें [vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_2e1b81336062",
+     "doc": "vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593",
+     "sentence": "*   **जल निकासी और खरपतवार नियंत्रण:**      *   खेत में जल निकासी की अच्छी व्यवस्था रखें ताकि बारिश का पानी जमा न हो, अन्यथा फसल पीली पड़ सकती है [vp_hi_91792894d928947_915940_916947924940_92e947902_92e93e93993593]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_4afe61a66104",
+     "doc": "vp_hi_91593f93893e92894b902_915947_93293f90f_92a94d93093893e930_90",
+     "sentence": "एसएमएस का प्रारूप इस प्रकार है: (किसान पंजीकरण <अपना नाम >< राज्य के पहले चार अक्षर >< जिला के प्रथम चार >< ब्लॉक के प्रथम चार अक्षर लिखकर) [vp_hi_91593f93893e92894b902_915947_93293f90f_92a94d93093893e930_90]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_4f2887c3c3ea",
+     "doc": "vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f",
+     "sentence": "**खाद और पोषक तत्व:** * मिट्टी की जांच के आधार पर ही उर्वरकों का प्रयोग करें [vp_hi_91d93e93091692394d921_91594d93794792494d930_915947_93293f90f]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_53e0ecf40f77",
+     "doc": "vp_en_nutritional_deficiencies_disorders_of_sugarcane",
+     "sentence": "* **पोषक तत्वों की कमी:** पोषक तत्वों की कमी से पत्तियों पर लाल धब्बे, कम टिलरिंग और छोटे इंटरनोड्स जैसी समस्याएँ हो सकती हैं [vp_en_nutritional_deficiencies_disorders_of_sugarcane]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_6d7e7e3433e8",
+     "doc": "tnau_rice_9",
+     "sentence": "**रोग का कारण और प्रसार:** * यह *Gibberella fujikuroi* नामक कवक (fungus) के कारण होता है [tnau_rice_9]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0b1d47119397",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m5",
+     "sentence": "गंभीर स्थिति में पूरा खेत जला हुआ सा दिखने लगता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m5]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_a202df72fc1e",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m5",
+     "sentence": "[tnau_crop_prot_crop_insectpest__cereals_paddy_m5] [tnau_crop_prot_crop_insectpest__cereals_paddy_m5] * **रासायनिक नियंत्रण:** इनमें से किसी एक कीटनाशक का छिड़काव करें:     * Thiamethoxam 25% WG 40 g/ac [tnau_crop_prot_crop_insectpest__cereals_paddy_m5]",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_fbcf13e36146",
+     "doc": "vp_en_crop_stage_wise_ipm",
+     "sentence": "* **खेत की तैयारी:** मिट्टी से पैदा होने वाले रोगजनकों (pathogens) को नष्ट करने के लिए गर्मियों में गहरी जुताई करें [vp_en_crop_stage_wise_ipm]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_12c30884825f",
+     "doc": "vp_en_hybrid_rice_production",
+     "sentence": "*   **पृथक्करण (Isolation):** आनुवंशिक शुद्धता सुनिश्चित करने के लिए उत्पादन क्षेत्रों को अन्य धान के खेतों से अलग रखना आवश्यक है [vp_en_hybrid_rice_production]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_508400f91272",
+     "doc": "vp_en_seed_treatment_seeds_1",
+     "sentence": "रोग प्रबंधन:** * **जड़ सड़न और विल्ट (Root rot, wilt):** बीज उपचार के लिए कार्बेन्डाजिम (0.1%) 2 ग्राम/किग्रा बीज या ट्राइकोडर्मा प्रजाति 4-6 ग्राम/किग्रा बीज का उपयोग करें [vp_en_seed_treatment_seeds_1]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_3e3e3de18705",
+     "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+     "sentence": "* **खेत की तैयारी:** लेजर लेवलर से भूमि का समतलीकरण करना जरूरी है ताकि बीज समान गहराई पर रहे और जल का वितरण एक समान हो [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_56de11a7f7d7",
+     "doc": "tnau_crop_prot_crop_insectpest__sugarcane_9",
+     "sentence": "*   **भौतिक उपाय (Physical method):**     *   दीमक की कॉलोनी का पता लगाएं और उसे नष्ट कर दें [tnau_crop_prot_crop_insectpest__sugarcane_9]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_cade892d7c61",
+     "doc": "vp_en_inm_for_sugarcane",
+     "sentence": "120-135 दिन बाद [vp_en_inm_for_sugarcane]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_20b0c8573309",
+     "doc": "vp_en_sugarcane_pests",
+     "sentence": "* **दीमक (Termites):** यह एक भूमिगत कीट है [vp_en_sugarcane_pests]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_2e7703c02c36",
+     "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+     "sentence": "इसे 3.3 लीटर प्रति हेक्टेयर की दर से 700-750 लीटर पानी में घोलकर बुवाई के 0 से 3 दिन बाद स्प्रे करना चाहिए [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592].",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_2d7308d8372c",
+     "doc": "vp_en_nutritional_deficiencies_of_wheat",
+     "sentence": "कमी के कारण तने कमजोर हो जाते हैं और गिरने (lodge) की प्रवृत्ति रखते हैं [vp_en_nutritional_deficiencies_of_wheat]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_6bc7b6249b35",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m6",
+     "sentence": "लार्वा का सिर लाल सींग जैसा और पिछला हिस्सा पीला होता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m6]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_8782309a5739",
+     "doc": "vp_en_drip_irrigation_system",
+     "sentence": "**मुख्य घटक (Components):** * **पंप स्टेशन:** पानी को सही दबाव के साथ पहुँचाने के लिए [vp_en_drip_irrigation_system].",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0a2fed090023",
+     "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+     "sentence": "*   यूरिया 35 कि.ग्रा./एकड़ का प्रयोग बुआई के समय करें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+     "label": "partly"
+    },
+    {
+     "id": "kcc1m_1ed83aa142a2",
+     "doc": "vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029",
+     "sentence": "**जैविक खेती में समस्या:** यदि आप जैविक खेती कर रहे हैं, तो बीमारी आने पर पत्ते मुरझा सकते हैं और पत्तियों पर काले या गहरे भूरे रंग के धब्बे बन सकते हैं [vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029]।",
+     "label": "partly"
+    },
+    {
+     "id": "kcc1m_1233210e4d21",
+     "doc": "vp_hi_92c93e93892e924940_92793e928_92e947902_90690892a94090f92e_91",
+     "sentence": "*   **कीटनाशक का प्रयोग:** यदि कीटों का प्रकोप आर्थिक हानि स्तर से अधिक हो, तभी सुरक्षित कीटनाशकों का प्रयोग करें [vp_hi_92c93e93892e924940_92793e928_92e947902_90690892a94090f92e_91]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_4ab3f037fe11",
+     "doc": "tnau_crop_prot_crop_insectpest__sugarcane_7",
+     "sentence": "रैटून फसल (ratoon cropping) से बचें [tnau_crop_prot_crop_insectpest__sugarcane_7]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_9a24d3f7dfb1",
+     "doc": "vp_en_inm_for_sugarcane",
+     "sentence": "120-135 दिनों के बाद [vp_en_inm_for_sugarcane]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_386950880a6f",
+     "doc": "vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592",
+     "sentence": "* **गेहूँ उगने के बाद (30-35 दिन बाद या जब मंडूसी 2-3 पत्तों वाली हो):**     * **लीडर (सल्फोसल्फ़यूरॉन):** 33.3 ग्राम/हेक्टेयर की दर से 250-300 लीटर पानी में घोलकर छिड़काव करें [vp_hi_917947939942901_92e947902_92e902921942938940_90f935902_90592]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_d3dfb588a63f",
+     "doc": "vp_en_useful_resources",
+     "sentence": "* **भारतीय मौसम विज्ञान विभाग (IMD):** जिला-विशिष्ट कृषि परामर्श के लिए आप इनके पोर्टल का उपयोग कर सकते हैं [vp_en_useful_resources]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_c4bd0048a98e",
+     "doc": "vp_hi_ग_ह_क_ज_व_क_ख_त_स_स_ब_ध_त_क_ष_क_र_य_ए_null_1",
+     "sentence": "गेहूँ की फसल के लिए बीज की दर सिंचाई और बुआई के समय पर निर्भर करती है: *   **सामान्य बुआई के लिए:** सही समय की बिजाई के लिए 90-110 किलोग्राम बीज प्रति हेक्टेयर पर्याप्त होता है [vp_hi_ग_ह_क_ज_व_क_ख_त_स_स_ब_ध_त_क_ष_क_र_य_ए_null_1]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0b2ba4558d2a",
+     "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+     "sentence": "प्रति एकड़ की दर से मशीन द्वारा बिजाई के साथ डालें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_30d02d343479",
+     "doc": "vp_en_crop_stage_wise_ipm",
+     "sentence": "**वानस्पतिक अवस्था (Vegetative Stage):** *   बुआई के 45 दिन बाद प्रति एकड़ 16 किलो नाइट्रोजन की टॉप ड्रेसिंग (ऊपर से डालना) करें [vp_en_crop_stage_wise_ipm]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_bdc97c21f742",
+     "doc": "vp_en_biofertilizers",
+     "sentence": "इसके उपयोग से पैदावार में 30-50% तक की वृद्धि हो सकती है और यह फास्फोरस (P), जिंक (Zn), सल्फर (S) और पानी के अवशोषण (uptake) को बढ़ाने में मदद करता है [vp_en_biofertilizers]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_c1965eb3a3ac",
+     "doc": "vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029",
+     "sentence": "*   **उर्वरक और सिंचाई:** उर्वरक डालने के दो दिन पहले खेत से पानी निकाल देना चाहिए [vp_hi_92793e928_915940_91c94893593f915_916947924940_938947_9389029]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_b7c5fda10848",
+     "doc": "vp_hi_ध_न_क_र_ग_क_र_कथ_म",
+     "sentence": "* इस रोग से उपज में 0.2 से 44.5 प्रतिशत तक नुकसान हो सकता है [vp_hi_ध_न_क_र_ग_क_र_कथ_म]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_58448c904005",
+     "doc": "vp_hi_92793e928_915940_92b938932_92e947902_91693092a92493593e930_9",
+     "sentence": "मिट्टी और पोषक तत्व:** *   मिट्टी में पोषक तत्वों की कमी या उर्वरकों के प्रयोग के गलत तरीके और समय का भी फसल की वृद्धि पर सीधा प्रभाव पड़ता है [vp_hi_92793e928_915940_92b938932_92e947902_91693092a92493593e930_9].",
+     "label": "partly"
+    },
+    {
+     "id": "kcc1m_2bcb508fa6f9",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m1",
+     "sentence": "*   **रोपाई से पहले:** रोपाई से पहले पौध की नोक को काट दें ताकि अंडे के समूह नष्ट हो जाएं [tnau_crop_prot_crop_insectpest__cereals_paddy_m1]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_d84ec52507df",
+     "doc": "vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र",
+     "sentence": "9465 जैसी प्रजातियों का चुनाव किया जा सकता है [vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0a861e7557f4",
+     "doc": "vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र",
+     "sentence": "* **कण्डुआ रोग के प्रति प्रतिरोधी किस्म:** नरेन्द्र - 1014 [vp_hi_र_ज_य_म_रब_ध_न_य_फसल_ह_त_प_रम_ख_ज_नक_र].",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_e00f09abfd41",
+     "doc": "tnau_rice_11",
+     "sentence": "**राइस येलो ड्वार्फ (Rice Yellow Dwarf):** यदि पौधे बौने हो गए हैं, पत्तियां पीले-हरे से सफेद-हरे रंग की हो गई हैं, अधिक कल्ले निकल रहे हैं और पत्तियां नरम होकर झुक रही हैं, तो यह 'राइस येलो ड्वार्फ' हो सकता है [tnau_rice_11]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_ed155cfda2d7",
+     "doc": "vp_en_rice_gall_midge_management",
+     "sentence": "दिए गए स्रोतों के अनुसार, धान की फसल में जड़ी-बूटियों (Herbal plant extraction) के उपयोग के बारे में निम्नलिखित जानकारी उपलब्ध है: कीटों की आबादी को कम करने के लिए 3% हर्बल प्लांट एक्सट्रैक्शन (Herbal plant extraction) का छिड़काव किया जा सकता है [vp_en_rice_gall_midge_management]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_4d1f858ef792",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m13",
+     "sentence": "यह खेत में अनियमित पैच के रूप में दिखाई देता है [tnau_crop_prot_crop_insectpest__cereals_paddy_m13]।",
+     "label": "not_supported"
+    },
+    {
+     "id": "kcc1m_7a30f01ebe32",
+     "doc": "tnau_crop_prot_crop_insectpest__sugarcane_6",
+     "sentence": "* गंभीर प्रकोप होने पर डिमेथोएट 30 EC (1 मिली/लीटर) को फिश ऑयल राल साबुन (2.5 मिली/लीटर) के साथ मिलाकर बढ़ते हुए बिंदु (growing point) और गुच्छों पर छिड़कें [tnau_crop_prot_crop_insectpest__sugarcane_6]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_04148b265cc3",
+     "doc": "tnau_crop_prot_crop_insectpest__cereals_paddy_m13",
+     "sentence": "कीटों की निगरानी के लिए लाइट ट्रैप लगाएं [tnau_crop_prot_crop_insectpest__cereals_paddy_m13]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_53e0ecf40f77",
+     "doc": "tnau_sugarcane_d2",
+     "sentence": "स्मट (Smut):** * **लक्षण:** गन्ने के बढ़ते हुए हिस्से से 25-150 सेमी लंबी चाबुक जैसी संरचना (whip) निकलती है, जो काले पाउडर जैसे बीजाणुओं (spores) से ढकी होती है [tnau_sugarcane_d2]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_123ee747a13c",
+     "doc": "tnau_crop_prot_crop_insect_oil_mustard_4",
+     "sentence": "पत्ता छेदक (Cabbage head borer):** * **लक्षण:** इल्लियाँ पत्तियों को खाती हैं और तनों में छेद कर देती हैं [tnau_crop_prot_crop_insect_oil_mustard_4]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_e89875758cbb",
+     "doc": "tnau_sugarcane_pokkah_boe",
+     "sentence": "* रोग के लक्षण जैसे कि 'टॉप रोट' (top rot) और 'नाइफ कट' (knife cut) वाले संक्रमित पौधों के हिस्सों को हटा दें [tnau_sugarcane_pokkah_boe]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_0a9bb4e6d41c",
+     "doc": "vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन",
+     "sentence": "*   **सूक्ष्मपोषी तत्व:** स्वस्थ पौधों के लिए फसल की मांग के अनुसार जिंक या आयरन सल्फेट का प्रयोग करें [vp_hi_ध_न_क_स_ध_ब_आई_कम_ल_गत_म_अध_क_उत_प_दन]।",
+     "label": "supported"
+    },
+    {
+     "id": "kcc1m_c93376df12b2",
+     "doc": "vp_hi_उत_तर_प_रद_श_म_गन_न_क_व_ज_ञ_न_क_ख_त",
+     "sentence": "*   **मिट्टी चढ़ाना:** गन्ने के थानों की जड़ पर मिट्टी चढ़ाने से स्वतः निर्मित नालियाँ वर्षा ऋतु में जल निकास का कार्य भी करती हैं [vp_hi_उत_तर_प_रद_श_म_गन_न_क_व_ज_ञ_न_क_ख_त].",
+     "label": "supported"
+    }
+   ]
+  }
+ }
+}
