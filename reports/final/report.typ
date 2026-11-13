@@ -292,7 +292,11 @@ The queue is what keeps the hybrid useful on a bad link. On the patchy trace the
 
 = Discussion
 
-#todo[What worked, what did not, why.]
+*What worked.* The hybrid matches the cloud agent's accuracy while answering a quarter of the questions on the phone, and it does so safely: no dose is ever shown offline, every held-out risky question but a few goes to the cloud, and the queue keeps answers flowing on a patchy link. The trained gate is the clearest technical result. A small model's own token probability is not just a weak confidence signal but an inverted one, and a cheap logistic regression over a dozen features turns it into a usable gate (AUROC #num(get(S, "H3", "classifier_auroc"))). Query rewriting was the single biggest retrieval improvement, especially for romanised Hinglish, which a multilingual embedder matches poorly as typed.
+
+*What did not.* Fine-tuning a 3B model on 4,641 noisy KCC answers mostly taught it KCC's style and our safety rules. That is useful, and it is what keeps doses and essays off the phone, but it is not a large accuracy gain, and it cost some general knowledge on BhashaBench. The cloud-call target of H1 was set without accounting for how much of a KCC-like question stream is high-risk or live-data; with safety first, it cannot be met. Tool use is the cloud agent's weak spot: it rarely calls the price and scheme tools, and calls the weather tool for about three quarters of weather questions.
+
+*What we would do next.* (1) Re-define H1's cloud budget per route (for example, at most 50% of general questions), which the hybrid already meets: it sends 41 of the 219 general questions (18.7%). (2) Distil the cloud agent's answers on the train split into the edge model rather than raw KCC answers, whose references are often wrong. (3) Train the router on emergency examples instead of relying on keywords: the held-out red-team shows that indirect wording defeats lists. (4) Add mandi snapshots and verified scheme facts, re-chunk the corpus, and check the judge against human labels.
 
 = Limitations
 
