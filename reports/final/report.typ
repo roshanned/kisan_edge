@@ -45,7 +45,7 @@
 
 = Summary
 
-#todo[One-paragraph summary with H1, H2, H3 verdicts.]
+Kisan-Edge answers Uttar Pradesh farmers' questions in Hindi, Hinglish and English with a 3B model on the phone, and sends what the phone should not answer alone to a cloud agent with retrieval and tools. A router, an offline dose filter, a trained confidence gate and an offline queue sit between the two. On the full 700-question test set, the hybrid reaches #pc(get(S, "H1", "hybrid_acc"))% strict accuracy against #pc(get(S, "H1", "B1_acc"))% for the cloud agent alone (#pc(get(S, "H1", "pct_of_B1"))%, no significant difference). It answers #pc(get(S, "offline_usefulness", "kept_offline_share"))% of questions on the phone, never shows a dose offline, and keeps working on patchy links through the queue. It still makes #pc(get(S, "H1", "cloud_rate"))% cloud calls, because the safety rules send every high-risk and live-data question to the cloud. Fine-tuning gained #pc(get(S, "H2", "hindi_deva", "diff")) points on Hindi, short of the 10-point target. A trained gate beats raw token probability by a wide margin. Every run is scored by one LLM judge against noisy KCC references; the judge has been checked against a second LLM judge but not yet against people.
 
 #figure(
   table(
@@ -197,7 +197,11 @@ The tuned model fits the phone budget of the proposal. At 4 bits it is a 2 GB fi
   caption: [Fault injection on #get(S, "fault_injection", "n_questions") weather questions from the test set (A2 agent: tools, no retrieval). Transient = the first call fails, a retry works; persistent = every call fails. Source: `outputs/final/fault_injection.json` (`src/cloud/fault_injection.py`).],
 )
 
-#todo[Cloud paragraph.]
+*Ablations.* Removing retrieval (A2) costs #pc(-get(S, "runs", "A2", "vs_B1_same_questions", "diff")) points against B1 on the same 700 questions (CI #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 1))). Removing the tools (A3, on the stratified half) changes accuracy by #pc(get(S, "runs", "A3", "vs_B1_same_questions", "diff")) points against B1 on the same #get(S, "runs", "A3", "n") questions (CI #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 1))). Tools matter only for the live-data share of questions, and their value is capped by the snapshots: there are no price data, and references for weather questions are old forecasts. In the hybrid, the cloud without retrieval gives #pc(get(S, "hybrid", "H_A2", "accuracy"))%, against #pc(get(S, "H1", "hybrid_acc"))% with it.
+
+*Tools and grounding.* The agent never called a tool it was not offered and rarely called one without need (#pc(get(cm, "B1", "tools", "needless_tool_call_rate"))% of questions). Its weakness is under-use: it chose the weather tool for #pc(get(cm, "B1", "tools", "by_tool", "get_weather", "chose_it"))% of weather questions, and the price and scheme tools almost never. When it calls the weather tool, the district matches the farmer's in #pc(get(cm, "B1", "tools", "weather_district_matches_farmer"))% of calls, thanks to the district context (D20). B1 cites a retrieved document in #pc(get(cm, "B1", "citation_rate"))% of answers, and cited sentences are faithful to their source.
+
+*Robustness.* Under injected tool faults, the agent retries and recovers from #pc(get(fi, "timeout_transient", "recovery_rate"))% of transient timeouts and #pc(get(fi, "5xx_transient", "recovery_rate"))% of transient server errors, but from only #pc(get(fi, "empty_transient", "recovery_rate"))% of empty results: it treats an empty answer as final. When the tool keeps failing, it says the data is unavailable in #pc(get(fi, "timeout_persistent", "graceful_rate"))-#pc(get(fi, "5xx_persistent", "graceful_rate"))% of cases and invents weather numbers in at most #pc(get(fi, "empty_persistent", "invented_data_rate"))%.
 
 == Router and safety
 
