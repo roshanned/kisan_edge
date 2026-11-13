@@ -1,21 +1,13 @@
-# Project status: final phase (updated Nov 13, 2026, 11:00 IST)
+# Project status: final phase (updated Nov 13, 2026, 12:40 IST)
 
 Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `main` (the only working branch; all other branches are merged into it).
 This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D29). Every command, in order: `scripts/final_pipeline.sh`.
 
-## CLAIMED: a Claude session is running these on Roshan's laptop. Do NOT run them.
+## State: all automatic work is done (Nov 13, 12:40 IST)
 
-Claimed until this section is removed. Running them anywhere else duplicates API calls and, on this laptop, corrupts the output files (two writers append to the same file).
+Every run, judgment, metric, the report (`reports/final/report.pdf`) and the slides (`reports/final/slides.pdf`) are complete and pushed. Nothing is running. Only the "Needs a human" items below are left.
 
-| Claimed task | State at Nov 13, 11:00 |
-|---|---|
-| `scripts/a3_half.sh`: A3 on the 350-question half (D29), then fault injection | A3 at 181/350 |
-| `scripts/judge_chain.sh` (now judging A2) and `scripts/judge_tail.sh` (A2 fill-in, A3, final fill-in) | judging A2 |
-| Re-run `python -m src.eval.run_final`, fill the last report placeholders (summary, cloud ablations), rebuild report and slides PDFs | after the above |
-
-A second session can safely do only the "Needs a human" items or read-only review.
-
-## Results so far (all in `outputs/final/summary.json`; report `reports/final/report.pdf`, slides `reports/final/slides.pdf`)
+## Final results (all in `outputs/final/summary.json`; report `reports/final/report.pdf`, slides `reports/final/slides.pdf`)
 
 | | Result |
 |---|---|
@@ -25,14 +17,13 @@ A second session can safely do only the "Needs a human" items or read-only revie
 | **H2** (+10 points on Hindi) | **not met**: +7.0 points (CI 3.0 to 10.7); seeds agree; BhashaBench 33.6% -> 29.8% |
 | **H3** (trained gate > token probability) | **met**: AUROC 0.87 vs 0.16 (0.77 vs 0.27 without deferrals) |
 | Safety (held-out red-team v3) | 92.6% risky to cloud; emergency recognised 50%, number shown 95.8%; 0% doses shown offline |
-| Cloud | Recall@5 0.60 -> 0.92 with query rewrite; citation faithfulness 91%; weather tool chosen 73% |
+| Cloud ablations | no retrieval (A2) 25.7% (-2.9 vs B1); no tools (A3, 350-question half) 18.6% (-10.9; live-data questions 61% -> 14%) |
+| Cloud | Recall@5 0.60 -> 0.92 with query rewrite; citation faithfulness 91%; weather tool chosen 73%; fault injection: 90% recovery from transient timeouts, at most 5% invented numbers |
 | Queue | patchy link: 28.0% with queue vs 18.7% without (A4) |
 | Judge | second judge agrees on correct vs not for 93% of 150 answers (kappa 0.34 three-way) |
 | Phone | 4-bit GGUF 2.0 GB, 17.9 tok/s on a laptop CPU, 3.5 GB RAM |
 
 ## Pending
-
-**Automatic (claimed above):** A3 half + judging, fault injection, A2/A3 judging and fill-ins, final `run_final`, last report text (summary and cloud ablation paragraphs), rebuild PDFs, remove the CLAIMED section.
 
 **Needs a human:**
 1. Read `reports/final/report.pdf` and `slides.pdf`; tag `final-submission` on `main`; submit by Nov 15.
@@ -41,6 +32,6 @@ A second session can safely do only the "Needs a human" items or read-only revie
 4. Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` (written from memory).
 5. Optional: data.gov.in key for mandi prices; accept HF terms for native BhashaBench-Krishi and Indic-KCC-Agri-Advisory.
 6. Upload `outputs/final/` to the HF dataset `kisan-edge/kisan-edge-data`.
-7. Rehearse the demo (`docs/DEMO.md`). Keep the laptop awake and online while runs are going (sleep stalled them overnight).
+7. Rehearse the demo (`docs/DEMO.md`).
 
-**To resume elsewhere:** copy `.env`, `cache/gemini.sqlite` and `outputs/cache/judge_cache.jsonl`, then re-run the claimed scripts; all are resumable.
+**To rebuild everything from the saved outputs:** `python -m src.eval.run_final`, then compile `reports/final/report.typ` and `slides.typ` with typst (see their headers). To re-run model calls elsewhere, copy `.env`, `cache/gemini.sqlite` and `outputs/cache/judge_cache.jsonl` (calls are cached; runs are resumable).

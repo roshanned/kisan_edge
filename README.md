@@ -16,6 +16,17 @@ question ─> router (keywords + TF-IDF classifier) ─┬─ emergency ─> sho
 cloud agent: LLM + retrieval (BGE-M3 + FAISS over 383 documents) + tools (weather, mandi price, schemes) + safety filter
 ```
 
+## Results (700 test questions; full report in `reports/final/report.pdf`)
+
+| | Result |
+|---|---|
+| Cloud agent B1 (RAG + tools) | 28.6% strict accuracy |
+| Hybrid (tuned edge + B1, trained gate) | 28.0%, i.e. 98% of B1 (no significant difference), with 74.6% cloud calls; 25% of questions answered on the phone, no dose ever shown offline |
+| H1 (>= 90% of B1 at <= 50% cloud calls) | not met: the safety rules send 68.7% of questions to the cloud before the gate |
+| H2 (+10 points on Hindi from fine-tuning) | not met: +7.0 points (95% CI 3.0 to 10.7) |
+| H3 (trained gate beats token probability) | met: AUROC 0.87 vs 0.16 |
+| Phone | 4-bit model 2.0 GB, about 18 tokens/s on a laptop CPU |
+
 ## Where things are
 
 | Path | What |
