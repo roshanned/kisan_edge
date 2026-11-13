@@ -1,4 +1,4 @@
-"""Ask the cloud agent (RAG + tools + safety filter). See docs/cloud/README.md.
+"""Ask the cloud agent (RAG + tools + safety filter). See docs/layers/cloud.md.
 
 Usage:
   python -m src.cloud.query "गेहूं में पीला रतुआ का इलाज?"                    # one question

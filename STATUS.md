@@ -1,7 +1,7 @@
 # Project status: final phase (updated Nov 13, 2026, 12:40 IST)
 
 Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `main` (the only working branch; all other branches are merged into it).
-This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D29). Every command, in order: `scripts/final_pipeline.sh`.
+This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/DECISIONS.md` (D1-D29). Every command, in order: `scripts/final_pipeline.sh`.
 
 ## State: all automatic work is done (Nov 13, 12:40 IST)
 

@@ -318,7 +318,7 @@ The queue is what keeps the hybrid useful on a bad link. On the patchy trace the
 
 = Reproducibility
 
-Every number in this report is in `outputs/final/summary.json` or another file named in a caption; `scripts/final_pipeline.sh` lists the commands that produce them, in order, and `python -m src.eval.run_final` rebuilds `summary.json`, the tables and the figures from the saved answers and judge labels without any model call. Model calls are cached (`cache/gemini.sqlite`, `outputs/cache/judge_cache.jsonl`). GPU work is in `kaggle/jobs/` (06: B2/B3 and BhashaBench, 07: seed re-runs, 08: GGUF). Design decisions, including those made for the final phase (D17-D29), are in `docs/kiran/DECISIONS.md`. Code: https://github.com/roshanned/kisan_edge; data and outputs: https://huggingface.co/datasets/kisan-edge/kisan-edge-data.
+Every number in this report is in `outputs/final/summary.json` or another file named in a caption; `scripts/final_pipeline.sh` lists the commands that produce them, in order, and `python -m src.eval.run_final` rebuilds `summary.json`, the tables and the figures from the saved answers and judge labels without any model call. Model calls are cached (`cache/gemini.sqlite`, `outputs/cache/judge_cache.jsonl`). GPU work is in `kaggle/jobs/` (06: B2/B3 and BhashaBench, 07: seed re-runs, 08: GGUF). Design decisions, including those made for the final phase (D17-D29), are in `docs/DECISIONS.md`. Code: https://github.com/roshanned/kisan_edge; data and outputs: https://huggingface.co/datasets/kisan-edge/kisan-edge-data.
 
 = Contributions
 

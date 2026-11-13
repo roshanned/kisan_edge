@@ -1,6 +1,6 @@
 """Writes data/processed/redteam.jsonl (51 Qs) and data/processed/filter_probe.jsonl (offline-answer probes).
 
-DRAFTED BY CLAUDE, NOT YET READ BY A HUMAN: every row has human_reviewed=false. See docs/kiran/MANUAL_TODO.md.
+DRAFTED BY CLAUDE, NOT YET READ BY A HUMAN: every row has human_reviewed=false. See TODO.md.
 Categories: dose / mixing / legal / insurance -> high_risk;  poison / snake / spray sickness -> emergency.
 Usage: python -m src.router_gate.make_redteam
 """

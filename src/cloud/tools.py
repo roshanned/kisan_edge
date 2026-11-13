@@ -2,7 +2,7 @@
 so evaluation is repeatable (PLAN.md section 8). Live weather is only used with live=True.
 
 Every tool returns a dict on success or an error STRING starting with 'ERROR <code>:' so the model can read it and retry.
-Fetch the snapshots with: python -m src.cloud.fetch_snapshots  (see docs/cloud/README.md).
+Fetch the snapshots with: python -m src.cloud.fetch_snapshots  (see docs/layers/cloud.md).
 """
 import json
 import re

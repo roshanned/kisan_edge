@@ -34,10 +34,13 @@ cp kaggle/results/08_gguf/outputs/llamacpp_{bench.json,smoke.jsonl} $F/
 python -m src.edge.bench_llamacpp --bin tools_ext/llamacpp/bin --model kaggle/results/08_gguf/models/kisan-edge-3b-Q4_K_M.gguf
 
 step "2. cloud runs on the 700 test questions (resumable; rerun after a quota stop)"
-for RUN in B1 A2 A3; do
+for RUN in B1 A2; do
   python -m src.cloud.query --questions $Q --split test --run $RUN --model $AGENT --as-of 2026-10-30 \
       --workers 6 --out $F/cloud_$RUN.jsonl
 done
+# A3 on the stratified 350-question half (docs/DECISIONS.md D29)
+python -m src.cloud.query --questions $Q --split test --run A3 --model $AGENT --as-of 2026-10-30 \
+    --workers 6 --ids data/processed/test_half_ids.txt --out $F/cloud_A3.jsonl
 
 step "3. judge (JUDGE_MODEL in .env = gemma-4-31b-it)"
 J="--judge gemini --workers 10 --out-dir $F"
@@ -46,7 +49,7 @@ python -m src.eval.score --run B3_calib --outputs $F/edge_tuned_full.jsonl --sub
 python -m src.eval.score --run B3_dev --outputs $F/edge_tuned_full.jsonl --subset dev $J
 python -m src.eval.score --run B2 --outputs $F/edge_base_full.jsonl --subset test $J
 for RUN in B1 A2 A3; do python -m src.eval.score --run $RUN --outputs $F/cloud_$RUN.jsonl --subset test $J; done
-# seed re-runs: Hindi (Devanagari) test questions only, the H2 subset (judge quota, DECISIONS.md D26)
+# seed re-runs: Hindi (Devanagari) test questions only, the H2 subset (judge quota, docs/DECISIONS.md D26)
 for S in 1 2; do python -m src.eval.score --run B3_s$S --outputs $F/edge_tuned_s$S.jsonl --subset test --script deva $J; done
 
 step "4. cloud metrics: Recall@5, tools, citations (+ faithfulness on 60 sentences), abstention, fault injection"

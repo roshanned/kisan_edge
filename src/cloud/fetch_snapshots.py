@@ -64,7 +64,7 @@ def weather():
 def mandi():
     key = os.environ.get("DATA_GOV_API_KEY")
     if not key:
-        sys.exit("Set DATA_GOV_API_KEY in .env (free key from data.gov.in > My Account). MANUAL step, see docs/cloud/MANUAL_TODO.md")
+        sys.exit("Set DATA_GOV_API_KEY in .env (free key from data.gov.in > My Account). MANUAL step, see TODO.md")
     rows = []
     for commodity in ("Wheat", "Paddy(Dhan)", "Mustard", "Sugarcane"):
         r = requests.get(f"https://api.data.gov.in/resource/{MANDI_RESOURCE}", timeout=60, params={

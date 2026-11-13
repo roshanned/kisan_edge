@@ -1,7 +1,7 @@
 # Router, gate, queue: developer guide (Kiran's layer)
 
 Branch `kiran/gate`. Everything here was built by Claude for Anushka while Kiran's work was missing. **Read
-[DECISIONS.md](DECISIONS.md) (what was chosen and why) and [MANUAL_TODO.md](MANUAL_TODO.md) (what only a human can do).**
+[DECISIONS.md](../DECISIONS.md) (what was chosen and why) and [TODO.md](../../TODO.md) (what only a human can do).**
 
 ## How a question flows
 
@@ -74,7 +74,7 @@ From `outputs/router_metrics.json` and `outputs/queue_metrics.json`. **Read the 
 
 ## Known limitations
 - **H1 may be unreachable.** Always-to-cloud routes (live_data 20% and high_risk 40% of the test split, by Anushka's quotas)
-  already put ~60%+ of questions on the cloud before the gate acts. See DECISIONS D4 and MANUAL_TODO 4.
+  already put ~60%+ of questions on the cloud before the gate acts. See DECISIONS D4 and TODO.md.
 - Only 2 `emergency` rows exist in KCC, so the classifier cannot learn it; emergency is rules only.
 - The queue uses precomputed cloud answers. Real latency, quota limits and failures are not modelled beyond a coin flip.
 - Time-to-answer is in simulated ticks (1 tick = 1 minute), not wall-clock.

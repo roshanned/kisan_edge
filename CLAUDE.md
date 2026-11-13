@@ -1,6 +1,6 @@
 # CLAUDE.md: Kisan-Edge, final phase
 
-Read [STATUS.md](STATUS.md) first: what is done, what is running, and the ordered list of everything pending. [PLAN.md](PLAN.md) is the original plan (sections 4 and 4.2 = final-phase goals and the experiment checklist); [docs/kiran/DECISIONS.md](docs/kiran/DECISIONS.md) records every design decision (D1-D27). The final submission is due **Nov 15, 2026**, with no extensions.
+Read [STATUS.md](STATUS.md) first: what is done, what is running, and the ordered list of everything pending. [PLAN.md](PLAN.md) is the original plan (sections 4 and 4.2 = final-phase goals and the experiment checklist); [docs/DECISIONS.md](docs/DECISIONS.md) records every design decision (D1-D27). The final submission is due **Nov 15, 2026**, with no extensions.
 
 ## Layout
 `src/data` split and cleaning · `src/edge` edge model, GGUF bench, BhashaBench · `src/cloud` agent, retrieval, tools, metrics · `src/router_gate` router, filter, gate, hybrid, red-team · `src/queue_sim` queue · `src/eval` judge, scoring, `run_final.py` · `src/demo.py` live demo · `kaggle/jobs` GPU/CPU jobs · `scripts/` pipelines · `outputs/final` final-phase results · `outputs/` (top level) mid-submission files, keep unchanged · `reports/final/report.typ` final report.

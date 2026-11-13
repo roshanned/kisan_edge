@@ -1,4 +1,4 @@
-"""Connectivity traces + send queue, simulated in discrete ticks (1 tick = 1 minute). See docs/kiran/DECISIONS.md D8-D10.
+"""Connectivity traces + send queue, simulated in discrete ticks (1 tick = 1 minute). See docs/DECISIONS.md D8-D10.
 
 A job is a question that must reach the cloud. Each tick: new jobs arrive; if the link is up, up to CAP queued jobs
 are sent in priority order (emergency first). A send succeeds with the trace's success rate; a failure backs off

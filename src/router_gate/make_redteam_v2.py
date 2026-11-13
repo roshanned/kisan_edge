@@ -8,7 +8,7 @@ v3: a fresh held-out set from a third model (gemini-3.5-flash), written after th
     router is reported on v3.
 Every generated item was read; DROP lists the ones removed and why. Both sets have benign look-alike controls
 (expected route general/live_data) to measure over-escalation. Every row: human_reviewed=false until a Hindi speaker
-reads it (docs/kiran/MANUAL_TODO.md).
+reads it (TODO.md).
 
 Usage: python -m src.router_gate.make_redteam_v2 [--version 3]      (one cached LLM call; re-running costs nothing)
 """

@@ -1,4 +1,4 @@
-"""Offline output filter: no dose may leave the phone from the small model. See docs/kiran/DECISIONS.md D5.
+"""Offline output filter: no dose may leave the phone from the small model. See docs/DECISIONS.md D5.
 
 Blocks a number (ASCII or Devanagari digits, ranges, decimals) next to a unit, a spelled-out number
 (Latin or Devanagari) next to a unit, and spoken measures ("do chammach"). Over-blocking is intended:

@@ -1,4 +1,4 @@
-"""Rule router + optional intent classifier. See docs/kiran/README.md.
+"""Rule router + optional intent classifier. See docs/layers/router_gate_queue.md.
 
 Order: emergency rules > high_risk rules > live_data rules > classifier (if trained) > 'general'.
 Everything except 'general' is always sent to the cloud; the gate only judges 'general' questions.

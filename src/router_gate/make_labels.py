@@ -1,4 +1,4 @@
-"""Builds data/processed/router_labels.jsonl from the frozen questions file. See docs/kiran/DECISIONS.md D2.
+"""Builds data/processed/router_labels.jsonl from the frozen questions file. See docs/DECISIONS.md D2.
 
 label = Anushka's first-pass category (from KCC QueryType + keywords), upgraded (never downgraded) to
 emergency / high_risk when our keyword rules fire. KCC has almost no emergency rows, so those come from rules.

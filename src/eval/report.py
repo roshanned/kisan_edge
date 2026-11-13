@@ -1,4 +1,5 @@
-"""Tables and plots from outputs/scores_*.jsonl, per language and script (PLAN.md section 10).
+"""Mid-submission tables and plots from outputs/mid/scores_*.jsonl, per language and script (PLAN.md section 10).
+The final-phase tables come from src/eval/run_final.py instead.
 
 Writes to reports/mid/ (or --out):
   tables/summary.md       one row per run: n, correct / partly / wrong %, deferred %
@@ -36,7 +37,7 @@ def wilson(k, n, z=1.96):
 
 def load():
     runs = {}
-    for f in Path("outputs").glob("scores_*.jsonl"):
+    for f in Path("outputs/mid").glob("scores_*.jsonl"):
         rows = read_jsonl(f)
         if rows:
             runs[rows[0]["run"]] = rows
@@ -84,7 +85,7 @@ def main():
     out = Path(ap.parse_args().out)
     runs = load()
     if not runs:
-        raise SystemExit("no outputs/scores_*.jsonl yet; run src.eval.score first")
+        raise SystemExit("no outputs/mid/scores_*.jsonl yet; run src.eval.score first")
     (out / "tables").mkdir(parents=True, exist_ok=True)
     (out / "figures").mkdir(parents=True, exist_ok=True)
 

@@ -1,7 +1,7 @@
 # Data and evaluation: choices and facts (Anushka)
 
-What was built, why, and what to watch out for. How to run it: [dev.md](dev.md). Status: [checklist.md](checklist.md).
-Plan: [PLAN.md](PLAN.md). Written Oct 28, 2026.
+What was built, why, and what to watch out for. How to run it: [data_eval_howto.md](data_eval_howto.md). Status: [archive/data_eval_checklist.md](../archive/data_eval_checklist.md).
+Plan: [PLAN.md](../../PLAN.md). Written Oct 28, 2026.
 
 ## 1. Where the data comes from
 

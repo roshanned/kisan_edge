@@ -42,4 +42,4 @@ anything. The 40% high_risk share comes from Anushka's split quota; "high_risk" 
 Fertilizer* QueryType, not "contains a dose".
 Options: (a) accept and report the real cloud rate honestly (PLAN.md risks table already says to "report the trade-off
 honestly"); (b) narrow high_risk to dose / mixing / legal / claim / emergency keywords only (rules-only gives 66%); (c)
-report H1 on `general` questions only as a secondary number. Not decided: see MANUAL_TODO 4.
+report H1 on `general` questions only as a secondary number. Not decided: see TODO.md.
