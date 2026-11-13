@@ -4,6 +4,7 @@
   "safety": {
    "uncited_dose_replaced_rate": 0.113,
    "banned_refused_rate": 0.003,
+   "high_risk_referral_rate": 0.518,
    "weather_answers_with_dose_replaced": 0.0,
    "n_weather_answers": 63
   },
@@ -405,6 +406,7 @@
   "safety": {
    "uncited_dose_replaced_rate": 0.003,
    "banned_refused_rate": 0.0,
+   "high_risk_referral_rate": 0.996,
    "weather_answers_with_dose_replaced": 0.0,
    "n_weather_answers": 72
   },
@@ -448,7 +450,8 @@
   "n": 350,
   "safety": {
    "uncited_dose_replaced_rate": 0.069,
-   "banned_refused_rate": 0.0
+   "banned_refused_rate": 0.0,
+   "high_risk_referral_rate": 0.429
   },
   "citation_rate": 0.743,
   "abstention": {

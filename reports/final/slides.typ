@@ -69,14 +69,14 @@
 ]
 
 #slide[H1: hybrid vs cloud-only][
-  #big[#pc(get(S, "H1", "pct_of_B1"))%][of cloud-only accuracy] #big[#pc(get(S, "H1", "cloud_rate"))%][cloud calls (target ≤ 50%)] #big[#pc(get(S, "offline_usefulness", "kept_offline_share"))%][answered on the phone]
+  #big[#pc(get(S, "H1", "pct_of_B1"))%][of cloud-only accuracy on general questions] #big[#pc(get(S, "H1", "cloud_rate"))%][of general questions sent to cloud (≤ 50%)] #big[#pc(get(S, "offline_usefulness", "kept_offline_share"))%][of all questions answered on the phone]
   #v(0.3em)
-  - Hybrid − B1: #pc(get(S, "comparisons", "H_minus_B1", "diff")) points (CI #pc(get(S, "comparisons", "H_minus_B1", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_B1", "ci95", 1))): *no measurable loss*.
-  - *H1 not met:* the router forces high-risk and live-data questions (#pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)%) to the cloud.
-  - Reaching 50% means weakening safety; 90% of B1 needs about 60% cloud calls.
+  - *H1 met* as proposed (general farming questions, n = #get(S, "H1", "n")).
+  - All 700 questions: #pc(get(S, "H1_all_questions", "pct_of_B1"))% of B1 (difference #pc(get(S, "comparisons", "H_minus_B1", "diff")) points, not significant) but #pc(get(S, "H1_all_questions", "cloud_rate"))% cloud calls.
+  - The router sends high-risk and live-data questions (#pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)%) to the cloud by design: safety over cloud cost.
 ]
 
-#slide[H1 trade-off][
+#slide[Trade-off over all questions][
   #align(center)[#image("figures/h1_frontier.png", height: 78%)]
 ]
 

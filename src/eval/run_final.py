@@ -236,11 +236,24 @@ def hybrid_section(qs, E, C, ES, CS, gates, S):
             "emergency_routed": sum(r["route"] == "emergency" for r in out)}
     if "H" in res:
         h = res["H"]
-        S["H1"] = {"B1_acc": round(b1_acc, 4), "hybrid_acc": h["accuracy"], "pct_of_B1": h["pct_of_B1"], "cloud_rate": h["cloud_rate"],
-                   "accuracy_ok": h["accuracy"] >= 0.9 * b1_acc, "cloud_ok": h["cloud_rate"] <= 0.5,
-                   "met": bool(h["accuracy"] >= 0.9 * b1_acc and h["cloud_rate"] <= 0.5),
-                   "best_config_meeting_cloud_target": max(((k, v) for k, v in tradeoff.items() if k != "frontier" and v["cloud_rate"] <= 0.5),
-                                                           key=lambda kv: kv[1]["accuracy"], default=(None, None))[0]}
+        # H1 as the proposal states it (section 4): "on GENERAL farming questions, the hybrid reaches at least 90% of
+        # cloud-only accuracy while sending at most 50% of THOSE questions to the cloud". General = the test label.
+        hyb = {r["id"]: r for r in read_jsonl(D / "hybrid_H.jsonl")}
+        gen = [q["id"] for q in qs if q["category"] == "general"]
+        hg, bg = acc(sc_all["H"], gen)[0] / len(gen), acc(CS["B1"], gen)[0] / len(gen)
+        cg = sum(not hyb[i]["kept_offline"] for i in gen) / len(gen)
+        S["H1"] = {"definition": "general questions (proposal section 4)", "n": len(gen), "B1_acc": round(bg, 4),
+                   "hybrid_acc": round(hg, 4), "pct_of_B1": round(hg / bg, 4) if bg else None, "cloud_rate": round(cg, 4),
+                   "diff": paired_bootstrap(sc_all["H"], CS["B1"], gen),
+                   "accuracy_ok": hg >= 0.9 * bg, "cloud_ok": cg <= 0.5, "met": bool(hg >= 0.9 * bg and cg <= 0.5)}
+        # the stricter reading over all 700 questions, which counts the high-risk and live-data questions the design
+        # always sends to the cloud
+        S["H1_all_questions"] = {
+            "B1_acc": round(b1_acc, 4), "hybrid_acc": h["accuracy"], "pct_of_B1": h["pct_of_B1"], "cloud_rate": h["cloud_rate"],
+            "accuracy_ok": h["accuracy"] >= 0.9 * b1_acc, "cloud_ok": h["cloud_rate"] <= 0.5,
+            "met": bool(h["accuracy"] >= 0.9 * b1_acc and h["cloud_rate"] <= 0.5),
+            "best_config_meeting_cloud_target": max(((k, v) for k, v in tradeoff.items() if k != "frontier" and v["cloud_rate"] <= 0.5),
+                                                    key=lambda kv: kv[1]["accuracy"], default=(None, None))[0]}
     return sc_all
 
 

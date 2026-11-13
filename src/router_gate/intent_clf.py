@@ -29,7 +29,14 @@ def train():
 
 
 def load():
-    return pickle.loads(MODEL.read_bytes()) if MODEL.exists() else None
+    """The saved classifier; trained and saved first if missing (models/ is gitignored, so a fresh clone has none).
+    Training is deterministic: a retrained model gives identical predictions."""
+    if not MODEL.exists():
+        if not Path("data/processed/router_labels.jsonl").exists():
+            return None
+        MODEL.parent.mkdir(exist_ok=True)
+        MODEL.write_bytes(pickle.dumps(train()))
+    return pickle.loads(MODEL.read_bytes())
 
 
 if __name__ == "__main__":

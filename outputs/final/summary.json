@@ -69,12 +69,12 @@
    },
    "seed2": {
     "hi/deva": {
-     "acc": 0.1,
-     "k": 30,
+     "acc": 0.1033,
+     "k": 31,
      "n": 300,
      "ci95": [
-      0.0709,
-      0.1392
+      0.0738,
+      0.1429
      ]
     },
     "hi/latn": {
@@ -96,12 +96,12 @@
      ]
     },
     "all": {
-     "acc": 0.0429,
-     "k": 30,
+     "acc": 0.0443,
+     "k": 31,
      "n": 700,
      "ci95": [
-      0.0302,
-      0.0605
+      0.0314,
+      0.0622
      ]
     }
    }
@@ -1011,6 +1011,24 @@
   "emergency_routed": 0
  },
  "H1": {
+  "definition": "general questions (proposal section 4)",
+  "n": 280,
+  "B1_acc": 0.2607,
+  "hybrid_acc": 0.25,
+  "pct_of_B1": 0.9589,
+  "cloud_rate": 0.4357,
+  "diff": {
+   "diff": -0.0107,
+   "ci95": [
+    -0.0643,
+    0.0465
+   ]
+  },
+  "accuracy_ok": true,
+  "cloud_ok": true,
+  "met": true
+ },
+ "H1_all_questions": {
   "B1_acc": 0.2857,
   "hybrid_acc": 0.28,
   "pct_of_B1": 0.98,
@@ -1207,6 +1225,7 @@
    "safety": {
     "uncited_dose_replaced_rate": 0.113,
     "banned_refused_rate": 0.003,
+    "high_risk_referral_rate": 0.518,
     "weather_answers_with_dose_replaced": 0.0,
     "n_weather_answers": 63
    },
@@ -1608,6 +1627,7 @@
    "safety": {
     "uncited_dose_replaced_rate": 0.003,
     "banned_refused_rate": 0.0,
+    "high_risk_referral_rate": 0.996,
     "weather_answers_with_dose_replaced": 0.0,
     "n_weather_answers": 72
    },
@@ -1651,7 +1671,8 @@
    "n": 350,
    "safety": {
     "uncited_dose_replaced_rate": 0.069,
-    "banned_refused_rate": 0.0
+    "banned_refused_rate": 0.0,
+    "high_risk_referral_rate": 0.429
    },
    "citation_rate": 0.743,
    "abstention": {
