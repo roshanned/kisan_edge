@@ -31,7 +31,7 @@ Every run, judgment, metric, the report (`reports/final/report.pdf`) and the sli
 3. Hindi speaker reads red-team v2/v3, the Nov 11 keyword additions and the 158 gold questions.
 4. Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` (written from memory).
 5. Optional: data.gov.in key for mandi prices; accept HF terms for native BhashaBench-Krishi and Indic-KCC-Agri-Advisory.
-6. Upload `outputs/final/` to the HF dataset `kisan-edge/kisan-edge-data`.
+6. Upload to Hugging Face: create a token with write access to the `kisan-edge` org (huggingface.co/settings/tokens), run `hf auth login`, then `python scripts/upload_hf.py` (stages and uploads everything, 217 files / 58 MB; the current saved token is read-only).
 7. Rehearse the demo (`docs/DEMO.md`).
 
 **To rebuild everything from the saved outputs:** `python -m src.eval.run_final`, then compile `reports/final/report.typ` and `slides.typ` with typst (see their headers). To re-run model calls elsewhere, copy `.env`, `cache/gemini.sqlite` and `outputs/cache/judge_cache.jsonl` (calls are cached; runs are resumable).

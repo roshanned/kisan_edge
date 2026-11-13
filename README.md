@@ -105,7 +105,7 @@ kisan_edge/
 │   └── demo.py        end-to-end demo on one question
 ├── tests/             62 unit tests, no network needed (pytest -q)
 ├── kaggle/            GPU/CPU jobs run from the command line (jobs/01-08) and push_code.py
-├── scripts/           final_pipeline.sh (every final-phase command in order); resumable run chains
+├── scripts/           final_pipeline.sh (every final-phase command in order), run chains, upload_hf.py (Hugging Face upload)
 ├── data/
 │   ├── processed/     questions.jsonl (frozen split), gold.jsonl, router_labels.jsonl, red-team sets, SFT data
 │   └── snapshots/     frozen weather forecasts (76 UP districts), district coordinates, scheme facts

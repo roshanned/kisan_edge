@@ -9,7 +9,7 @@ Only the steps that need a human: a decision, a login, or a Hindi reader. The fu
 | 1 | **Read `reports/final/report.pdf` end to end.** Fix anything that is not true or not clear. | It is the graded deliverable. | 45 min |
 | 2 | **Approve tagging `final-submission` on `main`** once the report is final. All work is on `main`. | Graders look at GitHub. | 10 min |
 | 3 | **Check 100 judge labels by hand**: open `reports/final/judge_check_sheet.csv`, fill `human_label` (correct / partly_correct / wrong) without looking at `judge_label` first, then run `python -m src.eval.judge_check --dir outputs/final --report-dir reports/final agree`. Put the agreement into the report (section "Evaluation method"). | Every accuracy number rests on the LLM judge. Judge-vs-judge agreement is already reported, but it is not a human check. | 60-90 min |
-| 4 | **Upload the final outputs to the Hugging Face dataset** `kisan-edge/kisan-edge-data` (folder `outputs/final/`, `data/processed/redteam_v2.jsonl`, `redteam_v3.jsonl`, `corpus/recall_queries.jsonl`). Commands are in the README. | The README says all data lives there. | 10 min |
+| 4 | **Upload to Hugging Face**: the saved token is read-only. Create a token with write access to the `kisan-edge` org, `hf auth login`, then `python scripts/upload_hf.py` (everything is staged by the script). | The README says all data lives there. | 5 min |
 | 5 | Prepare the slides and rehearse the live demo (`python -m src.demo ...`, see README "Demo"). | Nov 16-19 presentation. | 1-2 h |
 
 ## Should do (each one improves a reported number or removes a caveat)
