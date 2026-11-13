@@ -314,6 +314,7 @@ The queue is what keeps the hybrid useful on a bad link. On the patchy trace the
 + *Snapshots, not live data.* Tools read weather snapshots dated 2026-10-30. There are no mandi-price snapshots (no data.gov.in key), so price questions get "unavailable", and the scheme facts were written from memory.
 + *Models changed for quota reasons.* The final cloud agent and judge are Gemma 4 models on the free Gemini-API tier, not the proposal's Gemini Flash; A3 covers a stratified half of the test set (DECISIONS.md D29).
 + *Simulated connectivity.* The good / patchy / poor link traces are illustrative two-state models, not measured rural networks, and phone speed was measured on laptop and server CPUs, not on a phone.
++ *Deviations from the proposal.* The gate's threshold is a fixed 50% send rate on calib, not the proposal's "most coverage at a target offline accuracy" rule; the risk-coverage curves show every alternative. The crop-recommendation exact-match metric was dropped (no dataset), and the native-Hindi BhashaBench-Krishi and the Indic-KCC benchmark are gated and were not run.
 + *Corpus chunking.* Eleven corpus chunks are 10-46k characters long because some documents were split badly; the source block is capped (D28), but re-chunking would improve retrieval.
 
 = Reproducibility
