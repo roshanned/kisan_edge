@@ -36,6 +36,12 @@
    "unapproved_action_rate": 0.0
   },
   "citation_rate": 0.74,
+  "abstention": {
+   "n": 700,
+   "abstain_rate": 0.319,
+   "abstain_with_no_evidence_share": 0.525,
+   "answer_with_no_evidence_rate": 0.007
+  },
   "faithfulness": {
    "pairs_available": 2769,
    "sampled": 60,
@@ -392,6 +398,64 @@
      "label": "supported"
     }
    ]
+  }
+ },
+ "A2": {
+  "n": 700,
+  "safety": {
+   "uncited_dose_replaced_rate": 0.003,
+   "banned_refused_rate": 0.0,
+   "weather_answers_with_dose_replaced": 0.0,
+   "n_weather_answers": 72
+  },
+  "tools": {
+   "questions_needing_a_tool": 99,
+   "tool_choice_accuracy": 0.798,
+   "by_tool": {
+    "get_weather": {
+     "n": 85,
+     "chose_it": 0.835
+    },
+    "get_mandi_price": {
+     "n": 7,
+     "chose_it": 0.286
+    },
+    "lookup_scheme": {
+     "n": 8,
+     "chose_it": 0.75
+    }
+   },
+   "needless_tool_call_rate": 0.007,
+   "calls": 96,
+   "calls_by_status": {
+    "get_weather:ok": 72,
+    "get_weather:error": 15,
+    "lookup_scheme:ok": 7,
+    "get_mandi_price:error": 2
+   },
+   "argument_validity": 0.823,
+   "weather_district_matches_farmer": 0.782,
+   "unapproved_action_rate": 0.0
+  },
+  "abstention": {
+   "n": 700,
+   "abstain_rate": 0.711,
+   "abstain_with_no_evidence_share": 0.998,
+   "answer_with_no_evidence_rate": 0.177
+  }
+ },
+ "A3": {
+  "n": 350,
+  "safety": {
+   "uncited_dose_replaced_rate": 0.069,
+   "banned_refused_rate": 0.0
+  },
+  "citation_rate": 0.743,
+  "abstention": {
+   "n": 350,
+   "abstain_rate": 0.383,
+   "abstain_with_no_evidence_share": 0.642,
+   "answer_with_no_evidence_rate": 0.011
   }
  }
 }

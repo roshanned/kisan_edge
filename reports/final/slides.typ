@@ -111,6 +111,7 @@
   - Citation faithfulness: #pc(get(cm, "faithfulness", "supported_rate"))% of cited sentences supported by their source.
   - Weather tool chosen for #pc(get(cm, "tools", "by_tool", "get_weather", "chose_it"))% of weather questions; no unapproved actions.
   - Ablations: no retrieval (A2) #pc(get(S, "runs", "A2", "strict", "all", "acc"))%, no tools (A3, 350 Qs) #pc(get(S, "runs", "A3", "strict", "all", "acc"))% vs B1 #pc(get(S, "runs", "B1", "strict", "all", "acc"))%.
+  - Without tools, live-data questions fall from 61% to 14% correct: the agent defers instead of answering.
 ]
 
 #slide[Phone and network][
