@@ -11,6 +11,7 @@
 
 #let S = json("/outputs/final/summary.json")
 #let RM = json("/outputs/router_metrics.json")
+#let JJ = json("/outputs/final/judge_vs_judge.json")
 // percent with one decimal ("12.3"); n/a for none
 #let pc(x, d: 1) = if x == none { "n/a" } else {
   let s = str(calc.round(x * 100, digits: d))
@@ -87,7 +88,7 @@ Every answer is labelled correct, partly correct or wrong against the reference 
 
 *Accuracy* is the share of the 700 test questions labelled correct (strict); *lenient* also counts partly correct. Intervals are 95% Wilson intervals; differences between runs on the same questions use a paired bootstrap (2,000 resamples). The gate label is strict: an edge answer is good only if it is correct.
 
-*Can the judge be trusted?* #todo[judge-vs-judge numbers; human check pending (TODO.md).]
+*Can the judge be trusted?* A second judge from another model family, `gemini-3.5-flash-lite`, relabelled #get(JJ, "n") answers stratified over B1, B2, B3 and the three languages. The two judges agree on *correct vs not correct*, the split behind every strict accuracy in this report, for #pc(get(JJ, "agreement_correct_vs_not"))% of answers. Exact three-way agreement is lower (#pc(get(JJ, "exact_agreement"))%, Cohen's kappa #num(get(JJ, "kappa"))), almost entirely because our judge calls "wrong" what the second calls "partly correct" (#get(JJ, "confusion_main_x_second", "wrong|partly_correct") of #get(JJ, "n") answers). Strict numbers are therefore robust to the choice of judge; lenient numbers depend on it more. On the mid-submission's gold answers, the new judge agreed with the old flash-lite judge on 69% of labels (kappa 0.49). A check against human labels on 100 answers is still to be done.
 
 = Results
 

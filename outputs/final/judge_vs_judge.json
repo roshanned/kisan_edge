@@ -1,0 +1,24 @@
+{
+ "second_judge": "gemini-3.5-flash-lite",
+ "n": 150,
+ "exact_agreement": 0.613,
+ "kappa": 0.336,
+ "agreement_correct_vs_not": 0.933,
+ "agreement_wrong_vs_not": 0.66,
+ "main_correct_rate": 0.12,
+ "second_correct_rate": 0.16,
+ "confusion_main_x_second": {
+  "correct|correct": 16,
+  "correct|partly_correct": 2,
+  "partly_correct|correct": 5,
+  "partly_correct|partly_correct": 7,
+  "wrong|correct": 3,
+  "wrong|partly_correct": 48,
+  "wrong|wrong": 69
+ },
+ "by_run_exact_agreement": {
+  "B1": 0.529,
+  "B2": 0.725,
+  "B3": 0.583
+ }
+}
