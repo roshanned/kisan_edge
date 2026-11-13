@@ -568,6 +568,82 @@
    "pct_of_B1": 0.91,
    "n_questions": 700,
    "B1_acc_same_questions": 0.2857
+  },
+  "H_A2": {
+   "n": 700,
+   "mode": "gate",
+   "trace": "none",
+   "queue": true,
+   "target_rate": 0.5,
+   "policy": "safety",
+   "gate": "classifier",
+   "cut": 0.2041,
+   "cloud_calls_per_100": 74.6,
+   "answered_by": {
+    "edge": 178,
+    "cloud": 522,
+    "deferral": 0
+   },
+   "filter_blocked": 8,
+   "queue_metrics": {
+    "jobs": 522,
+    "delivery_rate": 1.0,
+    "p50_ticks": 0,
+    "p90_ticks": 0,
+    "stale_rate": 0.0,
+    "duplicate_send_rate": 0.0,
+    "sends": 522
+   },
+   "route_counts": {
+    "general": 219,
+    "live_data": 125,
+    "high_risk": 356,
+    "emergency": 0
+   },
+   "accuracy": 0.24,
+   "lenient": 0.4314,
+   "by_group": {
+    "hi/deva": {
+     "acc": 0.3067,
+     "k": 92,
+     "n": 300,
+     "ci95": [
+      0.2572,
+      0.361
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.172,
+     "k": 43,
+     "n": 250,
+     "ci95": [
+      0.1303,
+      0.2237
+     ]
+    },
+    "en/latn": {
+     "acc": 0.22,
+     "k": 33,
+     "n": 150,
+     "ci95": [
+      0.1612,
+      0.2928
+     ]
+    },
+    "all": {
+     "acc": 0.24,
+     "k": 168,
+     "n": 700,
+     "ci95": [
+      0.2098,
+      0.273
+     ]
+    }
+   },
+   "cloud_rate": 0.7457,
+   "pct_of_B1": 0.84,
+   "n_questions": 700,
+   "B1_acc_same_questions": 0.2857
   }
  },
  "h1_tradeoff": {
@@ -1582,6 +1658,59 @@
    "deferred": 0.3186,
    "cloud_per_100": 100
   },
+  "A2": {
+   "what": "cloud without RAG",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.31,
+     "k": 93,
+     "n": 300,
+     "ci95": [
+      0.2603,
+      0.3645
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.216,
+     "k": 54,
+     "n": 250,
+     "ci95": [
+      0.1695,
+      0.2711
+     ]
+    },
+    "en/latn": {
+     "acc": 0.22,
+     "k": 33,
+     "n": 150,
+     "ci95": [
+      0.1612,
+      0.2928
+     ]
+    },
+    "all": {
+     "acc": 0.2571,
+     "k": 180,
+     "n": 700,
+     "ci95": [
+      0.2262,
+      0.2908
+     ]
+    }
+   },
+   "lenient": 0.4443,
+   "deferred": 0.7114,
+   "cloud_per_100": 100,
+   "vs_B1_same_questions": {
+    "diff": -0.0286,
+    "ci95": [
+     -0.0614,
+     0.0029
+    ],
+    "B1_acc": 0.2857
+   }
+  },
   "H": {
    "what": "hybrid (B3 + B1)",
    "n": 700,
@@ -1761,6 +1890,51 @@
    "lenient": 0.4329,
    "deferred": 0.2943,
    "cloud_per_100": 87.4
+  },
+  "H_A2": {
+   "what": "hybrid, cloud without RAG",
+   "n": 700,
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3067,
+     "k": 92,
+     "n": 300,
+     "ci95": [
+      0.2572,
+      0.361
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.172,
+     "k": 43,
+     "n": 250,
+     "ci95": [
+      0.1303,
+      0.2237
+     ]
+    },
+    "en/latn": {
+     "acc": 0.22,
+     "k": 33,
+     "n": 150,
+     "ci95": [
+      0.1612,
+      0.2928
+     ]
+    },
+    "all": {
+     "acc": 0.24,
+     "k": 168,
+     "n": 700,
+     "ci95": [
+      0.2098,
+      0.273
+     ]
+    }
+   },
+   "lenient": 0.4314,
+   "deferred": 0.5871,
+   "cloud_per_100": 74.6
   }
  },
  "runs_gold": {
@@ -1886,6 +2060,47 @@
     }
    },
    "lenient": 0.462
+  },
+  "A2": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.4098,
+     "k": 25,
+     "n": 61,
+     "ci95": [
+      0.2954,
+      0.535
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.3191,
+     "k": 15,
+     "n": 47,
+     "ci95": [
+      0.204,
+      0.4617
+     ]
+    },
+    "en/latn": {
+     "acc": 0.28,
+     "k": 14,
+     "n": 50,
+     "ci95": [
+      0.1747,
+      0.4167
+     ]
+    },
+    "all": {
+     "acc": 0.3418,
+     "k": 54,
+     "n": 158,
+     "ci95": [
+      0.2724,
+      0.4187
+     ]
+    }
+   },
+   "lenient": 0.4873
   },
   "H": {
    "strict": {
@@ -2050,6 +2265,47 @@
     }
    },
    "lenient": 0.462
+  },
+  "H_A2": {
+   "strict": {
+    "hi/deva": {
+     "acc": 0.3607,
+     "k": 22,
+     "n": 61,
+     "ci95": [
+      0.2517,
+      0.4861
+     ]
+    },
+    "hi/latn": {
+     "acc": 0.3191,
+     "k": 15,
+     "n": 47,
+     "ci95": [
+      0.204,
+      0.4617
+     ]
+    },
+    "en/latn": {
+     "acc": 0.26,
+     "k": 13,
+     "n": 50,
+     "ci95": [
+      0.1587,
+      0.3955
+     ]
+    },
+    "all": {
+     "acc": 0.3165,
+     "k": 50,
+     "n": 158,
+     "ci95": [
+      0.249,
+      0.3926
+     ]
+    }
+   },
+   "lenient": 0.4873
   }
  },
  "comparisons": {
