@@ -1,0 +1,69 @@
+{
+ "n_questions": 20,
+ "model": "gemma-4-26b-a4b-it",
+ "conditions": {
+  "timeout_transient": {
+   "n": 20,
+   "recovery_rate": 0.9,
+   "invented_data_rate": 0.0,
+   "graceful_rate": 0.0,
+   "mean_tool_calls": 1.8,
+   "tool_status": {
+    "error": 18,
+    "ok": 18
+   }
+  },
+  "timeout_persistent": {
+   "n": 20,
+   "recovery_rate": 0.0,
+   "invented_data_rate": 0.0,
+   "graceful_rate": 0.9,
+   "mean_tool_calls": 1.8,
+   "tool_status": {
+    "error": 36
+   }
+  },
+  "empty_transient": {
+   "n": 20,
+   "recovery_rate": 0.35,
+   "invented_data_rate": 0.077,
+   "graceful_rate": 0.769,
+   "mean_tool_calls": 1.25,
+   "tool_status": {
+    "ok_empty": 18,
+    "ok": 7
+   }
+  },
+  "empty_persistent": {
+   "n": 20,
+   "recovery_rate": 0.0,
+   "invented_data_rate": 0.05,
+   "graceful_rate": 0.85,
+   "mean_tool_calls": 1.25,
+   "tool_status": {
+    "ok_empty": 25
+   }
+  },
+  "5xx_transient": {
+   "n": 20,
+   "recovery_rate": 0.7,
+   "invented_data_rate": 0.0,
+   "graceful_rate": 0.667,
+   "mean_tool_calls": 1.6,
+   "tool_status": {
+    "error": 18,
+    "ok": 14
+   }
+  },
+  "5xx_persistent": {
+   "n": 20,
+   "recovery_rate": 0.0,
+   "invented_data_rate": 0.0,
+   "graceful_rate": 0.9,
+   "mean_tool_calls": 1.6,
+   "tool_status": {
+    "error": 32
+   }
+  }
+ }
+}
