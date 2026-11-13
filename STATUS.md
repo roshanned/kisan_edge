@@ -1,67 +1,46 @@
-# Project status: final phase (updated Nov 12, 2026, evening)
+# Project status: final phase (updated Nov 13, 2026, 11:00 IST)
 
 Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `main` (the only working branch; all other branches are merged into it).
-This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D27). Every command, in order: `scripts/final_pipeline.sh`.
+This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/kiran/DECISIONS.md` (D1-D29). Every command, in order: `scripts/final_pipeline.sh`.
 
-## CLAIMED: another Claude session is doing these on Roshan's laptop. Do NOT run them.
+## CLAIMED: a Claude session is running these on Roshan's laptop. Do NOT run them.
 
-Claimed Nov 12, 19:10 IST, until this section is removed. Starting them anywhere else would duplicate API calls and, on this laptop, corrupt the output files (two writers append to the same file).
+Claimed until this section is removed. Running them anywhere else duplicates API calls and, on this laptop, corrupts the output files (two writers append to the same file).
 
-| Claimed task | State at 19:10 |
+| Claimed task | State at Nov 13, 11:00 |
 |---|---|
-| `scripts/cloud_chain.sh`: B1 -> B1 regeneration -> A2 -> A3 -> fault injection | B1 at 471/700 |
-| `scripts/judge_chain.sh`: seed re-runs, fill-in, B1, A2, A3 | judging B3_s1 |
-| Pending items 2-8 below (cloud metrics, judge-vs-judge, `run_final`, report text and PDF, README, judge-check sheet, slides) | to follow when the chains finish |
+| `scripts/a3_half.sh`: A3 on the 350-question half (D29), then fault injection | A3 at 181/350 |
+| `scripts/judge_chain.sh` (now judging A2) and `scripts/judge_tail.sh` (A2 fill-in, A3, final fill-in) | judging A2 |
+| Re-run `python -m src.eval.run_final`, fill the last report placeholders (summary, cloud ablations), rebuild report and slides PDFs | after the above |
 
-A second session can safely do only items 9-16 ("Needs a human") or read-only review. If you must take over, first check that no `src.cloud.query` / `src.eval.score` process is running (`logs/cloud_chain.log`, `logs/judge_chain_2.log` stop growing).
+A second session can safely do only the "Needs a human" items or read-only review.
 
-## Done
+## Results so far (all in `outputs/final/summary.json`; report `reports/final/report.pdf`, slides `reports/final/slides.pdf`)
 
-| Area | What exists | Where |
-|---|---|---|
-| Data | Frozen split (test 700, calib 600, dev 600, train 16,435); gold subset 158 (LLM pre-checked) | `data/processed/` |
-| Edge model | Llama-3.2-3B + QLoRA (B3); B2/B3 answers with logprobs on test+calib+dev; 2 seed re-runs on test; BhashaBench-Krishi Hindi (3,000 MCQs: base 33.6%, tuned 29.8%) | `outputs/final/edge_*`, `bhashabench_*` (Kaggle jobs 06, 07) |
-| Phone size | 4-bit GGUF Q4_K_M, 2.01 GB; laptop i7 4 threads 17.9 tok/s generate, 3.5 GB RAM; Kaggle CPU 8.6 tok/s | `outputs/final/llamacpp_*` (job 08, `src/edge/bench_llamacpp.py`) |
-| Judging | One judge (`gemma-4-31b-it`) for all final runs. Done: B3 test, B2 test, B3 calib, B3 dev. Judge vs old flash-lite judge on B3 gold: 69% agreement, kappa 0.49 | `outputs/final/scores_*` |
-| Router / safety | Red-team v2 + v3 (held out, written by other models); final router on v3: 92.6% risky to cloud, emergency recognised 50%, emergency number shown 95.8%, controls over-escalated 38.9% | `outputs/router_metrics.json`, `data/processed/redteam_v*.jsonl` |
-| Retrieval | Recall@5 0.60 raw query, 0.92 with LLM rewrite (60 synthetic queries) | `outputs/final/rag_recall.json` |
-| Code | Gate v2 (classifier, calib cut, bootstrap H3), hybrid policies, cloud metrics, fault injection, `run_final.py` (all tables/figures), judge checks, live demo, report skeleton | `src/`, `reports/final/report.typ` |
-| Tests | 62 passing (`pytest -q`) | `tests/` |
+| | Result |
+|---|---|
+| B1 cloud (RAG + tools), 700 test | 28.6% strict, 47.0% lenient |
+| Hybrid H (B3 + B1, trained gate) | 28.0% (98% of B1; difference -0.6, CI -2.9 to +1.7) at 74.6% cloud calls; 25% answered on the phone |
+| **H1** (>= 90% of B1 with <= 50% cloud) | **not met**: accuracy yes, cloud calls no; the router forces 68.7% of questions to the cloud. 90% of B1 needs about 60% cloud calls (trade-off curve) |
+| **H2** (+10 points on Hindi) | **not met**: +7.0 points (CI 3.0 to 10.7); seeds agree; BhashaBench 33.6% -> 29.8% |
+| **H3** (trained gate > token probability) | **met**: AUROC 0.87 vs 0.16 (0.77 vs 0.27 without deferrals) |
+| Safety (held-out red-team v3) | 92.6% risky to cloud; emergency recognised 50%, number shown 95.8%; 0% doses shown offline |
+| Cloud | Recall@5 0.60 -> 0.92 with query rewrite; citation faithfulness 91%; weather tool chosen 73% |
+| Queue | patchy link: 28.0% with queue vs 18.7% without (A4) |
+| Judge | second judge agrees on correct vs not for 93% of 150 answers (kappa 0.34 three-way) |
+| Phone | 4-bit GGUF 2.0 GB, 17.9 tok/s on a laptop CPU, 3.5 GB RAM |
 
-## Running now (on Roshan's laptop; both resumable)
+## Pending
 
-| Chain | Steps | Log |
-|---|---|---|
-| `scripts/cloud_chain.sh` (agent model `gemma-4-26b-a4b-it`) | B1 to 700 (was 430/700) -> regenerate B1 from cache with the D27 weather fix -> A2 (700) -> A3 (700) -> fault injection | `logs/cloud_chain.log`, `logs/cloud_*.log` |
-| `scripts/judge_chain.sh B3_s1 B3_s2 B3 B2 B3_calib B3_dev B1 A2 A3` (judge `gemma-4-31b-it`) | seed re-runs (Hindi only) -> fill-in pass for failed labels -> B1 (after regeneration) -> A2 -> A3 | `logs/judge_chain_2.log` |
-
-Rough timing: about 2.3 B1/A3 questions a minute (agent limited to 16k input tokens/min), A2 faster; judge 7-10 labels/min (Gemma 31B is often "high demand"). Expected finish: early Nov 13.
-
-**To resume on another machine:** copy `.env` (see `.env.example`), `cache/gemini.sqlite` and `outputs/cache/judge_cache.jsonl` if possible (otherwise answers are re-requested), then run the two chains above. Never run two copies of the same chain at once: they append to the same files.
-
-## Pending (everything left, in order)
-
-**Automatic (no decisions needed, just run):**
-1. Finish the two chains above (B1, regeneration, A2, A3, fault injection; judge seeds, fill-in, B1, A2, A3).
-2. `python -m src.cloud.metrics --runs B1,A2,A3 --faithfulness 60` (citation faithfulness uses `gemini-3.5-flash-lite`).
-3. `python -m src.eval.judge_check --dir outputs/final judges --n 150 --model gemini-3.5-flash-lite` (judge vs second judge).
-4. `python -m src.eval.run_final` -> `outputs/final/summary.json`, `reports/final/tables`, `reports/final/figures` (gate, hybrids H / H_tok / R / A1 / H_A2 / H_A3, queue traces + A4, H1 / H2 / H3).
-5. Fill every `TODO-INTERPRET` block in `reports/final/report.typ` from `summary.json`, compile: `python -c "import typst; typst.compile('reports/final/report.typ', output='reports/final/report.pdf', root='.')"`, read the PDF.
-6. Update README results line, commit, push.
-7. `python -m src.eval.judge_check --dir outputs/final --report-dir reports/final sample --n 100` (sheet for the human judge check).
-8. Slides for the presentation (results from `summary.json`; demo steps in `docs/DEMO.md`).
+**Automatic (claimed above):** A3 half + judging, fault injection, A2/A3 judging and fill-ins, final `run_final`, last report text (summary and cloud ablation paragraphs), rebuild PDFs, remove the CLAIMED section.
 
 **Needs a human:**
-9. Approve tagging `final-submission` on `main`; submit report PDF + GitHub link by Nov 15.
-10. Hand-label 100 judge outputs (`reports/final/judge_check_sheet.csv`), run `... judge_check --dir outputs/final --report-dir reports/final agree`, put the number in the report.
-11. Hindi speaker reads red-team v2/v3 and the Nov 11 keyword additions; human check of the 158 gold questions.
-12. Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` (written from memory).
-13. data.gov.in API key for mandi prices (`DATA_GOV_API_KEY`, `python -m src.cloud.fetch_snapshots mandi`); without it price questions get "unavailable".
-14. Accept terms on Hugging Face for `bharatgenai/BhashaBench-Krishi` (native Hindi) and `sthanika-ai/Indic-KCC-Agri-Advisory-Benchmark`, if those numbers are wanted.
-15. Upload `outputs/final/` and the new data files to the HF dataset `kisan-edge/kisan-edge-data`.
-16. Rehearse the demo (`docs/DEMO.md`).
+1. Read `reports/final/report.pdf` and `slides.pdf`; tag `final-submission` on `main`; submit by Nov 15.
+2. Hand-label 100 judge outputs (`reports/final/judge_check_sheet.csv`, column `human_label`), then `python -m src.eval.judge_check --dir outputs/final --report-dir reports/final agree` and add the number to the report.
+3. Hindi speaker reads red-team v2/v3, the Nov 11 keyword additions and the 158 gold questions.
+4. Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` (written from memory).
+5. Optional: data.gov.in key for mandi prices; accept HF terms for native BhashaBench-Krishi and Indic-KCC-Agri-Advisory.
+6. Upload `outputs/final/` to the HF dataset `kisan-edge/kisan-edge-data`.
+7. Rehearse the demo (`docs/DEMO.md`). Keep the laptop awake and online while runs are going (sleep stalled them overnight).
 
-## Known results so far (preliminary, before the fill-in pass)
-- Strict accuracy on test: B3 9.5%, B2 5.0%; Hindi (Devanagari) B3 9.9% vs B2 2.7%: about +7 points, so H2 (+10) looks not met.
-- Token probability is anti-correlated with correctness for B3 (mid: AUROC 0.18): the model is surest of its deferral template.
-- With the designed router (rules + classifier), 68.7% of test questions are forced to the cloud before the gate, so H1's 50% cloud-call target is out of reach by construction; the report shows the trade-off curve.
+**To resume elsewhere:** copy `.env`, `cache/gemini.sqlite` and `outputs/cache/judge_cache.jsonl`, then re-run the claimed scripts; all are resumable.
