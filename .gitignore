@@ -40,3 +40,5 @@ logs/
 # final-phase files still being written by running jobs are committed when finished
 outputs/final/.B1_regenerated
 .specstory/
+
+TWW*
