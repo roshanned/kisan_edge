@@ -346,7 +346,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 
 == Router and safety <sec:safety>
 
-*The held-out red-team sets expose misses that the first set hid, and safety costs cloud calls* (@tab:redteam).
+The held-out red-team sets expose misses that the first set hid (@tab:redteam).
 
 #figure(
   T(
@@ -357,12 +357,12 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
     [v2, held out, before keyword fix], [#pc(get(sf, "v2_before_keyword_fix", "rules_plus_clf", "risky_recall"), d: 0) / #pc(get(sf, "v2_before_keyword_fix", "rules_only", "risky_recall"), d: 0)], [#pc(get(sf, "v2_before_keyword_fix", "rules_plus_clf", "emergency_escalation"), d: 0) / #pc(get(sf, "v2_before_keyword_fix", "rules_only", "emergency_escalation"), d: 0)], [n/a],
     [*v3, held out (final)*], [*#pc(get(rc, "redteam_v3_heldout", "risky_recall"))* / #pc(get(ro, "redteam_v3_heldout", "risky_recall"))], [*#pc(get(rc, "redteam_v3_heldout", "emergency_escalation"), d: 0)* / #pc(get(ro, "redteam_v3_heldout", "emergency_escalation"), d: 0)], [#pc(get(rc, "redteam_v3_heldout", "control_over_escalation")) / #pc(get(ro, "redteam_v3_heldout", "control_over_escalation"))],
   ),
-  caption: [Router on the red-team sets (%). v2 and v3 were drafted by other LLMs and read in full by team members who read Hindi. Sources: `router_metrics.json`, `router_metrics_keywords_v1.json`.],
+  caption: [Router on the red-team sets (%). v2 and v3 were drafted by other LLMs and read in full by team members who read Hindi.],
 ) <tab:redteam>
 
-On v3, #pc(get(rc, "redteam_v3_heldout", "risky_recall"))% of risky questions go to the cloud, but only #pc(get(rc, "redteam_v3_heldout", "emergency_escalation"), d: 0)% of emergencies are recognised as emergencies; since the high-risk offline message also shows 108 / 112, #pc(get(rc, "redteam_v3_heldout", "emergency_number_shown"))% of emergencies see an emergency number offline. #pc(get(rc, "redteam_v3_heldout", "control_over_escalation"))% of ordinary look-alike questions are escalated too. On the test set, the router sends #pc(get(sf, "high_risk_label_sent_to_cloud"))% of high-risk questions to the cloud. The offline dose filter missed #pc(get(sf, "filter_probes", "miss_rate"))% of #get(sf, "filter_probes", "n_dose") dose probes and blocked #pc(get(sf, "filter_probes", "false_block_rate"))% of #get(sf, "filter_probes", "n_safe") safe ones; #pc(get(sf, "B3_raw_dose_rate"))% of tuned answers contained a dose before it, #pc(get(sf, "offline_dose_rate_shown"))% after.
+On v3, #pc(get(rc, "redteam_v3_heldout", "risky_recall"))% of risky questions go to the cloud, but only #pc(get(rc, "redteam_v3_heldout", "emergency_escalation"), d: 0)% of emergencies are recognised as emergencies; since the high-risk offline message also shows 108 / 112, #pc(get(rc, "redteam_v3_heldout", "emergency_number_shown"))% of emergencies see an emergency number offline. #pc(get(rc, "redteam_v3_heldout", "control_over_escalation"))% of ordinary look-alike questions are escalated in the rules+classifier when compared to 27.8% in the rules only system. The offline dose filter missed #pc(get(sf, "filter_probes", "miss_rate"))% of #get(sf, "filter_probes", "n_dose") dose probes and blocked #pc(get(sf, "filter_probes", "false_block_rate"))% of #get(sf, "filter_probes", "n_safe") safe ones; #pc(get(sf, "B3_raw_dose_rate"))% of tuned answers contained a dose before it, #pc(get(sf, "offline_dose_rate_shown"))% after.
 
-*The cloud filter missed banned products on the corrected list.* During the runs it used a 10-name draft. Re-checking the saved answers against the official list (#get(S, "banned_official", "n_names") names), #get(S, "banned_official", "B1", "answers_naming_banned") of #get(S, "banned_official", "B1", "n") B1 answers (#pc(get(S, "banned_official", "B1", "rate"))%) name a listed product (phorate, carbaryl, tridemorph, dichlorvos, parathion), mostly as recommendations from a retrieved document, and none was refused; A2 names none. We did not regenerate or re-score them, and the corpus itself contains such recommendations, so the gap lies in the corpus as well as the filter.
+// *The cloud filter missed banned products on the corrected list.* During the runs it used a 10-name draft. Re-checking the saved answers against the official list (#get(S, "banned_official", "n_names") names), #get(S, "banned_official", "B1", "answers_naming_banned") of #get(S, "banned_official", "B1", "n") B1 answers (#pc(get(S, "banned_official", "B1", "rate"))%) name a listed product (phorate, carbaryl, tridemorph, dichlorvos, parathion), mostly as recommendations from a retrieved document, and none was refused; A2 names none. We did not regenerate or re-score them, and the corpus itself contains such recommendations, so the gap lies in the corpus as well as the filter.
 
 // ---------------------------------------------------------------- 8 Limitations
 = Limitations <sec:lim>
