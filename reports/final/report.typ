@@ -28,7 +28,7 @@
 #show figure.caption: set par(justify: true, leading: 0.45em)
 #show figure.caption: it => [#strong[#it.supplement~#context it.counter.display(it.numbering)#it.separator]#it.body]
 #set figure.caption(separator: [: ])
-#show figure.where(kind: table): set figure.caption(position: top)
+#show figure.where(kind: table): set figure.caption(position: bottom)
 #show figure.where(kind: table): set text(size: 8pt)
 #set figure(gap: 4pt)
 #set table(
@@ -88,7 +88,7 @@
   #block(width: 94%)[
     #set text(size: 10pt)
     #set par(justify: true, leading: 0.5em)
-    Farmers in Uttar Pradesh ask crop questions in Hindi, Hinglish and English, often over weak mobile links, and a wrong pesticide dose can cause harm. However, a 3B-parameter model small enough for a phone answers only #pc(get(S, "runs", "B3", "strict", "all", "acc"))% of 700 held-out Kisan Call Centre (KCC) questions correctly, against #pc(get(S, "H1_all_questions", "B1_acc"))% for a cloud agent, which needs an internet connection and can still give unsafe advice, such as a pesticide dose twice the label rate. We build Kisan-Edge, which answers on the phone with a 4-bit Llama-3.2-3B model tuned with QLoRA, uses a safety-first router, an offline dose filter and a trained gate to decide which questions may stay offline, and queues the rest for a cloud agent with retrieval and tools. On 700 held-out Kisan Call Centre (KCC) questions, the hybrid is correct on #pc(get(S, "H1_all_questions", "hybrid_acc"))% against #pc(get(S, "H1_all_questions", "B1_acc"))% for the cloud agent alone (difference #pc(get(S, "comparisons", "H_minus_B1", "diff")) points, 95% CI #pc(get(S, "comparisons", "H_minus_B1", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_B1", "ci95", 1))), answers #pc(get(S, "offline_usefulness", "kept_offline_share"))% of questions on the phone, and shows no dose offline; on general questions it keeps #pc(get(S, "H1", "pct_of_B1"))% of cloud accuracy with #pc(get(S, "H1", "cloud_rate"))% cloud calls, though the interval is wide (#num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1))). A phone model with a safety-first router therefore matches cloud accuracy while answering a quarter of the questions offline, but the safety rules still send #pc(get(S, "H1_all_questions", "cloud_rate"))% of questions to the cloud, fine-tuning adds only #pc(get(S, "H2", "hindi_deva", "diff")) points on Hindi (target: 10), and a trained gate beats raw token probability mainly because that probability is inverted for the tuned model.
+    Farmers in Uttar Pradesh ask crop questions in Hindi, Hinglish and English, often over weak mobile links, and a wrong pesticide dose can cause harm. However, a 3B-parameter model small enough for a phone answers only #pc(get(S, "runs", "B3", "strict", "all", "acc"))% of 700 held-out Kisan Call Centre (KCC) questions correctly, against #pc(get(S, "H1_all_questions", "B1_acc"))% for a cloud agent, which needs an internet connection and can still give unsafe advice, such as a pesticide dose twice the label rate. We build Kisan-Edge, which answers on the phone with a 4-bit Llama-3.2-3B model tuned with QLoRA, uses a safety-first router, an offline dose filter and a trained gate to decide which questions may stay offline, and queues the rest for a cloud agent with retrieval and tools. On 700 held-out Kisan Call Centre (KCC) questions, the hybrid is correct on #pc(get(S, "H1_all_questions", "hybrid_acc"))% against #pc(get(S, "H1_all_questions", "B1_acc"))% for the cloud agent alone (difference #pc(get(S, "comparisons", "H_minus_B1", "diff")) points, 95% CI #pc(get(S, "comparisons", "H_minus_B1", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_B1", "ci95", 1))), answers #pc(get(S, "offline_usefulness", "kept_offline_share"))% of questions on the phone, and shows no dose offline; on general questions it keeps #pc(get(S, "H1", "pct_of_B1"))% of cloud accuracy with #pc(get(S, "H1", "cloud_rate"))% cloud calls, though the interval is wide (#num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1))). The hybrid therefore matches cloud accuracy while answering a quarter of the questions on the phone, although most of that accuracy comes from the cloud and only #pc(get(S, "offline_usefulness", "useful_offline_share"))% of questions get a correct or partly correct offline answer. The safety rules still send #pc(get(S, "H1_all_questions", "cloud_rate"))% of questions to the cloud, fine-tuning adds only #pc(get(S, "H2", "hindi_deva", "diff")) points on Hindi (target: 10), and a trained gate beats raw token probability mainly because that probability is inverted for the tuned model.
   ]
 ]
 
@@ -102,7 +102,7 @@ However, neither works alone. Our tuned 3B phone model is correct on #pc(get(S, 
 In this paper, we build Kisan-Edge, a phone-first advisor with a cloud fallback, and test it on 700 held-out questions in Hindi, Hinglish and English. We make four claims, each checkable in the tables:
 
 + *The hybrid matches cloud-only accuracy* (#pc(get(S, "H1_all_questions", "hybrid_acc"))% vs #pc(get(S, "H1_all_questions", "B1_acc"))%) and answers #pc(get(S, "offline_usefulness", "kept_offline_share"))% of questions on the phone (@sec:runs).
-+ *No dose reaches the screen offline*, and #pc(get(S, "safety", "high_risk_label_sent_to_cloud"))% of high-risk test questions go to the cloud (@sec:safety).
++ *No dose reached the screen offline in our tests*, and #pc(get(S, "safety", "high_risk_label_sent_to_cloud"))% of high-risk test questions go to the cloud (@sec:safety).
 + *A trained gate ranks phone answers better than token probability* (AUROC #num(get(S, "H3", "classifier_auroc")) vs #num(get(S, "H3", "token_prob_auroc"))), mainly because that probability is inverted for the tuned model (@sec:gate).
 + *Each cloud part and the queue earn their place*: removing tools cuts live-data accuracy from 61.4% to 14.3%, and the queue lifts accuracy on a patchy link from #pc(get(S, "queue", "Q_patchy_A4", "accuracy"))% to #pc(get(S, "queue", "Q_patchy", "accuracy"))% (@sec:abl).
 
@@ -140,30 +140,62 @@ Five smaller sets test single components. BhashaBench-Krishi: 3,000 Hindi multip
 
 == System overview
 
-A question passes through six parts in a fixed order (@fig:flow).
+A question follows one of four paths, set by the router and the gate (@fig:flow).
 
-#let nd(t, w: 100%) = box(width: w, stroke: 0.5pt, inset: 2.5pt, radius: 2pt, align(center, text(size: 7.5pt, t)))
-#let ar = align(center, text(size: 7.5pt)[↓])
+#let bx(title, body, fill: white, line: luma(70)) = box(width: 100%, fill: fill, stroke: 0.7pt + line, radius: 3pt, inset: (x: 3pt, y: 3.5pt),
+  align(center)[#set par(justify: false, leading: 0.35em)
+    #text(weight: "bold", size: 8pt)[#title] \ #text(size: 7pt)[#body]])
+#let dn(l: none) = align(center + horizon, text(size: 7pt, fill: luma(60))[↓ #l])
+#let up(l: none) = align(center + horizon, text(size: 7pt, fill: luma(60))[↑ #l])
+#let rt(l: none) = align(center + horizon, stack(dir: ttb, spacing: 1pt, text(size: 6.5pt, fill: luma(60))[#l], text(size: 9pt, fill: luma(60))[→]))
+#let c-q = rgb("#ffffff")
+#let c-router = rgb("#ece6f8")
+#let c-edge = rgb("#dff1ef")
+#let c-emerg = rgb("#fde3e0")
+#let c-interim = rgb("#ffe9cc")
+#let c-ok = rgb("#e1f1de")
+#let c-queue = rgb("#fff3c4")
+#let c-cloud = rgb("#dce9fb")
+#let panel(title, fill, body) = block(width: 100%, height: 6.2cm, fill: fill, stroke: (paint: luma(150), thickness: 0.7pt, dash: "dashed"), radius: 4pt, inset: 5pt)[
+  #text(weight: "bold", size: 8.5pt)[#title] #v(2pt) #body]
+#let phone = panel([Phone side (offline)], rgb("#f3f6ee"), grid(
+  columns: (1fr, 1fr, 0.9cm, 1.2fr, 0.55cm), row-gutter: 1.5pt,
+  grid.cell(x: 0, y: 0, colspan: 2, bx([Farmer's question], [Hindi, Hinglish or English], fill: c-q)),
+  grid.cell(x: 0, y: 1, colspan: 2, dn()),
+  grid.cell(x: 0, y: 2, colspan: 2, bx([1\. Router], [rules in 3 languages + intent classifier: \ emergency / high-risk / live-data / general], fill: c-router, line: rgb("#6b4fbb"))),
+  grid.cell(x: 2, y: 2, rt(l: [general])),
+  grid.cell(x: 3, y: 2, bx([2\. Edge model + gate], [Llama-3.2-3B, QLoRA, 4-bit; dose filter; gate keeps or sends], fill: c-edge, line: rgb("#1f8a80"))),
+  grid.cell(x: 0, y: 3, dn(l: [emergency])),
+  grid.cell(x: 1, y: 3, dn(l: [high-risk, live-data])),
+  grid.cell(x: 3, y: 3, dn(l: [gate keeps])),
+  grid.cell(x: 0, y: 4, bx([Emergency], [shows 108 / 112 / KCC 1551 at once, never queued], fill: c-emerg, line: rgb("#c0392b"))),
+  grid.cell(x: 1, y: 4, bx([Interim message], [expert + KCC 1551 + 108 / 112; answer follows online], fill: c-interim, line: rgb("#c77d0a"))),
+  grid.cell(x: 3, y: 4, bx([Offline answer], [no dose is ever shown], fill: c-ok, line: rgb("#3a8a3a"))),
+  grid.cell(x: 4, y: 2, rowspan: 4, align(center + horizon, rotate(90deg, reflow: true, text(size: 6.5pt, fill: luma(60))[gate sends →]))),
+  grid.cell(x: 1, y: 5, dn(l: [queued])),
+  grid.cell(x: 0, y: 6, colspan: 5, bx([3\. Offline queue], [priority (emergency first), de-duplication, exponential back-off; re-asks live-data answers older than an hour; released by the link simulator (good / patchy / poor)], fill: c-queue, line: rgb("#b8920a"))),
+))
+#let cloud = panel([Cloud side (online)], rgb("#eaf1fb"), block(height: 5.25cm, align(bottom, grid(
+  columns: 1fr, row-gutter: 1.5pt,
+  bx([Verified answer], [farmer's language, citations, "as of" date], fill: c-ok, line: rgb("#3a8a3a")),
+  up(),
+  bx([6\. Safety filter], [uncited doses removed; banned pesticides refused], fill: c-interim, line: rgb("#c77d0a")),
+  up(),
+  bx([5\. Retrieval + tools], [BGE-M3 + FAISS over 383 documents; weather, price and scheme tools], fill: white, line: rgb("#2f6db5")),
+  up(),
+  bx([4\. Cloud agent], [gemma-4-26b-a4b-it; rewrites the query, loops over tools (at most 4 steps)], fill: c-cloud, line: rgb("#2f6db5")),
+))))
 #figure(
-  stack(spacing: 1.5pt,
-    nd[Farmer's question (Hindi / Hinglish / English)], ar,
-    nd[*Router*: rules + intent classifier], ar,
-    grid(columns: (1fr, 1fr), gutter: 3pt,
-      stack(spacing: 1.5pt, nd[_emergency_: show 108 / 112 / 1551 at once], nd[_high-risk, live data_: wait for the cloud]),
-      stack(spacing: 1.5pt, nd[_general_: *edge model* + dose filter], ar, nd[*Gate*: keep offline or send])),
-    ar,
-    nd[*Queue* (priority, dedupe, retry, stale re-ask)], ar,
-    nd[*Cloud agent*: retrieval + tools + safety filter],
-  ),
-  caption: [The router keeps emergencies and high-risk or live-data questions away from the phone's free-form answer; the gate keeps good general answers offline; the queue sends the rest to the cloud.],
-  kind: image, supplement: [Figure],
+  grid(columns: (1.95fr, 0.9cm, 1fr), column-gutter: 0pt, phone, align(bottom + center, pad(bottom: 0.45cm, stack(dir: ttb, spacing: 1pt, text(size: 6.5pt, fill: luma(60))[online], text(size: 9pt, fill: luma(60))[→]))), cloud),
+  caption: [Kisan-Edge pipeline. A question takes one of four paths: emergency numbers at once; an interim message and the queue (high-risk or live-data); an offline answer (general, gate keeps); or the queue and the cloud agent (general, gate sends). Cloud answers read from the bottom up.],
+  placement: top, scope: "parent", kind: image, supplement: [Figure],
 ) <fig:flow>
 
-For example if a farmer writes "gehun mein peela rust, kitni dawai daalein?" (yellow rust in wheat, how much fungicide?). The router flags a dose request as high-risk, so the phone shows a safe message with the KVK and KCC 1551 contacts and queues the question. Online, the cloud agent rewrites the query into Hindi and English, retrieves and cites crop-protection chunks, and keeps a dose only if a retrieved source supports it.
+For example if a farmer writes "gehun mein peela rust, kitni dawai daalein?" (yellow rust in wheat, how much fungicide?). The router flags a dose request as high-risk, so the phone shows a safe message that points to an expert and KCC 1551 and adds the emergency numbers 108 / 112, and queues the question. Online, the cloud agent rewrites the query into Hindi and English, retrieves and cites crop-protection chunks, and keeps a dose only if a retrieved source supports it.
 
-The router uses keyword rules in three languages for emergencies (poisoning, snakebite, fire, electric shock, heatstroke), high-risk topics and live data, followed by a TF-IDF + logistic-regression intent classifier trained on train. An emergency shows 108 / 112 / KCC 1551 at once, online or not. *The edge model* is Llama-3.2-3B-Instruct with a QLoRA adapter (rank 16, 2 epochs, seed 42; seeds 1 and 2 for re-runs), merged and quantised to GGUF Q4_K_M (2 GB); other settings are in `src/edge/` and `kaggle/jobs/`. *The dose filter* blocks any number or number word next to a unit, in Latin and Devanagari digits and Hindi units, so no dose leaves the phone even if the model writes one.
+The router uses keyword rules in three languages for emergencies (poisoning, snakebite, fire, electric shock, heatstroke), high-risk topics and live data, followed by a TF-IDF + logistic-regression intent classifier trained on train. An emergency shows 108 / 112 / KCC 1551 at once, online or not. *The edge model* is Llama-3.2-3B-Instruct with a QLoRA adapter (rank 16, 2 epochs, seed 42; seeds 1 and 2 for re-runs), merged and quantised to GGUF Q4_K_M (2 GB); other settings are in `src/edge/` and `kaggle/jobs/`. *The dose filter* blocks any number or number word next to a unit, in Latin and Devanagari digits and Hindi units, and it missed none of #get(sf, "filter_probes", "n_dose") dose probes (@sec:safety), so no dose reached the screen in our tests even when the model wrote one.
 
-The gate is a logistic regression over the answer's token log-probabilities, its length, its script, the share of unknown words in the question, and a deferral-template flag. We fit it on dev, set the cut on calib at a fixed 50% send rate, and report on test; the baseline uses only mean token probability. *The queue* holds cloud-bound questions by priority (emergency first) with deduplication, exponential back-off, and a re-ask for live-data answers older than an hour.
+The gate is a logistic regression over the answer's token log-probabilities, its length, its script, the share of unknown words in the question, whether a crop is recognised, the question's high-risk and live-data category flags, and a deferral-template flag. We fit it on dev, set the cut on calib at a fixed 50% send rate over all questions (in the hybrid the gate sees only the router's general questions, so it sends fewer), and report on test; the baseline uses only mean token probability. *The queue* holds cloud-bound questions by priority (emergency first) with deduplication, exponential back-off, and a re-ask for live-data answers older than an hour.
 
 The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + English query, calls weather, price and scheme tools, cites sources, and passes a safety filter that removes uncited doses and banned pesticides. It also receives the farmer's district. The agent is `gemma-4-26b-a4b-it` and the judge `gemma-4-31b-it` (Gemini API); free-tier quotas forced this change from the proposal's Gemini Flash, and it applies to every final run alike. The ban list was a 10-name draft during the runs; we have since checked it against the official CIB\&RC list (31 October 2026) and extended it to #get(S, "banned_official", "n_names") names (@sec:safety).
 
@@ -171,9 +203,9 @@ The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + Engl
 
 One LLM judge labels every answer correct, partly correct or wrong against its reference (temperature 0, differing from the cloud agent), and flags deferrals. For live-data questions it ignores differing numbers, since references are old snapshots. A hybrid answer takes the label of the edge or cloud answer it shows; an answer that never arrives counts as wrong. 
 - *Strict* accuracy counts only "correct"; 
-- *lenient* adds "partly correct". 
+- *Lenient* adds "partly correct". 
 
-We report 95% Wilson intervals, paired bootstrap differences (2,000 resamples), and AUROC, AURC and ECE for the gate, whose label is strict.
+We report 95% Wilson intervals, paired bootstrap differences (2,000 resamples), and AUROC and ECE for the gate (AURC is in `summary.json`), whose label is strict.
 
 // ---------------------------------------------------------------- 5 Experiment runs
 = Experiment Runs <sec:runs>
@@ -202,7 +234,7 @@ We report 95% Wilson intervals, paired bootstrap differences (2,000 resamples), 
   [The hybrid H matches the cloud agent B1 and both far exceed the phone model B3. Share (%) of the 700 test questions judged correct (300 Hindi, 250 Hinglish, 150 English). A3 covers a 350-question half. Hybrid scores combine the judge labels of the answers they show. /*Source: `summary.json` (`runs`).*/],
 ) <tab:runs>
 
-The hybrid H matches the cloud agent B1, and both beat the phone model B3 by #pc(get(S, "comparisons", "B1_minus_B3", "diff")) points or more (@tab:runs). B1 is the cloud agent alone, B2 the untuned phone model, B3 the tuned one, and H the full hybrid; A1 to A3 and R are ablations (@sec:abl). Absolute accuracies are low because the references are raw KCC answers and deferrals never count as correct. On the 158 gold questions with corrected references, B1 reaches #pc(get(S, "runs_gold", "B1", "strict", "all", "acc"))% and H #pc(get(S, "runs_gold", "H", "strict", "all", "acc"))%, in the same order.
+The hybrid H matches the cloud agent B1, and both beat the phone model B3, by #pc(get(S, "runs", "H", "strict", "all", "acc") - get(S, "runs", "B3", "strict", "all", "acc")) and #pc(get(S, "comparisons", "B1_minus_B3", "diff")) points respectively (@tab:runs). B1 is the cloud agent alone, B2 the untuned phone model, B3 the tuned one, and H the full hybrid; A1 to A3 and R are ablations (@sec:abl). Absolute accuracies are low because the references are raw KCC answers and deferrals never count as correct. On the 158 gold questions with corrected references, B1 reaches #pc(get(S, "runs_gold", "B1", "strict", "all", "acc"))% and H #pc(get(S, "runs_gold", "H", "strict", "all", "acc"))%, so the two are indistinguishable and their order is not stable (on all 700, B1 is slightly ahead).
 
 == Edge model and H2
 
@@ -220,16 +252,16 @@ Fine-tuning raised Hindi accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) poi
     [Answers = safe deferral template], [#pc(get(e2, "deferral_template_rate"))], [#pc(get(e3, "deferral_template_rate"))],
     [BhashaBench-Krishi Hindi (chance 25%)], [#pc(get(bb, "base", "acc"))], [#pc(get(bb, "tuned", "acc"))],
   ),
-  caption: [Tuning shortens answers and removes doses but lowers BhashaBench accuracy (%, unless stated). Sources: `summary.json` (`edge`, `runs`).],
+  caption: [Tuning shortens answers and nearly removes doses but lowers BhashaBench accuracy (%, unless stated). Sources: `summary.json` (`edge`, `runs`).],
 ) <tab:edge>
 
 H2 is #yes(get(S, "H2", "met")). On the 300 Hindi questions, fine-tuning raises strict accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points (95% CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1))); over all 700 it raises it by #pc(get(S, "H2", "all", "diff")) points, and on Hinglish and English the intervals include zero. Two re-runs with other seeds give #pc(get(S, "edge", "B3_seed_reruns", "seed1", "hi/deva", "acc"))% and #pc(get(S, "edge", "B3_seed_reruns", "seed2", "hi/deva", "acc"))% on Hindi, against #pc(get(S, "runs", "B3", "strict", "hi/deva", "acc"))%. Accuracy stays low because #pc(get(e3, "deferral_template_rate"))% of B3's answers are the safe deferral, which the judge never marks correct; without deferrals the Hindi gain is #pc(get(S, "H2", "hindi_deva_non_deferred", "diff")) points. Tuning clearly bought style and safety: answers are a third as long, and doses before the filter fall from #pc(get(e2, "dose_shown_rate")) to #pc(get(e3, "dose_shown_rate"))% of answers. It cost general knowledge: B3 scores #pc(get(bb, "base", "acc") - get(bb, "tuned", "acc")) points below B2 on BhashaBench-Krishi.
 
 == Phone-size check
 
-The 4-bit model fits a mid-range phone's budget. It is a #get(S, "edge", "gguf_laptop", "runs", 0, "model_size_gb") GB file that needs #get(S, "edge", "gguf_laptop", "runs", 0, "peak_rss_gb") GB of RAM and writes #get(S, "edge", "gguf_laptop", "runs", 0, "gen_tok_s") tokens per second on four laptop CPU threads (#get(S, "edge", "gguf", "gen_tok_s") on the slower Kaggle Xeon), so a typical 64-token answer takes about 4 seconds. 
+The 4-bit model is small enough for a mid-range phone. It is a #get(S, "edge", "gguf_laptop", "runs", 0, "model_size_gb") GB file that needs #get(S, "edge", "gguf_laptop", "runs", 0, "peak_rss_gb") GB of RAM and writes #get(S, "edge", "gguf_laptop", "runs", 0, "gen_tok_s") tokens per second on four laptop CPU threads (#get(S, "edge", "gguf", "gen_tok_s") on the slower Kaggle Xeon), so a typical 64-token answer takes about 4 seconds. 
 
-We did not measure on a phone.
+We did not measure it on a phone.
 
 == Gate and H3 <sec:gate>
 
@@ -250,18 +282,18 @@ The trained gate ranks phone answers better than token probability, but the prop
   caption: [The classifier wins on every row, but a sign-corrected token probability comes within #num(get(gd, "auroc_all", "classifier") - get(gd, "auroc_all", "token_prob_sign_corrected")) AUROC. Label: the judge marks the edge answer correct. Source: `summary.json` (`gate`, `gate_diagnostics`).],
 ) <tab:gate>
 
-H3 is #yes(get(S, "H3", "met")) as defined. The classifier reaches AUROC #num(get(g3, "classifier", "auroc")) against #num(get(g3, "token_prob", "auroc")) for token probability (paired bootstrap: better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of resamples; difference 95% CI #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 0)) to #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 1))). An AUROC below 0.5 means the model is most confident when it is wrong. The cause is plain: #pc(get(gd, "deferral_share_test"))% of edge answers are the fixed deferral template, which the model always generates with high confidence (mean log-probability #num(get(gd, "mean_logprob", "deferral"))) and never correct; among real answers, the correct ones are longer (#get(gd, "n_tokens_non_deferral", "correct") against #get(gd, "n_tokens_non_deferral", "wrong") tokens) and have lower mean log-probability (#num(get(gd, "mean_logprob", "non_deferral_correct")) against #num(get(gd, "mean_logprob", "non_deferral_wrong"))), because specific answers with product names and numbers contain low-probability tokens. A baseline whose sign we learn on dev is fairer: it reaches #num(get(gd, "auroc_all", "token_prob_sign_corrected")), and the classifier leads by #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 0)) to #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 1)) AUROC (95% CI), a few points. The gate ranks well, yet the phone model limits the result: the answers it keeps are correct #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% of the time.
+H3 is #yes(get(S, "H3", "met")) as defined. The classifier reaches AUROC #num(get(g3, "classifier", "auroc")) against #num(get(g3, "token_prob", "auroc")) for token probability (paired bootstrap: better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of resamples; difference 95% CI #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 0)) to #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 1))). An AUROC below 0.5 means the model is most confident when it is wrong. The cause is plain: #pc(get(gd, "deferral_share_test"))% of edge answers are the fixed deferral template, which the model always generates with high confidence (mean log-probability #num(get(gd, "mean_logprob", "deferral"))) and never correct; among real answers, the correct ones are longer (#get(gd, "n_tokens_non_deferral", "correct") against #get(gd, "n_tokens_non_deferral", "wrong") tokens) and have lower mean log-probability (#num(get(gd, "mean_logprob", "non_deferral_correct")) against #num(get(gd, "mean_logprob", "non_deferral_wrong"))), because specific answers with product names and numbers contain low-probability tokens. A baseline whose sign we learn on dev is fairer: it reaches #num(get(gd, "auroc_all", "token_prob_sign_corrected")), and the classifier leads by #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 0)) to #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 1)) AUROC (95% CI), a few points. The gate ranks well, yet the phone model limits the result: the answers it keeps in the hybrid are correct #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% of the time (the router has already removed risky questions; over all 700 answers at the 50% cut it is #pc(get(g3, "classifier", "kept_accuracy"))%).
 
 == Hybrid and H1
 
-*H1 holds on the point estimate for general questions and fails on cloud calls over all questions.* On the #get(S, "H1", "n") general test questions, the hybrid is correct on #pc(get(S, "H1", "hybrid_acc"))% against #pc(get(S, "H1", "B1_acc"))% for B1 (#pc(get(S, "H1", "pct_of_B1"))%) with #pc(get(S, "H1", "cloud_rate"))% cloud calls. Support is weak: the 95% interval of the ratio is #num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1)), only #pc(get(S, "H1", "p_ratio_at_least_0.9"))% of bootstrap resamples keep the ratio at or above 0.9, and random routing at #pc(get(S, "H1", "random_routing", "cloud_rate"))% cloud calls already reaches #pc(get(S, "H1", "random_routing", "pct_of_B1"))% of B1. We also adopted the general-questions reading after seeing that the all-question reading fails.
+H1 holds on the point estimate for general questions and fails on cloud calls over all questions On the #get(S, "H1", "n") general test questions, the hybrid is correct on #pc(get(S, "H1", "hybrid_acc"))% against #pc(get(S, "H1", "B1_acc"))% for B1 (#pc(get(S, "H1", "pct_of_B1"))%) with #pc(get(S, "H1", "cloud_rate"))% cloud calls. Support is weak: the 95% interval of the ratio is #num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1)), only #pc(get(S, "H1", "p_ratio_at_least_0.9"))% of bootstrap resamples keep the ratio at or above 0.9, and on these questions random routing at #pc(get(S, "H1", "random_routing", "cloud_rate"))% cloud calls already reaches #pc(get(S, "H1", "random_routing", "pct_of_B1"))% of B1. We also adopted the general-questions reading after seeing that the all-question reading fails.
 
-Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% of B1, but #pc(get(S, "H1_all_questions", "cloud_rate"))% of questions reach the cloud. The router causes this, not the gate: #get(S, "hybrid", "H", "route_counts", "high_risk") questions are high-risk and #get(S, "hybrid", "H", "route_counts", "live_data") need live data, so #pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)% go to the cloud before the gate is consulted. The cloud supplies most of the hybrid's accuracy. With no link, a farmer still gets a correct or partly correct answer to #pc(get(S, "offline_usefulness", "useful_offline_share"))% of questions, plus the safe interim message or emergency numbers for the rest.
+Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% of B1, but #pc(get(S, "H1_all_questions", "cloud_rate"))% of questions reach the cloud. The router causes this, not the gate: #get(S, "hybrid", "H", "route_counts", "high_risk") questions are flagged high-risk and #get(S, "hybrid", "H", "route_counts", "live_data") live-data by the router (these flags differ from the 280 and 140 labelled questions), so #pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)% go to the cloud before the gate is consulted. The cloud supplies most of the hybrid's accuracy. With no link, a farmer still gets a correct or partly correct answer to #pc(get(S, "offline_usefulness", "useful_offline_share"))% of questions, plus the safe interim message or emergency numbers for the rest.
 
 // ---------------------------------------------------------------- 6 Ablations
 = Ablations <sec:abl>
 
-*Tools matter most among the cloud parts, and each component's loss is measured on the same questions.* Removing retrieval (A2) costs #pc(-get(S, "runs", "A2", "vs_B1_same_questions", "diff")) points against B1 (CI #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 1))); removing tools (A3, 350-question half) costs #pc(-get(S, "runs", "A3", "vs_B1_same_questions", "diff")) points (CI #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 1))), all on live-data questions: B1 is correct on 61.4% of them, A3 on 14.3%, and A3 defers on 71% of them (@tab:cloud). Retrieval changes usefulness more than accuracy: without it the agent abstains on #pc(get(cm, "A2", "abstention", "abstain_rate"))% of answers, against #pc(get(cm, "B1", "abstention", "abstain_rate"))% for B1.
+*Tools matter most among the cloud parts, and each component's loss is measured on the same questions.* Removing retrieval (A2) costs #pc(-get(S, "runs", "A2", "vs_B1_same_questions", "diff")) points against B1 (CI #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A2", "vs_B1_same_questions", "ci95", 1))); removing tools (A3, 350-question half) costs #pc(-get(S, "runs", "A3", "vs_B1_same_questions", "diff")) points (CI #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 0)) to #pc(get(S, "runs", "A3", "vs_B1_same_questions", "ci95", 1))), all on live-data questions: B1 is correct on 61.4% of the 70 live-data questions in A3's half, A3 on 14.3%, and A3 defers on 71% of them (counted from `scores_B1.jsonl` and `scores_A3.jsonl`; @tab:cloud). Retrieval changes usefulness more than accuracy: without it the agent abstains on #pc(get(cm, "A2", "abstention", "abstain_rate"))% of answers, against #pc(get(cm, "B1", "abstention", "abstain_rate"))% for B1.
 
 #figure(
   T(
@@ -280,7 +312,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 
 *The tuned phone model and the trained gate add small gains whose intervals touch zero.* Swapping in the base model (A1, token-probability gate) costs #pc(get(S, "comparisons", "H_tok_minus_A1", "diff")) points and makes the dose filter block #get(S, "hybrid", "A1", "filter_blocked") answers instead of #get(S, "hybrid", "H", "filter_blocked"); random routing at the same cloud rate (R) is #pc(get(S, "comparisons", "H_minus_R", "diff")) points below H (CI #pc(get(S, "comparisons", "H_minus_R", "ci95", 0)) to #pc(get(S, "comparisons", "H_minus_R", "ci95", 1))). Both gains are small because the phone answers only a quarter of the questions.
 
-*Cutting cloud calls below about 60% costs accuracy or safety* (@fig:frontier). The designed routing cannot go below #pc(get(S, "h1_tradeoff", "rules+clf, gate_all", "cloud_rate"), d: 0)% cloud calls by moving the gate cut alone. Rules-only routing or letting high-risk questions through the gate allows lower rates, but 90% of B1 needs about 60% cloud calls, at 50% the best variant reaches only #pc(get(S, "h1_tradeoff", "rules only, gate_all", "pct_of_B1"))% of B1, and rules alone send only #pc(get(ro, "redteam_v3_heldout", "risky_recall"))% of held-out risky questions to the cloud. We keep the safe design.
+*Cutting cloud calls below about 60% costs accuracy or safety* (@fig:frontier). The designed routing cannot go below #pc(get(S, "h1_tradeoff", "frontier", "rules+clf/safety", -1, "cloud_rate"), d: 0)% cloud calls by moving the gate cut alone. Letting high-risk questions through the gate reaches #pc(get(S, "h1_tradeoff", "rules+clf, gate_all", "cloud_rate"), d: 0)% (#pc(get(S, "h1_tradeoff", "rules+clf, gate_all", "pct_of_B1"))% of B1), and rules-only routing allows lower rates. Over all 700 questions, 90% of B1 needs about 60% cloud calls, and at 50% the best variant reaches only #pc(get(S, "h1_tradeoff", "rules only, gate_all", "pct_of_B1"))% of B1. Rules alone send only #pc(get(ro, "redteam_v3_heldout", "risky_recall"))% of held-out risky questions to the cloud. We keep the safe design.
 
 #figure(image("figures/h1_frontier.png", width: 100%),
   caption: [Accuracy against cloud-call rate as the gate cut moves, for each router and policy. Dashed: 90% of B1; dotted: 50% cloud calls.]) <fig:frontier>
