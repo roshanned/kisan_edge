@@ -406,7 +406,7 @@ On v3, #pc(get(rc, "redteam_v3_heldout", "risky_recall"))% of risky questions go
 
 #heading(numbering: none, level: 2)[Contributions and Reproducibility]
 
-The project had four workstreams: data and evaluation (Anushka Sharma), edge model (Roshan K), cloud (Sai Rithvik), and router, gate, queue and integration (Kiran R). We have taken the help of an AI coding assistant (Claude) that wrote much of the code. Team members who read Hindi checked the hindi/hinglish gold and red-team sets and others checked the English sets; one team member labelled 100 judge outputs. `python -m src.eval.run_final` rebuilds every table and figure from saved answers without model calls; `scripts/final_pipeline.sh` lists all steps. Code: #link("https://github.com/roshanned/kisan_edge"); data: #link("https://huggingface.co/datasets/kisan-edge/kisan-edge-data").
+The project had four workstreams: data and evaluation (Anushka Sharma), edge model (training and ablations) and integration (Roshan K), cloud (all ablations) (Sai Rithvik), and router, gate and queue (Kiran R). We have taken the help of an AI coding assistant (Claude) that wrote much of the code. Team members who read Hindi checked the hindi/hinglish gold and red-team sets and others checked the English sets; one team member labelled 100 judge outputs. `python -m src.eval.run_final` rebuilds every table and figure from saved answers without model calls; `scripts/final_pipeline.sh` lists all steps. Code: #link("https://github.com/roshanned/kisan_edge"); data: #link("https://huggingface.co/datasets/kisan-edge/kisan-edge-data").
 
 // ---------------------------------------------------------------- References
 #bibliography("refs.bib", title: [References], style: "apa")
