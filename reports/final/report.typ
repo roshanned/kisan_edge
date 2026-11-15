@@ -285,7 +285,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 
 == Hypothesis verdicts
 
-*H2 fails, and H1 and H3 hold only with caveats* (@tab:verdicts).
+*H2 is not met, and H1 and H3 hold only with caveats* (@tab:verdicts).
 
 #figure(
   T(
@@ -293,7 +293,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
     align: (left, left),
     [*H*], [*Result on the test set*],
     [H1], [#yes(get(S, "H1", "met")) on the point estimate: #pc(get(S, "H1", "pct_of_B1"))% of B1 at #pc(get(S, "H1", "cloud_rate"))% cloud calls (n = #get(S, "H1", "n"); ratio CI #num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1))). Over all 700: #pc(get(S, "H1_all_questions", "pct_of_B1"))% at #pc(get(S, "H1_all_questions", "cloud_rate"))%],
-    [H2], [#yes(get(S, "H2", "met")): +#pc(get(S, "H2", "hindi_deva", "diff")) points (CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1)))],
+    [H2], [#yes(get(S, "H2", "met")): +#pc(get(S, "H2", "hindi_deva", "diff")) points (the point estimate misses the target but is within the confidence interval: CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1)))],
     [H3], [#yes(get(S, "H3", "met")) as defined: AUROC #num(get(S, "H3", "classifier_auroc")) vs #num(get(S, "H3", "token_prob_auroc")); vs sign-corrected #num(get(gd, "auroc_all", "token_prob_sign_corrected"))],
   ),
   caption: [Hypothesis verdicts (strict accuracy).],
@@ -301,7 +301,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 
 == Judge reliability <sec:judge>
 
-*The judge agrees with a second judge on #pc(get(JJ, "agreement_correct_vs_not"), d: 0)% and with one person on #pc(get(JH, "agreement_correct_vs_not"), d: 0)% of the correct-vs-not decisions behind every strict accuracy.* The second judge (`gemini-3.5-flash-lite`) relabelled #get(JJ, "n") stratified answers; three-way agreement is lower (#pc(get(JJ, "exact_agreement"), d: 0)%, $kappa$ = #num(get(JJ, "kappa"))), mostly because our judge calls "wrong" what the second calls "partly correct". One team member relabelled #get(JH, "n") answers (B1, B2, B3; Hindi and English) blind, using the judge's rule of comparing with the reference, not the truth: exact agreement is #pc(get(JH, "exact_agreement"), d: 0)% ($kappa$ = #num(get(JH, "kappa"))), and the person and judge both mark #pc(get(JH, "human_correct_rate"), d: 0)% of answers correct, so strict accuracy shows no bias on this sample. The limits are one labeller and only 13 human-correct answers.
+*The judge (`gemma-4-31b-it`) agrees with a second judge (`gemini-3.5-flash-lite`) on #pc(get(JJ, "agreement_correct_vs_not"), d: 0)% and with one person on #pc(get(JH, "agreement_correct_vs_not"), d: 0)% of the correct-vs-not decisions behind every strict accuracy.* The second judge relabelled #get(JJ, "n") stratified answers; three-way agreement is lower (#pc(get(JJ, "exact_agreement"), d: 0)%, $kappa$ = #num(get(JJ, "kappa"))), mostly because our judge calls "wrong" what the second calls "partly correct". One team member relabelled #get(JH, "n") answers (B1, B2, B3; Hindi and English) blind, using the judge's rule of comparing with the reference, not the truth: exact agreement is #pc(get(JH, "exact_agreement"), d: 0)% ($kappa$ = #num(get(JH, "kappa"))), and the person and judge both mark #pc(get(JH, "human_correct_rate"), d: 0)% of answers correct, so strict accuracy shows no bias on this sample. The limits are one labeller and only 13 human-correct answers.
 
 == Retrieval, tools and fault handling
 
