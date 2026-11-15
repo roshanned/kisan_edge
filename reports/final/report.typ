@@ -159,7 +159,7 @@ A question passes through six parts in a fixed order (@fig:flow).
   kind: image, supplement: [Figure],
 ) <fig:flow>
 
-A farmer writes "gehun mein peela rust, kitni dawai daalein?" (yellow rust in wheat, how much fungicide?). The router flags a dose request as high-risk, so the phone shows a safe message with the KVK and KCC 1551 contacts and queues the question. Online, the cloud agent rewrites the query into Hindi and English, retrieves and cites crop-protection chunks, and keeps a dose only if a retrieved source supports it.
+For example if a farmer writes "gehun mein peela rust, kitni dawai daalein?" (yellow rust in wheat, how much fungicide?). The router flags a dose request as high-risk, so the phone shows a safe message with the KVK and KCC 1551 contacts and queues the question. Online, the cloud agent rewrites the query into Hindi and English, retrieves and cites crop-protection chunks, and keeps a dose only if a retrieved source supports it.
 
 The router uses keyword rules in three languages for emergencies (poisoning, snakebite, fire, electric shock, heatstroke), high-risk topics and live data, followed by a TF-IDF + logistic-regression intent classifier trained on train. An emergency shows 108 / 112 / KCC 1551 at once, online or not. *The edge model* is Llama-3.2-3B-Instruct with a QLoRA adapter (rank 16, 2 epochs, seed 42; seeds 1 and 2 for re-runs), merged and quantised to GGUF Q4_K_M (2 GB); other settings are in `src/edge/` and `kaggle/jobs/`. *The dose filter* blocks any number or number word next to a unit, in Latin and Devanagari digits and Hindi units, so no dose leaves the phone even if the model writes one.
 
@@ -169,7 +169,11 @@ The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + Engl
 
 == Evaluation protocol
 
-*One LLM judge labels every answer correct, partly correct or wrong against its reference* (temperature 0, differing from the cloud agent), and flags deferrals. For live-data questions it ignores differing numbers, since references are old snapshots. A hybrid answer takes the label of the edge or cloud answer it shows; an answer that never arrives counts as wrong. *Strict* accuracy counts only "correct"; *lenient* adds "partly correct". We report 95% Wilson intervals, paired bootstrap differences (2,000 resamples), and AUROC, AURC and ECE for the gate, whose label is strict. Every number comes from `outputs/final/summary.json` or a file named in a caption.
+One LLM judge labels every answer correct, partly correct or wrong against its reference (temperature 0, differing from the cloud agent), and flags deferrals. For live-data questions it ignores differing numbers, since references are old snapshots. A hybrid answer takes the label of the edge or cloud answer it shows; an answer that never arrives counts as wrong. 
+- *Strict* accuracy counts only "correct"; 
+- *lenient* adds "partly correct". 
+
+We report 95% Wilson intervals, paired bootstrap differences (2,000 resamples), and AUROC, AURC and ECE for the gate, whose label is strict.
 
 // ---------------------------------------------------------------- 5 Experiment runs
 = Experiment Runs <sec:runs>
@@ -195,14 +199,14 @@ The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + Engl
     [*Run*], [*What*], [*Hindi*], [*Hinglish*], [*English*], [*All, strict \[95% CI\]*], [*Lenient*], [*Cloud /100*],
     ..("B1", "A2", "A3", "B2", "B3", "H", "R", "A1").map(row).flatten(),
   ),
-  [The hybrid H matches the cloud agent B1 and both far exceed the phone model B3. Share (%) of the 700 test questions judged correct (300 Hindi, 250 Hinglish, 150 English). A3 covers a 350-question half. Hybrid scores combine the judge labels of the answers they show. Source: `summary.json` (`runs`).],
+  [The hybrid H matches the cloud agent B1 and both far exceed the phone model B3. Share (%) of the 700 test questions judged correct (300 Hindi, 250 Hinglish, 150 English). A3 covers a 350-question half. Hybrid scores combine the judge labels of the answers they show. /*Source: `summary.json` (`runs`).*/],
 ) <tab:runs>
 
-*The hybrid H matches the cloud agent B1, and both beat the phone model B3 by #pc(get(S, "comparisons", "B1_minus_B3", "diff")) points or more* (@tab:runs). B1 is the cloud agent alone, B2 the untuned phone model, B3 the tuned one, and H the full hybrid; A1 to A3 and R are ablations (@sec:abl). Absolute accuracies are low because the references are raw KCC answers and deferrals never count as correct. On the 158 gold questions with corrected references, B1 reaches #pc(get(S, "runs_gold", "B1", "strict", "all", "acc"))% and H #pc(get(S, "runs_gold", "H", "strict", "all", "acc"))%, in the same order.
+The hybrid H matches the cloud agent B1, and both beat the phone model B3 by #pc(get(S, "comparisons", "B1_minus_B3", "diff")) points or more (@tab:runs). B1 is the cloud agent alone, B2 the untuned phone model, B3 the tuned one, and H the full hybrid; A1 to A3 and R are ablations (@sec:abl). Absolute accuracies are low because the references are raw KCC answers and deferrals never count as correct. On the 158 gold questions with corrected references, B1 reaches #pc(get(S, "runs_gold", "B1", "strict", "all", "acc"))% and H #pc(get(S, "runs_gold", "H", "strict", "all", "acc"))%, in the same order.
 
 == Edge model and H2
 
-*Fine-tuning raised Hindi accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points, short of the 10-point target, and changed style and safety more than accuracy* (@tab:edge).
+Fine-tuning raised Hindi accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points, short of the 10-point target, and changed style and safety more than accuracy (@tab:edge).
 
 #figure(
   T(
@@ -219,15 +223,17 @@ The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + Engl
   caption: [Tuning shortens answers and removes doses but lowers BhashaBench accuracy (%, unless stated). Sources: `summary.json` (`edge`, `runs`).],
 ) <tab:edge>
 
-*H2 is #yes(get(S, "H2", "met")).* On the 300 Hindi questions, fine-tuning raises strict accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points (95% CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1))); over all 700 it raises it by #pc(get(S, "H2", "all", "diff")) points, and on Hinglish and English the intervals include zero. Two re-runs with other seeds give #pc(get(S, "edge", "B3_seed_reruns", "seed1", "hi/deva", "acc"))% and #pc(get(S, "edge", "B3_seed_reruns", "seed2", "hi/deva", "acc"))% on Hindi, against #pc(get(S, "runs", "B3", "strict", "hi/deva", "acc"))%. Accuracy stays low because #pc(get(e3, "deferral_template_rate"))% of B3's answers are the safe deferral, which the judge never marks correct; without deferrals the Hindi gain is #pc(get(S, "H2", "hindi_deva_non_deferred", "diff")) points. Tuning clearly bought style and safety: answers are a third as long, and doses before the filter fall from #pc(get(e2, "dose_shown_rate")) to #pc(get(e3, "dose_shown_rate"))% of answers. It cost general knowledge: B3 scores #pc(get(bb, "base", "acc") - get(bb, "tuned", "acc")) points below B2 on BhashaBench-Krishi.
+H2 is #yes(get(S, "H2", "met")). On the 300 Hindi questions, fine-tuning raises strict accuracy by #pc(get(S, "H2", "hindi_deva", "diff")) points (95% CI #pc(get(S, "H2", "hindi_deva", "ci95", 0)) to #pc(get(S, "H2", "hindi_deva", "ci95", 1))); over all 700 it raises it by #pc(get(S, "H2", "all", "diff")) points, and on Hinglish and English the intervals include zero. Two re-runs with other seeds give #pc(get(S, "edge", "B3_seed_reruns", "seed1", "hi/deva", "acc"))% and #pc(get(S, "edge", "B3_seed_reruns", "seed2", "hi/deva", "acc"))% on Hindi, against #pc(get(S, "runs", "B3", "strict", "hi/deva", "acc"))%. Accuracy stays low because #pc(get(e3, "deferral_template_rate"))% of B3's answers are the safe deferral, which the judge never marks correct; without deferrals the Hindi gain is #pc(get(S, "H2", "hindi_deva_non_deferred", "diff")) points. Tuning clearly bought style and safety: answers are a third as long, and doses before the filter fall from #pc(get(e2, "dose_shown_rate")) to #pc(get(e3, "dose_shown_rate"))% of answers. It cost general knowledge: B3 scores #pc(get(bb, "base", "acc") - get(bb, "tuned", "acc")) points below B2 on BhashaBench-Krishi.
 
 == Phone-size check
 
-*The 4-bit model fits a mid-range phone's budget.* It is a #get(S, "edge", "gguf_laptop", "runs", 0, "model_size_gb") GB file that needs #get(S, "edge", "gguf_laptop", "runs", 0, "peak_rss_gb") GB of RAM and writes #get(S, "edge", "gguf_laptop", "runs", 0, "gen_tok_s") tokens per second on four laptop CPU threads (#get(S, "edge", "gguf", "gen_tok_s") on the slower Kaggle Xeon), so a typical 64-token answer takes about 4 seconds. We did not measure on a phone.
+The 4-bit model fits a mid-range phone's budget. It is a #get(S, "edge", "gguf_laptop", "runs", 0, "model_size_gb") GB file that needs #get(S, "edge", "gguf_laptop", "runs", 0, "peak_rss_gb") GB of RAM and writes #get(S, "edge", "gguf_laptop", "runs", 0, "gen_tok_s") tokens per second on four laptop CPU threads (#get(S, "edge", "gguf", "gen_tok_s") on the slower Kaggle Xeon), so a typical 64-token answer takes about 4 seconds. 
+
+We did not measure on a phone.
 
 == Gate and H3 <sec:gate>
 
-*The trained gate ranks phone answers better than token probability, but the proposal's baseline is inverted, so the margin depends on the baseline* (@tab:gate).
+The trained gate ranks phone answers better than token probability, but the proposal's baseline is inverted, so the margin depends on the baseline (@tab:gate).
 
 #figure(
   T(
@@ -244,7 +250,7 @@ The cloud agent embeds with BGE-M3, searches FAISS with a rewritten Hindi + Engl
   caption: [The classifier wins on every row, but a sign-corrected token probability comes within #num(get(gd, "auroc_all", "classifier") - get(gd, "auroc_all", "token_prob_sign_corrected")) AUROC. Label: the judge marks the edge answer correct. Source: `summary.json` (`gate`, `gate_diagnostics`).],
 ) <tab:gate>
 
-*H3 is #yes(get(S, "H3", "met")) as defined.* The classifier reaches AUROC #num(get(g3, "classifier", "auroc")) against #num(get(g3, "token_prob", "auroc")) for token probability (paired bootstrap: better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of resamples; difference 95% CI #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 0)) to #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 1))). An AUROC below 0.5 means the model is most confident when it is wrong. The cause is plain: #pc(get(gd, "deferral_share_test"))% of edge answers are the fixed deferral template, which the model always generates with high confidence (mean log-probability #num(get(gd, "mean_logprob", "deferral"))) and never correct; among real answers, the correct ones are longer (#get(gd, "n_tokens_non_deferral", "correct") against #get(gd, "n_tokens_non_deferral", "wrong") tokens) and have lower mean log-probability (#num(get(gd, "mean_logprob", "non_deferral_correct")) against #num(get(gd, "mean_logprob", "non_deferral_wrong"))), because specific answers with product names and numbers contain low-probability tokens. A baseline whose sign we learn on dev is fairer: it reaches #num(get(gd, "auroc_all", "token_prob_sign_corrected")), and the classifier leads by #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 0)) to #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 1)) AUROC (95% CI), a few points. The gate ranks well, yet the phone model limits the result: the answers it keeps are correct #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% of the time.
+H3 is #yes(get(S, "H3", "met")) as defined. The classifier reaches AUROC #num(get(g3, "classifier", "auroc")) against #num(get(g3, "token_prob", "auroc")) for token probability (paired bootstrap: better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of resamples; difference 95% CI #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 0)) to #num(get(S, "H3", "bootstrap", "auroc_diff_ci95", 1))). An AUROC below 0.5 means the model is most confident when it is wrong. The cause is plain: #pc(get(gd, "deferral_share_test"))% of edge answers are the fixed deferral template, which the model always generates with high confidence (mean log-probability #num(get(gd, "mean_logprob", "deferral"))) and never correct; among real answers, the correct ones are longer (#get(gd, "n_tokens_non_deferral", "correct") against #get(gd, "n_tokens_non_deferral", "wrong") tokens) and have lower mean log-probability (#num(get(gd, "mean_logprob", "non_deferral_correct")) against #num(get(gd, "mean_logprob", "non_deferral_wrong"))), because specific answers with product names and numbers contain low-probability tokens. A baseline whose sign we learn on dev is fairer: it reaches #num(get(gd, "auroc_all", "token_prob_sign_corrected")), and the classifier leads by #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 0)) to #num(get(gd, "classifier_minus_sign_corrected_token_prob", "all", 1)) AUROC (95% CI), a few points. The gate ranks well, yet the phone model limits the result: the answers it keeps are correct #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% of the time.
 
 == Hybrid and H1
 
