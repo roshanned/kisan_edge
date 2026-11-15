@@ -1,11 +1,11 @@
-# Project status: final phase (updated Nov 13, 2026, 12:40 IST)
+# Project status: final phase (updated Nov 15, 2026)
 
 Final submission: **Sun Nov 15**. Evaluations Nov 16-19. Branch: `main` (the only working branch; all other branches are merged into it).
 This file is the hand-off: anyone (or any Claude session) can continue from it. Design decisions: `docs/DECISIONS.md` (D1-D29). Every command, in order: `scripts/final_pipeline.sh`.
 
-## State: all automatic work is done (Nov 13, 12:40 IST)
+## State: all automatic work is done (Nov 15)
 
-Every run, judgment, metric, the report (`reports/final/report.pdf`) and the slides (`reports/final/slides.pdf`) are complete and pushed. Nothing is running. Only the "Needs a human" items below are left.
+Every run, judgment and metric is complete. Nothing is running. The human checks of Nov 14-15 (judge labels, Hindi review, ban list, schemes) are in `summary.json` and the report. On Nov 15 `reports/final/report.typ` was rewritten in two-column ACL layout with the sections Abstract, Introduction, Literature Review, Dataset, Methodology, Experiment Runs, Ablations, Evaluations, Limitations, Conclusions, References (bibliography in `reports/final/refs.bib`); the earlier single-column version is kept as `report_old.typ`. Build: `typst compile --root . reports/final/report.typ reports/final/report.pdf`. `slides.typ` is unchanged. Only the "Needs a human" items below are left.
 
 ## Final results (all in `outputs/final/summary.json`; report `reports/final/report.pdf`, slides `reports/final/slides.pdf`)
 
@@ -26,7 +26,7 @@ Every run, judgment, metric, the report (`reports/final/report.pdf`) and the sli
 ## Pending
 
 **Needs a human:**
-1. Read `reports/final/report.pdf` and `slides.pdf`; tag `final-submission` on `main`; submit by Nov 15.
+1. Read the new `reports/final/report.pdf` (check the references in `refs.bib`: they were written from memory) and `slides.pdf`; tag `final-submission` on `main`; submit by Nov 15.
 2. ~~Hand-label 100 judge outputs~~ **done Nov 14** (`judge_check_sheet_final.csv`; numbers in `summary.json` key `judge_human`, in the report). Optional: a second person labels the same sheet to get human-human agreement.
 3. ~~Hindi review~~ **done Nov 15** by team members who read Hindi, no changes: red-team v2/v3 (141 rows, `human_reviewed: true`), the 158 gold questions, and the router keyword lists. (`gold.jsonl` now has `human_checked: true`; `check_method` stays `ai_precheck` because an LLM proposed the corrections the people confirmed.)
 4. `src/cloud/banned_pesticides.txt` **verified Nov 15** against the CIB&RC list (updated 31.10.2026): 87 entries. Re-check of saved answers: 11 of 700 B1 answers (1.6%) name a now-listed banned product, not regenerated (see report, Safety). `data/snapshots/schemes.json` also checked and corrected Nov 15 (`needs_verification: false`; the scheme tool was never called in the saved runs, so no result changes).
