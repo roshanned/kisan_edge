@@ -60,7 +60,7 @@ All numbers come from [`outputs/final/summary.json`](outputs/final/summary.json)
 
 | Hypothesis (proposal) | Result |
 |---|---|
-| **H1**: on general farming questions, the hybrid reaches ≥ 90% of cloud-only accuracy while sending ≤ 50% of them to the cloud | **Met**: 95.9% of B1 with 43.6% of the 280 general questions sent to the cloud. Over all 700 questions the hybrid reaches 98.0% of B1 (no significant difference) but makes 74.6% cloud calls, because the safety rules send every high-risk and live-data question to the cloud |
+| **H1**: on general farming questions, the hybrid reaches ≥ 90% of cloud-only accuracy while sending ≤ 50% of them to the cloud | **Met on the point estimate, weakly supported**: 95.9% of B1 with 43.6% of the 280 general questions sent to the cloud. Caveats: the 95% CI on the ratio is 0.76 to 1.19, random routing at a similar cloud rate (47.5%) already reaches 90.4% of B1, and absolute accuracy is low (about 25%). Over all 700 questions the hybrid reaches 98.0% of B1 (no significant difference) but makes 74.6% cloud calls, because the safety rules send every high-risk and live-data question to the cloud |
 | **H2**: LoRA tuning adds ≥ 10 points on the Hindi test set | **Not met**: +7.0 points (95% CI 3.0 to 10.7); two seed re-runs agree |
 | **H3**: a trained gate has higher AUROC than raw token probability | **Met**: 0.87 vs 0.16 (0.77 vs 0.27 without the deferral answers) |
 
@@ -76,7 +76,7 @@ All numbers come from [`outputs/final/summary.json`](outputs/final/summary.json)
 | A1 hybrid with the base model | 26.0% | 87.4 |
 
 Also measured:
-- **Safety.** No dose is ever shown offline. On a held-out red-team set written by another model, 92.6% of risky questions go to the cloud and 95.8% of emergencies see an emergency number.
+- **Safety.** No dose is ever shown offline. On a held-out red-team set drafted by another model and read in full by team members who read Hindi (no changes), 92.6% of risky questions go to the cloud and 95.8% of emergencies see an emergency number.
 - **Retrieval.** Recall@5 rises from 0.60 to 0.92 with the LLM-rewritten query.
 - **Citations and tools.** Citation faithfulness is 91%. Without tools, accuracy on live-data questions drops from 61% to 14%.
 - **Queue.** On a patchy link, accuracy is 28.0% with the queue and 18.7% without it.
@@ -84,7 +84,7 @@ Also measured:
 - **BhashaBench-Krishi (Hindi).** Base 33.6%, tuned 29.8%.
 - **Judge.** A second LLM judge agrees with ours on "correct vs not correct" for 93% of 150 sampled answers.
 
-Caveats are in the report's *Limitations* section. The main ones: the KCC references are noisy, and the judge has not yet been checked against human labels.
+Caveats are in the report's *Limitations* section. The main ones: the KCC references are noisy, and the judge was checked against one person on 100 answers (85% exact agreement, 92% on correct vs not; one labeller, small sample).
 
 ## Repository map
 
@@ -114,7 +114,7 @@ kisan_edge/
 │   ├── final/         final-phase answers, judge scores, hybrid runs, metrics and summary.json
 │   └── mid/           mid-submission run files (kept so the mid report reproduces)
 ├── reports/
-│   ├── final/         report.typ/.pdf, slides.typ/.pdf, figures/, tables/, judge_check_sheet.csv
+│   ├── final/         report.typ/.pdf, slides.typ/.pdf, figures/, tables/, judge_check_sheet.csv (+ judge_check_sheet_final.csv, human-labelled)
 │   └── mid/           mid-submission report
 └── docs/              DECISIONS.md, DEMO.md, per-layer guides (layers/), archive/
 ```

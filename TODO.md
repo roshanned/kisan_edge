@@ -8,7 +8,7 @@ Only the steps that need a human: a decision, a login, or a Hindi reader. The fu
 |---|---|---|---|
 | 1 | **Read `reports/final/report.pdf` end to end.** Fix anything that is not true or not clear. | It is the graded deliverable. | 45 min |
 | 2 | **Approve tagging `final-submission` on `main`** once the report is final. All work is on `main`. | Graders look at GitHub. | 10 min |
-| 3 | **Check 100 judge labels by hand**: open `reports/final/judge_check_sheet.csv`, fill `human_label` (correct / partly_correct / wrong) without looking at `judge_label` first, then run `python -m src.eval.judge_check --dir outputs/final --report-dir reports/final agree`. Put the agreement into the report (section "Evaluation method"). | Every accuracy number rests on the LLM judge. Judge-vs-judge agreement is already reported, but it is not a human check. | 60-90 min |
+| 3 | ~~Check 100 judge labels by hand~~ **Done Nov 14**: 85% exact agreement with the judge, kappa 0.63, 92% on correct vs not (`reports/final/judge_agreement.md`, report section "Can the judge be trusted?"). Optional: a second labeller on the same sheet. | Every accuracy number rests on the LLM judge. | done |
 | 4 | **Upload to Hugging Face**: the saved token is read-only. Create a token with write access to the `kisan-edge` org, `hf auth login`, then `python scripts/upload_hf.py` (everything is staged by the script). | The README says all data lives there. | 5 min |
 | 5 | Prepare the slides and rehearse the live demo (`python -m src.demo ...`, see README "Demo"). | Nov 16-19 presentation. | 1-2 h |
 
@@ -16,9 +16,9 @@ Only the steps that need a human: a decision, a login, or a Hindi reader. The fu
 
 | # | What | Effect |
 |---|---|---|
-| 6 | A Hindi speaker reads the red-team sets `redteam_v2.jsonl` (69) and `redteam_v3.jsonl` (72), and the keywords added on Nov 11 (bottom of `src/router_gate/keywords/*.txt`). Mark `human_reviewed: true` (or fix rows) and re-run `python -m src.router_gate.eval_router` and `python -m src.eval.run_final`. | Removes "LLM-written, machine-checked only" from the safety numbers |
-| 7 | Human check of the 158 gold questions (`data/processed/gold.jsonl`, `check_method = ai_precheck`). | The gold columns become human-checked |
-| 8 | Verify `src/cloud/banned_pesticides.txt` and `data/snapshots/schemes.json` against official lists (both were written from memory). | Cloud safety filter and scheme tool facts |
+| 6 | ~~Red-team v2/v3 review and keyword lists~~ **done Nov 15**, no changes. | | done |
+| 7 | ~~Human check of the 158 gold questions~~ **done Nov 15**, no changes (`gold.jsonl`: `human_checked: true`). | | done |
+| 8 | ~~Verify `banned_pesticides.txt` and `schemes.json`~~ **done Nov 15** (banned list: CIB&RC 31.10.2026, 87 entries; schemes checked and corrected). | | done |
 | 9 | Get a free data.gov.in API key, put `DATA_GOV_API_KEY` in `.env`, run `python -m src.cloud.fetch_snapshots mandi`. | The mandi-price tool has no data, so price questions get "unavailable" |
 | 10 | Accept the terms of the gated datasets on Hugging Face: `bharatgenai/BhashaBench-Krishi` (native Hindi, 2,757 Qs; we used the machine-translated Hindi subset of the ungated BhashaBench-Multi) and `sthanika-ai/Indic-KCC-Agri-Advisory-Benchmark` (evaluation-only licence). Then `python -m src.edge.bhashabench --native --parquet <file>` on Kaggle. | Native-Hindi benchmark numbers |
 | 11 | Confirm or change decisions D17-D27 in `docs/DECISIONS.md` (model switch to Gemma, district context, red-team method, judge-quota savings). | The team owns the choices |

@@ -246,6 +246,23 @@ def hybrid_section(qs, E, C, ES, CS, gates, S):
                    "hybrid_acc": round(hg, 4), "pct_of_B1": round(hg / bg, 4) if bg else None, "cloud_rate": round(cg, 4),
                    "diff": paired_bootstrap(sc_all["H"], CS["B1"], gen),
                    "accuracy_ok": hg >= 0.9 * bg, "cloud_ok": cg <= 0.5, "met": bool(hg >= 0.9 * bg and cg <= 0.5)}
+        # how strong is that evidence? bootstrap of the hybrid/B1 ratio, and random routing on the same questions
+        rng = random.Random(0)
+        ratios = []
+        for _ in range(5000):
+            smp = [rng.choice(gen) for _ in gen]
+            b = acc(CS["B1"], smp)[0]
+            ratios.append(acc(sc_all["H"], smp)[0] / b if b else 0.0)
+        ratios.sort()
+        S["H1"]["ratio_ci95"] = [round(ratios[int(0.025 * len(ratios))], 4), round(ratios[int(0.975 * len(ratios))], 4)]
+        S["H1"]["p_ratio_at_least_0.9"] = round(sum(r >= 0.9 for r in ratios) / len(ratios), 3)
+        if "R" in sc_all:
+            rnd = {r["id"]: r for r in read_jsonl(D / "hybrid_R.jsonl")}
+            rg = acc(sc_all["R"], gen)[0] / len(gen)
+            S["H1"]["random_routing"] = {"accuracy": round(rg, 4), "pct_of_B1": round(rg / bg, 4) if bg else None,
+                                         "cloud_rate": round(sum(not rnd[i]["kept_offline"] for i in gen) / len(gen), 4)}
+        S["H1"]["lenient"] = {"B1": round(acc(CS["B1"], gen, False)[0] / len(gen), 4),
+                              "hybrid": round(acc(sc_all["H"], gen, False)[0] / len(gen), 4)}
         # the stricter reading over all 700 questions, which counts the high-risk and live-data questions the design
         # always sends to the cloud
         S["H1_all_questions"] = {
@@ -392,6 +409,14 @@ def main():
     sc_h = hybrid_section(qs, E, C, ES, CS, gates, S)
     queue_section(qs, E, C, ES, CS, gates, S)
     safety_section(qs, E, S)
+    # cloud answers that name a pesticide on the CURRENT banned list (src/cloud/banned_pesticides.txt, CIB&RC 31.10.2026);
+    # the saved answers were produced with an earlier 10-name draft list, so this is a re-check, not a rerun
+    from src.cloud import safety as cloud_safety
+    S["banned_official"] = {"n_names": len(cloud_safety.BANNED)}
+    for k in C:
+        hits = [m.group(0).lower() for r in C[k] if (m := cloud_safety._BANNED_RX.search(r["answer"] or ""))]
+        S["banned_official"][k] = {"n": len(C[k]), "answers_naming_banned": len(hits), "rate": round(len(hits) / len(C[k]), 4),
+                                   "names": sorted(set(hits))}
     for name in ("rag_recall", "cloud_metrics", "fault_injection"):
         if (D / f"{name}.json").exists():
             S[name] = json.loads((D / f"{name}.json").read_text(encoding="utf-8"))
@@ -435,6 +460,12 @@ def main():
         S["H3"] = {"token_prob_auroc": g["token_prob"]["auroc"],
                    "classifier_auroc": g["classifier"]["auroc"] if isinstance(g["classifier"], dict) else None,
                    "met": g.get("h3_classifier_beats_token_prob"), "bootstrap": g.get("h3_bootstrap")}
+    if (D / "edge_tuned_full.jsonl").exists():
+        from src.eval.gate_diagnostics import diagnostics
+        S["gate_diagnostics"] = diagnostics()
+        (D / "gate_diagnostics.json").write_text(json.dumps(S["gate_diagnostics"], indent=1), encoding="utf-8")
+    from src.eval.judge_check import human_stats
+    S["judge_human"] = human_stats(R / "judge_check_sheet_final.csv")
     (D / "summary.json").write_text(json.dumps(S, ensure_ascii=False, indent=1), encoding="utf-8")
     write_tables(S)
     print(json.dumps({k: S[k] for k in ("H1", "H2", "H3") if k in S}, indent=1))

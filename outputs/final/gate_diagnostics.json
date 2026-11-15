@@ -1,0 +1,43 @@
+{
+ "n_test": 700,
+ "n_dev": 600,
+ "deferral_share_test": 0.39,
+ "accuracy_on_deferrals": 0.0,
+ "accuracy_non_deferral": 0.155,
+ "mean_logprob": {
+  "deferral": -0.032,
+  "non_deferral_correct": -0.767,
+  "non_deferral_wrong": -0.542
+ },
+ "n_tokens_non_deferral": {
+  "correct": 81.9,
+  "wrong": 49.9
+ },
+ "sign_chosen_on_dev": {
+  "mean_logprob": -1,
+  "min_logprob": -1
+ },
+ "dev_auroc_mean_logprob": 0.1696,
+ "auroc_all": {
+  "token_prob_as_defined": 0.1559,
+  "token_prob_sign_corrected": 0.8441,
+  "min_logprob_sign_corrected": 0.7177,
+  "classifier": 0.8687
+ },
+ "auroc_non_deferral": {
+  "token_prob_as_defined": 0.2739,
+  "token_prob_sign_corrected": 0.7261,
+  "min_logprob_sign_corrected": 0.6095,
+  "classifier": 0.7693
+ },
+ "classifier_minus_sign_corrected_token_prob": {
+  "all": [
+   0.001,
+   0.0489
+  ],
+  "non_deferral": [
+   0.0018,
+   0.0854
+  ]
+ }
+}

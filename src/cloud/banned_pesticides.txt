@@ -1,12 +1,99 @@
-# DRAFT, verify against the current CIB&RC banned/restricted list before the final report (TODO.md, cloud #6).
-# One lowercase name per line. Only products that are long-established as banned for agricultural use in India.
-endosulfan
-ddt
+# Source: CIB&RC "List of pesticides which are banned, refused registration and restricted in use" (updated 31.10.2026),
+# downloaded from ppqs.gov.in and checked by a team member on Nov 15, 2026.
+# Included: section I.A (banned for manufacture, import and use) and the names in I.B (banned for use, manufactured for export only).
+# NOT included on purpose: I.C (withdrawn), II (refused registration, never sold), III (restricted: banned only on some crops or
+# uses, e.g. chlorpyrifos, carbofuran, mancozeb, malathion, trifluralin on wheat, captafol as seed dresser), and sodium cyanide
+# (banned for insecticidal use only). A blanket refusal would wrongly block those.
+# One lowercase name per line, matched as a whole word (Latin letters) or as a substring (Devanagari). Lines starting with # are ignored.
+# --- I.A, Latin names (the first ten were on the original draft and are all on the official list) ---
+alachlor
+aldicarb
+aldrin
+benzene hexachloride
 bhc
 hch
-aldrin
-dieldrin
+benomyl
+calcium cyanide
+carbaryl
+chlorbenzilate
 chlordane
+chlorofenvinphos
+copper acetoarsenite
+diazinon
+dibromochloropropane
+dbcp
+dichlorvos
+dichlorovos
+ddvp
+dicofol
+dieldrin
+dinocap
+endosulfan
+endrin
+ethyl mercury chloride
+parathion
+methyl parathion
+ethylene dibromide
+fenarimol
+fenthion
 heptachlor
-toxaphene
 lindane
+linuron
+maleic hydrazide
+menazon
+methomyl
+methoxy ethyl mercury chloride
+metoxuron
+nitrofen
+paraquat
+pentachloro nitrobenzene
+pcnb
+pentachlorophenol
+phenyl mercury acetate
+phorate
+phosphamidon
+sodium methane arsonate
+tetradifon
+thiometon
+toxaphene
+camphechlor
+triazophos
+tridemorph
+trichloro acetic acid
+trichloroacetic acid
+trichlorfon
+# --- DDT: on the restricted list, but "use in agriculture is withdrawn" (S.O. 378(E), 1989), so it is refused for farm use ---
+ddt
+# --- I.B only ---
+nicotin sulfate
+nicotine sulfate
+nicotine sulphate
+# --- Devanagari spellings (transliterations written by the team, not taken from the PDF) ---
+एंडोसल्फान
+एन्डोसल्फान
+डीडीटी
+फोरेट
+पैराक्वाट
+पैराक्वॉट
+कार्बारिल
+ट्राइजोफॉस
+ट्राईजोफॉस
+डाइक्लोरवास
+डाईक्लोरवास
+पैराथियान
+मिथाइल पैराथियान
+एल्ड्रिन
+लिंडेन
+मिथोमिल
+# spellings that appeared in saved cloud answers
+डिक्लोरवोस
+डाइक्लोरवोस
+डिक्लोरवास
+फॉस्फामिडोन
+फास्फामिडोन
+फोस्फामिडोन
+ट्राइडीमॉर्फ
+ट्राइडेमॉर्फ
+डायजिनॉन
+डायाजिनॉन
+ट्राइक्लोरफोन

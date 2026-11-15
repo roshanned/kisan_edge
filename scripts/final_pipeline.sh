@@ -62,3 +62,5 @@ step "5. gate, hybrids (H, R, A1, A4, traces), H1/H2/H3, tables and figures"
 python -m src.eval.run_final                     # -> $F/summary.json, reports/final/tables, reports/final/figures
 python -m src.eval.judge_check --dir $F judges --n 150 --model gemini-3.5-flash-lite   # judge vs a second judge
 python -m src.eval.judge_check --dir $F --report-dir reports/final sample --n 100      # sheet for the human check (MANUAL)
+# after labelling: save as reports/final/judge_check_sheet_final.csv, then
+python -m src.eval.judge_check --dir $F --report-dir reports/final --sheet reports/final/judge_check_sheet_final.csv agree

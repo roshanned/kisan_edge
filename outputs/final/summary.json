@@ -1026,7 +1026,21 @@
   },
   "accuracy_ok": true,
   "cloud_ok": true,
-  "met": true
+  "met": true,
+  "ratio_ci95": [
+   0.7647,
+   1.1875
+  ],
+  "p_ratio_at_least_0.9": 0.715,
+  "random_routing": {
+   "accuracy": 0.2357,
+   "pct_of_B1": 0.9041,
+   "cloud_rate": 0.475
+  },
+  "lenient": {
+   "B1": 0.4607,
+   "hybrid": 0.4643
+  }
  },
  "H1_all_questions": {
   "B1_acc": 0.2857,
@@ -1186,6 +1200,36 @@
   "high_risk_label_sent_to_cloud": 0.9536,
   "B3_raw_dose_rate": 0.0114,
   "B2_raw_dose_rate": 0.0829
+ },
+ "banned_official": {
+  "n_names": 87,
+  "B1": {
+   "n": 700,
+   "answers_naming_banned": 11,
+   "rate": 0.0157,
+   "names": [
+    "carbaryl",
+    "phorate",
+    "ट्राइडीमॉर्फ",
+    "डिक्लोरवोस",
+    "पैराथियान",
+    "फोरेट"
+   ]
+  },
+  "A2": {
+   "n": 700,
+   "answers_naming_banned": 0,
+   "rate": 0.0,
+   "names": []
+  },
+  "A3": {
+   "n": 350,
+   "answers_naming_banned": 1,
+   "rate": 0.0029,
+   "names": [
+    "phorate"
+   ]
+  }
  },
  "rag_recall": {
   "k": 5,
@@ -2811,6 +2855,86 @@
     0.6427,
     0.7757
    ]
+  }
+ },
+ "gate_diagnostics": {
+  "n_test": 700,
+  "n_dev": 600,
+  "deferral_share_test": 0.39,
+  "accuracy_on_deferrals": 0.0,
+  "accuracy_non_deferral": 0.155,
+  "mean_logprob": {
+   "deferral": -0.032,
+   "non_deferral_correct": -0.767,
+   "non_deferral_wrong": -0.542
+  },
+  "n_tokens_non_deferral": {
+   "correct": 81.9,
+   "wrong": 49.9
+  },
+  "sign_chosen_on_dev": {
+   "mean_logprob": -1,
+   "min_logprob": -1
+  },
+  "dev_auroc_mean_logprob": 0.1696,
+  "auroc_all": {
+   "token_prob_as_defined": 0.1559,
+   "token_prob_sign_corrected": 0.8441,
+   "min_logprob_sign_corrected": 0.7177,
+   "classifier": 0.8687
+  },
+  "auroc_non_deferral": {
+   "token_prob_as_defined": 0.2739,
+   "token_prob_sign_corrected": 0.7261,
+   "min_logprob_sign_corrected": 0.6095,
+   "classifier": 0.7693
+  },
+  "classifier_minus_sign_corrected_token_prob": {
+   "all": [
+    0.001,
+    0.0489
+   ],
+   "non_deferral": [
+    0.0018,
+    0.0854
+   ]
+  }
+ },
+ "judge_human": {
+  "sheet": "judge_check_sheet_final.csv",
+  "n": 100,
+  "exact_agreement": 0.85,
+  "kappa": 0.626,
+  "agreement_correct_vs_not": 0.92,
+  "agreement_wrong_vs_not": 0.89,
+  "human_correct_rate": 0.13,
+  "judge_correct_rate": 0.13,
+  "human_lenient_rate": 0.22,
+  "judge_lenient_rate": 0.27,
+  "confusion_human_x_judge": {
+   "correct|correct": 9,
+   "correct|partly_correct": 3,
+   "correct|wrong": 1,
+   "partly_correct|correct": 1,
+   "partly_correct|partly_correct": 6,
+   "partly_correct|wrong": 2,
+   "wrong|correct": 3,
+   "wrong|partly_correct": 5,
+   "wrong|wrong": 70
+  },
+  "by_run": {
+   "B1": 0.821,
+   "B2": 0.875,
+   "B3": 0.862
+  },
+  "by_language": {
+   "en": 0.882,
+   "hi": 0.833
+  },
+  "by_category": {
+   "general": 0.85,
+   "high_risk": 0.872,
+   "live_data": 0.81
   }
  }
 }

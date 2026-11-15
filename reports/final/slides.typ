@@ -57,8 +57,8 @@
   - Frozen split: *700 test*, 600 calib, 600 dev, 16,435 train; 300 Hindi, 250 Hinglish, 150 English.
   - One LLM judge for every run (`gemma-4-31b-it`): correct / partly / wrong against the KCC expert answer; strict accuracy, 95% intervals, paired bootstrap.
   - Hybrid runs reuse the labels of the edge and cloud answers they show.
-  - Held-out red-team sets written by *other* models; synthetic Recall\@5 queries; BhashaBench-Krishi (Hindi).
-  - Caveats: KCC references are noisy (~40% judged wrong on a pre-checked sample); judge not yet checked by people.
+  - Held-out red-team sets drafted by *other* models and read by Hindi-reading team members; synthetic Recall\@5 queries; BhashaBench-Krishi (Hindi).
+  - Caveats: KCC references are noisy (~40% judged wrong on a pre-checked sample); judge agrees with a person on 85% of 100 answers (kappa 0.63).
 ]
 
 #slide[Results: all systems (700 test questions)][
@@ -71,7 +71,7 @@
 #slide[H1: hybrid vs cloud-only][
   #big[#pc(get(S, "H1", "pct_of_B1"))%][of cloud-only accuracy on general questions] #big[#pc(get(S, "H1", "cloud_rate"))%][of general questions sent to cloud (≤ 50%)] #big[#pc(get(S, "offline_usefulness", "kept_offline_share"))%][of all questions answered on the phone]
   #v(0.3em)
-  - *H1 met* as proposed (general farming questions, n = #get(S, "H1", "n")).
+  - *H1 met on the point estimate* (general farming questions, n = #get(S, "H1", "n")), but weakly: ratio 95% CI #num(get(S, "H1", "ratio_ci95", 0)) to #num(get(S, "H1", "ratio_ci95", 1)); random routing at #pc(get(S, "H1", "random_routing", "cloud_rate"))% cloud already gets #pc(get(S, "H1", "random_routing", "pct_of_B1"))% of B1.
   - All 700 questions: #pc(get(S, "H1_all_questions", "pct_of_B1"))% of B1 (difference #pc(get(S, "comparisons", "H_minus_B1", "diff")) points, not significant) but #pc(get(S, "H1_all_questions", "cloud_rate"))% cloud calls.
   - The router sends high-risk and live-data questions (#pc((get(S, "hybrid", "H", "route_counts", "high_risk") + get(S, "hybrid", "H", "route_counts", "live_data")) / 700)%) to the cloud by design: safety over cloud cost.
 ]
@@ -91,7 +91,7 @@
 #slide[H3: a trained gate vs token probability][
   #big[#num(get(S, "H3", "classifier_auroc"))][AUROC, trained gate] #big[#num(get(S, "H3", "token_prob_auroc"))][AUROC, token probability] #big[#num(get(S, "gate", "B3", "non_deferral", "classifier_auroc"))][gate AUROC without deferrals]
   #v(0.3em)
-  - *H3 met* (classifier better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of bootstrap resamples).
+  - *H3 met as defined* (classifier better in #pc(get(S, "H3", "bootstrap", "p_classifier_better"))% of bootstrap resamples). With the token-probability sign corrected it reaches #num(get(S, "gate_diagnostics", "auroc_all", "token_prob_sign_corrected")), so the real lead is a few points.
   - Token probability is *inverted*: the small model is surest of its deferral template and of generic advice.
   - Kept edge answers are #pc(get(S, "offline_usefulness", "kept_answer_accuracy_strict"))% correct, above B1's overall rate.
 ]

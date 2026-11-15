@@ -119,6 +119,33 @@ def agree(d="outputs"):
         write_jsonl(recs, f)
 
 
+def human_stats(sheet):
+    """Numbers for summary.json from a hand-labelled sheet (None if the file is missing or empty)."""
+    sheet = Path(sheet)
+    if not sheet.exists():
+        return None
+    rows = [r for r in csv.DictReader(sheet.open(encoding="utf-8-sig")) if r["human_label"].strip()]
+    if not rows:
+        return None
+    pairs = [(r["human_label"].strip().lower(), r["judge_label"].strip().lower(), r) for r in rows]
+    h, j = [p[0] for p in pairs], [p[1] for p in pairs]
+    n = len(pairs)
+    share = lambda f: round(sum(f(a, b) for a, b, _ in pairs) / n, 3)
+    ok = lambda x: x != "wrong"
+    by = lambda key: {k: round(sum(a == b for a, b, r in pairs if r[key] == k) / sum(r[key] == k for _, _, r in pairs), 3)
+                      for k in sorted({r[key] for _, _, r in pairs})}
+    return {"sheet": sheet.name, "n": n, "exact_agreement": share(lambda a, b: a == b),
+            "kappa": round(kappa(list(zip(h, j))), 3),
+            "agreement_correct_vs_not": share(lambda a, b: (a == "correct") == (b == "correct")),
+            "agreement_wrong_vs_not": share(lambda a, b: ok(a) == ok(b)),
+            "human_correct_rate": round(sum(x == "correct" for x in h) / n, 3),
+            "judge_correct_rate": round(sum(x == "correct" for x in j) / n, 3),
+            "human_lenient_rate": round(sum(ok(x) for x in h) / n, 3), "judge_lenient_rate": round(sum(ok(x) for x in j) / n, 3),
+            "confusion_human_x_judge": {f"{a}|{b}": c for (a, b), c in sorted(Counter(zip(h, j)).items())},
+            "by_run": by("run"), "by_language": {k: v for k, v in by("lang").items()},
+            "by_category": by("category")}
+
+
 def judges(n, model, d, seed=5):
     """A second LLM judge relabels a stratified sample (over run and language); agreement with the main judge."""
     from src.eval.judge import GeminiJudge
@@ -156,6 +183,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default="outputs")
     ap.add_argument("--report-dir", default=None)
+    ap.add_argument("--sheet", default=None, help="labelled sheet to read for `agree` (default: <report-dir>/judge_check_sheet.csv)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sample").add_argument("--n", type=int, default=50)
     sub.add_parser("agree")
@@ -165,6 +193,8 @@ if __name__ == "__main__":
     a = ap.parse_args()
     if a.report_dir:
         SHEET, REPORT = Path(a.report_dir) / "judge_check_sheet.csv", Path(a.report_dir) / "judge_agreement.md"
+    if a.sheet:
+        SHEET = Path(a.sheet)
     if a.cmd == "sample":
         sample(a.n, d=a.dir)
     elif a.cmd == "agree":
