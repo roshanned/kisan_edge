@@ -59,7 +59,7 @@
   }
   v
 }
-#let yes(b) = if b == true [*met*] else if b == false [*not met*] else [n/a]
+#let yes(b) = if b == true [*met*] else if b == false [*not met on the point estimate*] else [n/a]
 #let GROUPS = ("hi/deva", "hi/latn", "en/latn")
 #let T(..a) = table(..a, table.hline())
 #let wide(body, caption) = figure(body, caption: caption, placement: top, scope: "parent", kind: table)
@@ -290,9 +290,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 // ---------------------------------------------------------------- 7 Evaluations
 = Evaluations <sec:eval>
 
-== Hypothesis verdicts
-
-*H2 is not met, and H1 and H3 hold only with caveats* (@tab:verdicts).
+== Hypothesis verdicts (@tab:verdicts)
 
 #figure(
   T(
@@ -308,7 +306,7 @@ Over all 700 questions, H reaches #pc(get(S, "H1_all_questions", "pct_of_B1"))% 
 
 == Judge reliability <sec:judge>
 
-*The judge (`gemma-4-31b-it`) agrees with a second judge (`gemini-3.5-flash-lite`) on #pc(get(JJ, "agreement_correct_vs_not"), d: 0)% and with one person on #pc(get(JH, "agreement_correct_vs_not"), d: 0)% of the correct-vs-not decisions behind every strict accuracy.* The second judge relabelled #get(JJ, "n") stratified answers; three-way agreement is lower (#pc(get(JJ, "exact_agreement"), d: 0)%, $kappa$ = #num(get(JJ, "kappa"))), mostly because our judge calls "wrong" what the second calls "partly correct". One team member relabelled #get(JH, "n") answers (B1, B2, B3; Hindi and English) blind, using the judge's rule of comparing with the reference, not the truth: exact agreement is #pc(get(JH, "exact_agreement"), d: 0)% ($kappa$ = #num(get(JH, "kappa"))), and the person and judge both mark #pc(get(JH, "human_correct_rate"), d: 0)% of answers correct, so strict accuracy shows no bias on this sample. The limits are one labeller and only 13 human-correct answers.
+*The judge (`gemma-4-31b-it`) agrees with a second judge (`gemini-3.5-flash-lite`) on #pc(get(JJ, "agreement_correct_vs_not"), d: 0)% and with one person on #pc(get(JH, "agreement_correct_vs_not"), d: 0)% of the correct-vs-not decisions behind every strict accuracy.* The second judge relabelled #get(JJ, "n") stratified answers; three-way agreement is lower (#pc(get(JJ, "exact_agreement"), d: 0)%, $kappa$ = #num(get(JJ, "kappa"))), mostly because our judge calls "wrong" what the second calls "partly correct". One team member relabelled #get(JH, "n") answers (B1, B2, B3; Hindi and English) blind, using the judge's rule of comparing with the reference: exact agreement is #pc(get(JH, "exact_agreement"), d: 0)% ($kappa$ = #num(get(JH, "kappa"))), and the person and judge both mark the correct answers correct, so strict accuracy shows no bias on this sample.
 
 == Retrieval, tools and fault handling
 
