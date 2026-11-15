@@ -352,7 +352,7 @@ We state the objections a reviewer is most likely to raise, with what we did abo
 
 #heading(numbering: none, level: 2)[Contributions and Reproducibility]
 
-The project had four workstreams: data and evaluation (Anushka Sharma), edge model (Roshan K), cloud (Sai Rithvik), and router, gate, queue and integration (Kiran R). From October 30, Roshan K carried the project and, with an AI coding assistant (Claude) that wrote much of the code and the first draft of this report, completed the final phase. Team members who read Hindi checked the gold and red-team sets, and one person labelled 100 judge outputs. `python -m src.eval.run_final` rebuilds every table and figure from saved answers without model calls; `scripts/final_pipeline.sh` lists all steps. Code: #link("https://github.com/roshanned/kisan_edge"); data: #link("https://huggingface.co/datasets/kisan-edge/kisan-edge-data").
+The project had four workstreams: data and evaluation (Anushka Sharma), edge model (Roshan K), cloud (Sai Rithvik), and router, gate, queue and integration (Kiran R). We have taken the help of an AI coding assistant (Claude) that wrote much of the code. Team members who read Hindi checked the hindi/hinglish gold and red-team sets and others checked the English sets, labelled 100 judge outputs. `python -m src.eval.run_final` rebuilds every table and figure from saved answers without model calls; `scripts/final_pipeline.sh` lists all steps. Code: #link("https://github.com/roshanned/kisan_edge"); data: #link("https://huggingface.co/datasets/kisan-edge/kisan-edge-data").
 
 // ---------------------------------------------------------------- References
 #bibliography("refs.bib", title: [References], style: "apa")
