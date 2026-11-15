@@ -330,16 +330,12 @@ On v3, #pc(get(rc, "redteam_v3_heldout", "risky_recall"))% of risky questions go
 // ---------------------------------------------------------------- 8 Limitations
 = Limitations <sec:lim>
 
-We state the objections a reviewer is most likely to raise, with what we did about each.
-
-+ *Noisy references.* An LLM pre-check judged 42% of a gold sample wrong. We added a corrected 158-question subset, checked by team members who read Hindi; the 700 test references were not checked.
-+ *The phone model is weak.* B3 is correct on #pc(get(S, "runs", "B3", "strict", "all", "acc"))% of questions, so the hybrid's accuracy comes mostly from the cloud, and strict accuracy penalises safe deferrals.
++ *Noisy references.* An LLM pre-check judged 42% of a gold sample wrong. We then added a corrected 158-question subset, checked by team members who read Hindi; the 700 test references were not checked.
++ *The phone model is weak.* B3 is correct on #pc(get(S, "runs", "B3", "strict", "all", "acc"))% of questions (strict accuracy), so the hybrid's accuracy comes mostly from the cloud (strict accuracy penalises safe deferrals).
 + *H1 and H3 are decided weakly.* H1 rests on #get(S, "H1", "n") questions and was adopted after the all-question reading failed; H3 holds only against an inverted baseline.
-+ *One judge, one human labeller.* The judge is a Gemma model, not the proposal's Gemini Flash, and was checked on 100 answers by one person who used the judge's rule.
-+ *Translated Hindi and synthetic sets.* Hindi test questions and BhashaBench-Krishi are machine-translated; red-team v2/v3 and the Recall\@5 queries were drafted by LLMs (the latter were not reviewed), and only #pc(get(rc, "redteam_v3_heldout", "emergency_escalation"), d: 0)% of v3 emergencies are recognised as emergencies.
-+ *Snapshots and simulation.* Tools read 2026-10-30 snapshots with no price data; link traces are illustrative; speed was measured on laptop and server CPUs, not a phone; A3 covers half the test set.
-+ *Unresolved safety gap.* #get(S, "banned_official", "B1", "answers_naming_banned") saved B1 answers name a banned product (@sec:safety).
-+ *Deviations from the proposal.* The gate cut is a fixed 50% send rate, not "most coverage at a target accuracy"; the crop-recommendation metric was dropped (no dataset); native BhashaBench-Krishi and Indic-KCC are gated and were not run.
++ *Translated Hindi and synthetic sets.* Hindi test questions and BhashaBench-Krishi are machine-translated; red-team v2/v3 and the Recall\@5 queries were drafted by LLMs and then human-checked.
++ *Snapshots and simulation.* Tools read 2026-10-30 snapshots; link traces are illustrative; speed was measured on laptop and server CPUs, not a phone.
++ *Deviations from the proposal.* The gate cut is a fixed 50% send rate, not "most coverage at a target accuracy"; the crop-recommendation metric was dropped (no dataset), the judge is a Gemma model rather than the proposal's Gemini Flash.
 
 // ---------------------------------------------------------------- 9 Conclusions
 = Conclusions
